@@ -1,0 +1,21 @@
+# Claude Code 状態ファイル（絶対に含めない）
+home/.claude/history.jsonl
+home/.claude/config/notification_states.json
+home/.claude/settings.local.json
+home/.claude/*.log
+home/.claude/logs/
+home/.claude/todos/
+home/.claude/shell-snapshots/
+home/.claude/projects/
+home/.claude/statsig/
+home/.claude/backups/
+home/.claude/.credentials.json
+
+# OS 固有
+.DS_Store
+Thumbs.db
+
+# エディタ
+*.swp
+*.swo
+*~
