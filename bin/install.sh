@@ -30,6 +30,47 @@ backup_and_link() {
   log "Link: $dest -> $src"
 }
 
+setup_mcp_servers() {
+  echo
+  log "=== MCP Servers Setup ==="
+
+  # Claude Code がインストールされているか確認
+  if ! command -v claude &> /dev/null; then
+    log "Claude Code not found. Skipping MCP setup."
+    log ""
+    log "After installing Claude Code, run these commands:"
+    log "  claude mcp add --scope user context7 -- npx -y @upstash/context7-mcp"
+    log "  claude mcp add --scope user fetch -- uvx mcp-server-fetch"
+    log ""
+    log "For GitHub MCP (optional):"
+    log "  claude mcp add --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='\${GITHUB_TOKEN}' github -- npx -y @modelcontextprotocol/server-github"
+    return
+  fi
+
+  log "Setting up MCP servers..."
+
+  # Context7（最新ドキュメント取得）
+  claude mcp remove context7 --scope user 2>/dev/null || true
+  claude mcp add --scope user context7 -- npx -y @upstash/context7-mcp
+  log "  ✓ context7 added"
+
+  # Fetch（Webコンテンツ取得）
+  claude mcp remove fetch --scope user 2>/dev/null || true
+  claude mcp add --scope user fetch -- uvx mcp-server-fetch
+  log "  ✓ fetch added"
+
+  # GitHub（常に追加、実行時に環境変数を評価）
+  claude mcp remove github --scope user 2>/dev/null || true
+  claude mcp add --scope user -e 'GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}' github -- npx -y @modelcontextprotocol/server-github
+  log "  ✓ github added (requires GITHUB_TOKEN at runtime)"
+  if [ -z "${GITHUB_TOKEN:-}" ]; then
+    log "    Note: GITHUB_TOKEN is not currently set. Set it before using GitHub MCP."
+  fi
+
+  log ""
+  log "MCP servers configured! Verify with: claude mcp list"
+}
+
 #=== メイン処理 ========================
 main() {
   log "Starting installation..."
@@ -43,10 +84,13 @@ main() {
     # まず .claude ディレクトリ自体を作成
     mkdir -p "${HOME_ROOT}/.claude"
 
-    # 直下のファイル・ディレクトリをリンク
-    for src in "${SOURCE_ROOT}/.claude"/*; do
+    # 直下のファイル・ディレクトリをリンク（隠しファイル含む）
+    for src in "${SOURCE_ROOT}/.claude"/* "${SOURCE_ROOT}/.claude"/.*; do
+      basename="$(basename "$src")"
+      case "$basename" in
+        .|..) continue ;;
+      esac
       if [ -e "$src" ]; then
-        basename="$(basename "$src")"
         dest="${HOME_ROOT}/.claude/${basename}"
         backup_and_link "$src" "$dest"
       fi
@@ -66,10 +110,16 @@ main() {
   done
 
   echo
-  log "Installation complete!"
+  log "Symlinks installation complete!"
   if [ -d "$BACKUP_ROOT" ]; then
     log "Previous files backed up to: $BACKUP_ROOT"
   fi
+
+  # MCP サーバーのセットアップ
+  setup_mcp_servers
+
+  echo
+  log "=== All Done ==="
 }
 
 main "$@"

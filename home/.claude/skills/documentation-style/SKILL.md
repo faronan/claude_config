@@ -3,7 +3,7 @@ name: documentation-style
 description: |
   Code documentation style rules for JSDoc, docstring, and rustdoc.
   MUST BE USED for all documentation generation.
-  Trigger: "document", "docstring", "JSDoc", "ドキュメント", "コメント追加"
+  Trigger: "document", "docstring", "JSDoc", "ドキュメント", "コメント追加", "コードコメント"
 ---
 
 # Documentation Style Rules

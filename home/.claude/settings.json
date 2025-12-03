@@ -11,10 +11,9 @@
       "Bash(git diff:*)",
       "Bash(git log:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)",
       "Bash(git branch:*)",
       "Bash(git checkout:*)",
-      "Bash(git stash:*)",
+      "Bash(git switch:*)",
       "Bash(npm run:*)",
       "Bash(pnpm:*)",
       "Bash(yarn:*)",
@@ -31,12 +30,17 @@
       "Bash(node:*)",
       "Bash(tsc:*)",
       "Bash(pytest:*)",
-      "Bash(cargo:*)"
+      "Bash(cargo:*)",
+      "Bash(uv:*)",
+      "Bash(ruff:*)",
+      "Bash(biome:*)",
+      "Bash(mise:*)"
     ],
     "ask": [
+      "Bash(git stash:*)",
+      "Bash(git rebase:*)",
       "Bash(git push:*)",
       "Bash(git merge:*)",
-      "Bash(git rebase:*)",
       "Bash(docker:*)",
       "Bash(kubectl:*)"
     ],
@@ -71,7 +75,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "black $CLAUDE_FILE_PATH 2>/dev/null || true"
+            "command": "ruff check --fix \"$CLAUDE_FILE_PATH\" 2>/dev/null; ruff format \"$CLAUDE_FILE_PATH\" 2>/dev/null || true"
           }
         ]
       },
@@ -80,7 +84,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "prettier --write $CLAUDE_FILE_PATH 2>/dev/null || true"
+            "command": "biome check --write \"$CLAUDE_FILE_PATH\" 2>/dev/null || prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null || true"
           }
         ]
       }

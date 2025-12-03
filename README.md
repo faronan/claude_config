@@ -11,13 +11,12 @@ Claude Code のグローバル設定ディレクトリ `~/.claude` を Git 管�
 ```
 claude-config/
 ├── home/                    # $HOME をルートとしたミラー
-│   ├── .claude/
-│   │   ├── CLAUDE.md       # グローバルユーザー設定
-│   │   ├── settings.json   # 権限・フック設定
-│   │   ├── commands/       # スラッシュコマンド
-│   │   ├── agents/         # サブエージェント
-│   │   └── skills/         # スキル
-│   └── .mcp.json           # MCP サーバー設定
+│   └── .claude/
+│       ├── CLAUDE.md       # グローバルユーザー設定
+│       ├── settings.json   # 権限・フック設定
+│       ├── commands/       # スラッシュコマンド
+│       ├── agents/         # サブエージェント
+│       └── skills/         # スキル
 ├── templates/               # プロジェクト用テンプレート
 ├── bin/
 │   └── install.sh          # デプロイスクリプト
@@ -44,11 +43,38 @@ git clone git@github.com:<username>/claude-config.git ~/claude-config
 
 ### 環境変数の設定
 
-`.zshrc` 等に以下を追加:
+MCP サーバー（GitHub 等）で使用する環境変数を設定:
+
+**Fish shell** (`~/.config/fish/conf.d/secrets.fish`):
+
+```fish
+set -gx GITHUB_TOKEN "ghp_xxxx"
+```
+
+**Zsh/Bash** (`~/.zshrc` or `~/.bashrc`):
 
 ```bash
-export GITHUB_TOKEN="ghp_xxxx"  # .mcp.json で参照
+export GITHUB_TOKEN="ghp_xxxx"
 ```
+
+## MCP サーバー
+
+MCP サーバーは `install.sh` 実行時に自動セットアップされます。
+
+Claude Code 未インストール時は手動で以下を実行:
+
+```bash
+# Context7（最新ドキュメント取得）
+claude mcp add --scope user context7 -- npx -y @upstash/context7-mcp
+
+# Fetch（Webコンテンツ取得）
+claude mcp add --scope user fetch -- uvx mcp-server-fetch
+
+# GitHub（オプション、GITHUB_TOKEN が必要）
+claude mcp add --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOKEN}' github -- npx -y @modelcontextprotocol/server-github
+```
+
+確認: `claude mcp list`
 
 ## 含まれる設定
 
@@ -60,6 +86,9 @@ export GITHUB_TOKEN="ghp_xxxx"  # .mcp.json で参照
 | `/pr` | PR 説明文を生成 |
 | `/review` | コードレビューを実行 |
 | `/plan` | タスクの実行計画を策定 |
+| `/test` | テストを実行 |
+| `/docs` | ドキュメントを生成 |
+| `/refactor` | リファクタリング提案を実行 |
 
 ### サブエージェント
 
@@ -67,13 +96,36 @@ export GITHUB_TOKEN="ghp_xxxx"  # .mcp.json で参照
 |--------------|------|
 | `@code-reviewer` | コードレビュー専門 |
 | `@explainer` | コード説明専門 |
+| `@security-reviewer` | セキュリティレビュー専門 |
+| `@performance-analyzer` | パフォーマンス分析専門 |
+| `@refactoring-advisor` | リファクタリング提案専門 |
+
+### スキル
+
+| スキル | 説明 |
+|--------|------|
+| `commit-message` | Conventional Commits 形式のコミットメッセージ生成 |
+| `pr-description` | PR 説明文のフォーマットルール |
+| `documentation-style` | JSDoc/docstring/rustdoc のスタイルガイド |
 
 ### テンプレート
 
 | テンプレート | 用途 |
 |--------------|------|
-| `minimal` | 最小限の設定 |
+| `minimal` | 最小限の設定（settings.json のみ） |
 | `typescript-web` | TypeScript + React プロジェクト |
+
+## 推奨ツールチェーン（2025年）
+
+この設定は以下のツールチェーンを前提としています:
+
+| カテゴリ | ツール |
+|---------|--------|
+| JS/TS リンター/フォーマッター | **Biome**（新規）、ESLint + Prettier（既存） |
+| Python パッケージ | **uv** |
+| Python リンター/フォーマッター | **ruff** |
+| ランタイムバージョン管理 | **mise** |
+| シェル | **Fish** |
 
 ## カスタマイズ
 
@@ -84,4 +136,5 @@ export GITHUB_TOKEN="ghp_xxxx"  # .mcp.json で参照
 ## 注意事項
 
 - `settings.json` の `"Skill"` 許可がないと Skill が発火しない
-- `.mcp.json` にシークレットを直接書かない（`${ENV_VAR}` 形式を使用）
+- MCP サーバーは `claude mcp add` コマンドで管理（設定ファイル直接編集ではない）
+- Fish shell では zsh/bash のコマンドがそのまま動かない場合があるので注意
