@@ -41,6 +41,16 @@
 | コード説明依頼 | @explainer |
 | セキュリティレビュー | @security-reviewer |
 | パフォーマンス分析 | @performance-analyzer |
+| リファクタリング提案 | @refactoring-advisor |
+
+## Skill Usage Rules
+以下の条件で対応するスキルを参照すること：
+
+| 条件 | スキル |
+|------|--------|
+| コミットメッセージ生成 | commit-message |
+| PR説明文生成 | pr-description |
+| ドキュメント生成 | documentation-style |
 
 ## References
 詳細は以下を参照:
