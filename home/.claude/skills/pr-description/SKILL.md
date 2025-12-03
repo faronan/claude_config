@@ -1,8 +1,9 @@
 ---
 name: pr-description
 description: |
-  PR説明文のフォーマット規約。
-  「PR作成」「プルリクエスト」「PR説明」と言われたら使用。
+  PR description format rules for pull request creation.
+  MUST BE USED for all PR creation operations.
+  Trigger: "PR", "pull request", "プルリクエスト", "PR作成", "PR説明"
 ---
 
 # PR Description Rules

@@ -1,8 +1,9 @@
 ---
 name: documentation-style
 description: |
-  コードドキュメントのスタイル規約。
-  「ドキュメント生成」「docstring」「JSDoc」「コメント追加」と言われたら使用。
+  Code documentation style rules for JSDoc, docstring, and rustdoc.
+  MUST BE USED for all documentation generation.
+  Trigger: "document", "docstring", "JSDoc", "ドキュメント", "コメント追加"
 ---
 
 # Documentation Style Rules

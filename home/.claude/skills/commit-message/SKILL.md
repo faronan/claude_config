@@ -1,8 +1,9 @@
 ---
 name: commit-message
 description: |
-  Generate commit messages following Conventional Commits.
-  Use when committing, "git commit", "コミット", "コミットメッセージ".
+  Commit message format rules following Conventional Commits.
+  MUST BE USED for all commit operations.
+  Trigger: "commit", "git commit", "コミット", "コミットメッセージ"
 ---
 
 # Commit Message Rules
