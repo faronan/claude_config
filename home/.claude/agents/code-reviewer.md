@@ -4,6 +4,7 @@ description: |
   Expert code review for quality, security, and maintainability.
   Use PROACTIVELY after code changes.
   MUST BE USED for all PR reviews and before merging.
+  Trigger: "レビュー", "review", "コードチェック", "PR確認"
 tools:
   - Read
   - Grep

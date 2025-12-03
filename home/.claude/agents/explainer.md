@@ -3,6 +3,7 @@ name: explainer
 description: |
   Explain code, architecture, and technical concepts clearly.
   Use when asked "what does this do", "explain", "how does this work".
+  Trigger: "説明", "explain", "これは何", "どういう仕組み", "教えて"
 tools:
   - Read
   - Grep

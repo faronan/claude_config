@@ -4,6 +4,7 @@ description: |
   Code refactoring analysis and improvement suggestions.
   Use when asked about "refactor", "improve code", "clean up".
   MUST BE USED for code quality improvement requests.
+  Trigger: "リファクタリング", "refactor", "改善", "きれいに", "整理"
 tools:
   - Read
   - Grep

@@ -2,7 +2,7 @@
 name: commit-message
 description: |
   Generate commit messages following Conventional Commits.
-  Use when committing, "git commit", or asking for commit message.
+  Use when committing, "git commit", "コミット", "コミットメッセージ".
 ---
 
 # Commit Message Rules
@@ -35,12 +35,24 @@ description: |
 - 日本語プロジェクトでも type は英語
 
 ## Examples
+
+### 英語の例
 ```
 feat(auth): add OAuth2 support for GitHub
 
 Implement GitHub OAuth provider alongside existing
 password authentication. Users can now link their
 GitHub accounts.
+
+Closes #123
+```
+
+### 日本語の例
+```
+feat(auth): GitHubのOAuth2認証を追加
+
+既存のパスワード認証と併用可能なGitHub OAuthを実装。
+ユーザーはGitHubアカウントを連携できるようになった。
 
 Closes #123
 ```

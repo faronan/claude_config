@@ -4,6 +4,7 @@ description: |
   Performance analysis for optimization opportunities.
   Use when asked about "performance", "slow", "optimize", "speed up".
   MUST BE USED for performance-critical code paths.
+  Trigger: "パフォーマンス", "performance", "遅い", "最適化", "高速化"
 tools:
   - Read
   - Grep

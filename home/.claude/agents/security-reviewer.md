@@ -4,6 +4,7 @@ description: |
   Security-focused code review for vulnerabilities and best practices.
   Use PROACTIVELY for authentication, authorization, and data handling code.
   MUST BE USED when reviewing security-sensitive changes.
+  Trigger: "セキュリティ", "security", "脆弱性", "vulnerability", "安全性"
 tools:
   - Read
   - Grep
