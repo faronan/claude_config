@@ -40,9 +40,7 @@ setup_mcp_servers() {
     log ""
     log "After installing Claude Code, run these commands:"
     log "  claude mcp add --scope user context7 -- npx -y @upstash/context7-mcp"
-    log "  claude mcp add --scope user fetch -- uvx mcp-server-fetch"
-    log ""
-    log "For GitHub MCP (optional):"
+    log "  claude mcp add --scope user sequential-thinking -- npx -y @modelcontextprotocol/server-sequential-thinking"
     log "  claude mcp add --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='\${GITHUB_TOKEN}' github -- npx -y @modelcontextprotocol/server-github"
     return
   fi
@@ -54,10 +52,12 @@ setup_mcp_servers() {
   claude mcp add --scope user context7 -- npx -y @upstash/context7-mcp
   log "  ✓ context7 added"
 
-  # Fetch（Webコンテンツ取得）
-  claude mcp remove fetch --scope user 2>/dev/null || true
-  claude mcp add --scope user fetch -- uvx mcp-server-fetch
-  log "  ✓ fetch added"
+  # Sequential Thinking（複雑な問題の構造化思考）
+  claude mcp remove sequential-thinking --scope user 2>/dev/null || true
+  claude mcp add --scope user sequential-thinking -- npx -y @modelcontextprotocol/server-sequential-thinking
+  log "  ✓ sequential-thinking added"
+
+  # Note: fetch MCP は不要（Claude Code 組み込みの Fetch/WebFetch で十分）
 
   # GitHub（常に追加、実行時に環境変数を評価）
   claude mcp remove github --scope user 2>/dev/null || true

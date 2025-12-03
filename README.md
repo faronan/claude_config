@@ -67,12 +67,14 @@ Claude Code 未インストール時は手動で以下を実行:
 # Context7（最新ドキュメント取得）
 claude mcp add --scope user context7 -- npx -y @upstash/context7-mcp
 
-# Fetch（Webコンテンツ取得）
-claude mcp add --scope user fetch -- uvx mcp-server-fetch
+# Sequential Thinking（複雑な問題の構造化思考）
+claude mcp add --scope user sequential-thinking -- npx -y @modelcontextprotocol/server-sequential-thinking
 
 # GitHub（オプション、GITHUB_TOKEN が必要）
 claude mcp add --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOKEN}' github -- npx -y @modelcontextprotocol/server-github
 ```
+
+> **Note**: Web コンテンツ取得には Claude Code 組み込みの Fetch/WebFetch ツールを使用します（MCP 不要）。
 
 確認: `claude mcp list`
 
