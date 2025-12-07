@@ -18,6 +18,7 @@ claude-config/
 │       ├── agents/         # サブエージェント
 │       └── skills/         # スキル
 ├── templates/               # プロジェクト用テンプレート
+│   ├── GUIDE.md            # プロジェクト CLAUDE.md 作成ガイド
 │   ├── minimal/            # 最小限の設定
 │   ├── typescript-web/     # TypeScript + React（Playwright MCP 付き）
 │   └── python-data/        # Python データ分析（Jupyter MCP 付き）
@@ -138,6 +139,8 @@ claude mcp add --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOKEN}' gi
 | `python-data` | Python データ分析 | Jupyter |
 
 テンプレートの `.mcp.json` はプロジェクトスコープで自動読み込みされます。
+
+プロジェクト固有の `CLAUDE.md` を作成する際は **[templates/GUIDE.md](templates/GUIDE.md)** を参照してください。
 
 ## 推奨ツールチェーン（2025年）
 

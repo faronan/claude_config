@@ -1,5 +1,8 @@
 ---
-description: テストを実行
+description: |
+  Run tests and analyze results.
+  Use after implementing features or fixing bugs.
+  Trigger: "テスト", "test", "テスト実行"
 ---
 
 1. プロジェクトのテストフレームワークを検出（jest, vitest, pytest 等）

@@ -1,5 +1,8 @@
 ---
-description: ドキュメントを生成
+description: |
+  Generate documentation for code.
+  Use when adding/updating code documentation.
+  Trigger: "ドキュメント", "docs", "コメント追加"
 ---
 
 1. $ARGUMENTS で対象を指定（ファイル、関数、モジュール等）

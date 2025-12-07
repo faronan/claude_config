@@ -1,5 +1,8 @@
 ---
-description: PR 説明文を生成
+description: |
+  Generate PR description from commits.
+  Use when creating a pull request.
+  Trigger: "PR", "プルリク", "pull request"
 ---
 
 1. `git log main..HEAD --oneline` でコミット一覧を取得

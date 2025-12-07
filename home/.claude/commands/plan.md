@@ -1,5 +1,8 @@
 ---
-description: タスクの実行計画を策定（実装はしない）
+description: |
+  Create execution plan for a task (no implementation).
+  Use BEFORE starting complex or multi-step tasks.
+  Trigger: "計画", "plan", "設計", "どうやって"
 ---
 
 以下のタスクについて実行計画を策定してください。**コードは書かない**でください。

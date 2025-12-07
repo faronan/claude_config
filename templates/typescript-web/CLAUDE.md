@@ -3,18 +3,18 @@
 TypeScript + React の Web アプリケーション。
 
 ## Commands
-- `pnpm dev` - 開発サーバー
-- `pnpm build` - ビルド
-- `pnpm test` - テスト
-- `pnpm lint` - リント
-
-## Code Style
-- ES modules (import/export)
-- 関数コンポーネント + Hooks
-- 型定義は必須
+- `pnpm dev` - 開発サーバー起動
+- `pnpm build` - プロダクションビルド
+- `pnpm test` - Vitest でテスト実行
+- `pnpm lint` - Biome でリント
 
 ## Architecture
-- `src/components/` - UI コンポーネント
+- `src/components/` - UIコンポーネント
 - `src/hooks/` - カスタムフック
-- `src/lib/` - ユーティリティ
+- `src/lib/` - ユーティリティ・API
 - `src/types/` - 型定義
+
+## Conventions
+- コンポーネント: 関数コンポーネント + Hooks
+- スタイル: Tailwind CSS / CSS Modules
+- 状態管理: React Context または Zustand

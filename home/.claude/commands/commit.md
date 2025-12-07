@@ -1,5 +1,8 @@
 ---
-description: ステージ済み変更からコミットメッセージを生成してコミット
+description: |
+  Generate commit message from staged changes and commit.
+  Use after staging changes with git add.
+  Trigger: "コミット", "commit", "git commit"
 ---
 
 1. `git diff --staged` で変更内容を確認

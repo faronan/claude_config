@@ -1,5 +1,8 @@
 ---
-description: コードレビューを実行
+description: |
+  Execute code review using @code-reviewer agent.
+  Use BEFORE committing changes or creating PRs.
+  Trigger: "レビュー", "review", "コードチェック"
 ---
 
 @code-reviewer サブエージェントを使用してコードレビューを実行。
