@@ -18,6 +18,9 @@ claude-config/
 │       ├── agents/         # サブエージェント
 │       └── skills/         # スキル
 ├── templates/               # プロジェクト用テンプレート
+│   ├── minimal/            # 最小限の設定
+│   ├── typescript-web/     # TypeScript + React（Playwright MCP 付き）
+│   └── python-data/        # Python データ分析（Jupyter MCP 付き）
 ├── bin/
 │   └── install.sh          # デプロイスクリプト
 └── README.md
@@ -32,6 +35,22 @@ git clone git@github.com:<username>/claude-config.git ~/claude-config
 cd ~/claude-config
 chmod +x bin/install.sh
 ./bin/install.sh
+```
+
+### インストールオプション
+
+```bash
+# 通常インストール
+./bin/install.sh
+
+# 確認のみ（実際には変更しない）
+./bin/install.sh --dry-run
+
+# MCP セットアップをスキップ
+./bin/install.sh --no-mcp
+
+# ヘルプ表示
+./bin/install.sh --help
 ```
 
 ### 新マシンでの再現
@@ -112,10 +131,13 @@ claude mcp add --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOKEN}' gi
 
 ### テンプレート
 
-| テンプレート | 用途 |
-|--------------|------|
-| `minimal` | 最小限の設定（settings.json のみ） |
-| `typescript-web` | TypeScript + React プロジェクト |
+| テンプレート | 用途 | MCP サーバー |
+|--------------|------|-------------|
+| `minimal` | 最小限の設定 | なし |
+| `typescript-web` | TypeScript + React | Playwright（E2E テスト） |
+| `python-data` | Python データ分析 | Jupyter |
+
+テンプレートの `.mcp.json` はプロジェクトスコープで自動読み込みされます。
 
 ## 推奨ツールチェーン（2025年）
 

@@ -6,6 +6,50 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 HOME_ROOT="${HOME}"
 SOURCE_ROOT="${REPO_ROOT}/home"
 BACKUP_ROOT="${HOME_ROOT}/.claude-config-backup-$(date +%Y%m%d-%H%M%S)"
+DRY_RUN=false
+SKIP_MCP=false
+
+#=== ヘルプ ============================
+show_help() {
+  cat << EOF
+Usage: $(basename "$0") [OPTIONS]
+
+Claude Code グローバル設定をインストールします。
+
+OPTIONS:
+  -n, --dry-run    実際には実行せず、何が行われるかを表示
+  --no-mcp         MCP サーバーのセットアップをスキップ
+  -h, --help       このヘルプを表示
+
+EXAMPLES:
+  $(basename "$0")              # 通常インストール
+  $(basename "$0") --dry-run    # 確認のみ
+  $(basename "$0") --no-mcp     # MCP セットアップをスキップ
+EOF
+}
+
+#=== 引数解析 ==========================
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -n|--dry-run)
+      DRY_RUN=true
+      shift
+      ;;
+    --no-mcp)
+      SKIP_MCP=true
+      shift
+      ;;
+    -h|--help)
+      show_help
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $1"
+      show_help
+      exit 1
+      ;;
+  esac
+done
 
 #=== 関数 ==============================
 log() {
@@ -15,6 +59,14 @@ log() {
 backup_and_link() {
   local src="$1"
   local dest="$2"
+
+  if $DRY_RUN; then
+    if [ -e "$dest" ] || [ -L "$dest" ]; then
+      log "[DRY-RUN] Would backup: $dest"
+    fi
+    log "[DRY-RUN] Would link: $dest -> $src"
+    return
+  fi
 
   mkdir -p "$(dirname "$dest")"
 
@@ -34,6 +86,11 @@ setup_mcp_servers() {
   echo
   log "=== MCP Servers Setup ==="
 
+  if $SKIP_MCP; then
+    log "MCP setup skipped (--no-mcp)"
+    return
+  fi
+
   # Claude Code がインストールされているか確認
   if ! command -v claude &> /dev/null; then
     log "Claude Code not found. Skipping MCP setup."
@@ -42,6 +99,14 @@ setup_mcp_servers() {
     log "  claude mcp add --scope user context7 -- npx -y @upstash/context7-mcp"
     log "  claude mcp add --scope user sequential-thinking -- npx -y @modelcontextprotocol/server-sequential-thinking"
     log "  claude mcp add --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='\${GITHUB_TOKEN}' github -- npx -y @modelcontextprotocol/server-github"
+    return
+  fi
+
+  if $DRY_RUN; then
+    log "[DRY-RUN] Would configure MCP servers:"
+    log "[DRY-RUN]   - context7 (npx -y @upstash/context7-mcp)"
+    log "[DRY-RUN]   - sequential-thinking (npx -y @modelcontextprotocol/server-sequential-thinking)"
+    log "[DRY-RUN]   - github (npx -y @modelcontextprotocol/server-github)"
     return
   fi
 
@@ -73,6 +138,9 @@ setup_mcp_servers() {
 
 #=== メイン処理 ========================
 main() {
+  if $DRY_RUN; then
+    log "=== DRY-RUN MODE ==="
+  fi
   log "Starting installation..."
   log "Repo root:  $REPO_ROOT"
   log "Home root:  $HOME_ROOT"
@@ -82,7 +150,11 @@ main() {
   # .claude ディレクトリ内のファイル/ディレクトリをリンク
   if [ -d "${SOURCE_ROOT}/.claude" ]; then
     # まず .claude ディレクトリ自体を作成
-    mkdir -p "${HOME_ROOT}/.claude"
+    if $DRY_RUN; then
+      log "[DRY-RUN] Would create: ${HOME_ROOT}/.claude"
+    else
+      mkdir -p "${HOME_ROOT}/.claude"
+    fi
 
     # 直下のファイル・ディレクトリをリンク（隠しファイル含む）
     for src in "${SOURCE_ROOT}/.claude"/* "${SOURCE_ROOT}/.claude"/.*; do
@@ -110,16 +182,24 @@ main() {
   done
 
   echo
-  log "Symlinks installation complete!"
-  if [ -d "$BACKUP_ROOT" ]; then
-    log "Previous files backed up to: $BACKUP_ROOT"
+  if $DRY_RUN; then
+    log "[DRY-RUN] Symlinks installation preview complete!"
+  else
+    log "Symlinks installation complete!"
+    if [ -d "$BACKUP_ROOT" ]; then
+      log "Previous files backed up to: $BACKUP_ROOT"
+    fi
   fi
 
   # MCP サーバーのセットアップ
   setup_mcp_servers
 
   echo
-  log "=== All Done ==="
+  if $DRY_RUN; then
+    log "=== DRY-RUN Complete (no changes made) ==="
+  else
+    log "=== All Done ==="
+  fi
 }
 
 main "$@"

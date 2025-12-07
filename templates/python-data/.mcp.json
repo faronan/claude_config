@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "jupyter": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["mcp-server-jupyter"],
+      "env": {}
+    }
+  }
+}

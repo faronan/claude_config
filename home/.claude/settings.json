@@ -34,7 +34,12 @@
       "Bash(uv:*)",
       "Bash(ruff:*)",
       "Bash(biome:*)",
-      "Bash(mise:*)"
+      "Bash(mise:*)",
+      "mcp__context7__*",
+      "mcp__sequential-thinking__*",
+      "mcp__github__*",
+      "mcp__playwright__*",
+      "mcp__fetch__*"
     ],
     "ask": [
       "Bash(git stash:*)",
