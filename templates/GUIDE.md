@@ -88,6 +88,35 @@
 
 ---
 
+## 個人用オーバーライド（CLAUDE.local.md）
+
+チーム共有設定を個人的にカスタマイズしたい場合:
+
+| 共有ファイル | 個人用ファイル | 用途 |
+|-------------|---------------|------|
+| `CLAUDE.md` | `CLAUDE.local.md` | 個人的な作業スタイル |
+| `.claude/settings.json` | `.claude/settings.local.json` | 個人的な権限・環境変数 |
+
+**両方のファイルが存在する場合、両方が読み込まれマージされます。**
+
+### 作成方法
+1. `/memory` コマンド → 「Project memory (local)」を選択
+2. または手動で `CLAUDE.local.md` を作成し、`.gitignore` に追加
+
+### CLAUDE.local.md の例
+```markdown
+# Personal Settings
+
+## 個人環境
+- Editor: Cursor（チームはVSCode）
+
+## 作業スタイル
+- コード変更前に必ず計画を見せてほしい
+- 詳細な説明を日本語でお願いします
+```
+
+---
+
 ## Progressive Disclosure（段階的開示）
 
 大規模プロジェクトでは、詳細を別ファイルに分離:
@@ -133,6 +162,7 @@ project/
 - [ ] グローバル設定と重複していない
 - [ ] 機密情報が含まれていない
 - [ ] コードフォーマット規則はリンターに委任している
+- [ ] 個人固有の設定は `CLAUDE.local.md` に分離している
 
 ---
 

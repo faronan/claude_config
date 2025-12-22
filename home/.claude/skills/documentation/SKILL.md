@@ -1,0 +1,56 @@
+---
+name: documentation
+description: |
+  Generate and maintain documentation.
+  Auto-invoke when: "ドキュメント", "docs", "README", "JSDoc", API documentation requests.
+---
+
+# Documentation Skill
+
+## Documentation Types
+
+### 1. Code Comments
+- **When**: 複雑なロジック、非自明な実装理由
+- **Format**: JSDoc (TS), docstring (Python)
+- **Avoid**: 自明なコードへのコメント
+
+### 2. README.md
+```markdown
+# Project Name
+
+Brief description.
+
+## Quick Start
+\`\`\`bash
+# Installation
+# Usage
+\`\`\`
+
+## Features
+- Feature 1
+- Feature 2
+
+## Development
+- Prerequisites
+- Setup
+- Testing
+
+## License
+```
+
+### 3. API Documentation
+- Endpoint, Method, Path
+- Request/Response schema
+- Error codes
+- Examples
+
+### 4. Architecture Documentation
+- System overview diagram (Mermaid)
+- Component responsibilities
+- Data flow
+
+## Style Guide
+- 簡潔に、しかし必要な情報は省かない
+- 例を含める
+- 最新の状態を維持
+- 対象読者を意識（初心者/経験者）

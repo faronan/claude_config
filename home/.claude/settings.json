@@ -18,6 +18,14 @@
       "Bash(pnpm:*)",
       "Bash(yarn:*)",
       "Bash(npx:*)",
+      "Bash(node:*)",
+      "Bash(tsc:*)",
+      "Bash(python:*)",
+      "Bash(pytest:*)",
+      "Bash(uv:*)",
+      "Bash(ruff:*)",
+      "Bash(biome:*)",
+      "Bash(mise:*)",
       "Bash(ls:*)",
       "Bash(cat:*)",
       "Bash(head:*)",
@@ -26,15 +34,14 @@
       "Bash(rg:*)",
       "Bash(fd:*)",
       "Bash(jq:*)",
-      "Bash(python:*)",
-      "Bash(node:*)",
-      "Bash(tsc:*)",
-      "Bash(pytest:*)",
-      "Bash(cargo:*)",
-      "Bash(uv:*)",
-      "Bash(ruff:*)",
-      "Bash(biome:*)",
-      "Bash(mise:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh issue list:*)",
+      "Bash(gh repo view:*)",
+      "Bash(gh api:*)",
       "mcp__context7__*",
       "mcp__sequential-thinking__*",
       "mcp__github__*",
@@ -42,12 +49,16 @@
       "mcp__fetch__*"
     ],
     "ask": [
+      "Bash(git commit:*)",
       "Bash(git stash:*)",
       "Bash(git rebase:*)",
       "Bash(git push:*)",
       "Bash(git merge:*)",
       "Bash(docker:*)",
-      "Bash(kubectl:*)"
+      "Bash(kubectl:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh issue create:*)"
     ],
     "deny": [
       "Bash(rm -rf /*)",
@@ -56,15 +67,12 @@
       "Bash(sudo:*)",
       "Bash(su:*)",
       "Bash(chmod 777:*)",
-      "Bash(chmod -R 777:*)",
       "Bash(git push --force:*)",
       "Bash(git push -f:*)",
       "Bash(git reset --hard:*)",
       "Bash(git clean -fd:*)",
-      "Bash(curl:* | bash)",
-      "Bash(curl:* | sh)",
-      "Bash(wget:* | bash)",
-      "Bash(wget:* | sh)",
+      "Bash(*| bash)",
+      "Bash(*| sh)",
       "Read(.env)",
       "Read(.env.*)",
       "Read(**/.env)",
@@ -74,32 +82,22 @@
     ]
   },
   "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write(*.py)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ruff check --fix \"$CLAUDE_FILE_PATH\" 2>/dev/null; ruff format \"$CLAUDE_FILE_PATH\" 2>/dev/null || true"
-          }
-        ]
-      },
-      {
-        "matcher": "Write(*.ts)|Write(*.tsx)|Write(*.js)|Write(*.jsx)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "biome check --write \"$CLAUDE_FILE_PATH\" 2>/dev/null || prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null || true"
-          }
-        ]
-      }
-    ],
     "Notification": [
       {
         "hooks": [
           {
             "type": "command",
             "command": "osascript -e 'display notification \"Claude待機中\" with title \"Claude Code\"' 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"タスク完了\" with title \"Claude Code\"' 2>/dev/null || true"
           }
         ]
       }

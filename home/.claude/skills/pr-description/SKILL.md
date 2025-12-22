@@ -1,74 +1,68 @@
 ---
 name: pr-description
 description: |
-  PR description format rules for pull request creation.
-  MUST BE USED for all PR creation operations.
-  Trigger: "PR", "pull request", "プルリクエスト", "PR作成", "PR説明"
+  Generate comprehensive PR descriptions.
+  Auto-invoke when: "PR", "プルリクエスト", "pull request", creating PRs.
 ---
 
-# PR Description Rules
+# PR Description Skill
 
-## フォーマット
+## Workflow
 
-```markdown
-## 概要
-[1-2文で変更の目的を説明]
+### 1. デフォルトブランチの検出
+```bash
+# リモートのデフォルトブランチを取得
+BASE_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
 
-## 変更内容
-- [変更点1]
-- [変更点2]
-- [変更点3]
-
-## テスト方法
-- [ ] [テスト手順1]
-- [ ] [テスト手順2]
-
-## 影響範囲
-- [影響を受けるコンポーネント/機能]
-
-## 関連Issue
-- closes #XXX（該当する場合）
+# 取得できない場合はリモートに問い合わせ
+if [ -z "$BASE_BRANCH" ]; then
+  BASE_BRANCH=$(git remote show origin | grep 'HEAD branch' | awk '{print $NF}')
+fi
 ```
 
-## ガイドライン
-
-### 概要
-- 「何を」「なぜ」変更したかを簡潔に
-- 技術的詳細より目的を優先
-
-### 変更内容
-- 論理的なグループでまとめる
-- 重要な変更から順に記載
-
-### テスト方法
-- 再現可能な手順を記載
-- チェックボックス形式で
-
-### 影響範囲
-- 他の機能への影響を明記
-- 破壊的変更がある場合は強調
-
-## 例
-
-```markdown
-## 概要
-ユーザー認証にOAuth2（GitHub/Google）を追加し、ソーシャルログインを可能にした。
-
-## 変更内容
-- GitHub OAuth プロバイダーを追加
-- Google OAuth プロバイダーを追加
-- 認証フローのリダイレクト処理を実装
-- ユーザープロファイルの自動取得機能を追加
-
-## テスト方法
-- [ ] `/login` ページで「GitHubでログイン」をクリック
-- [ ] GitHub認証後、プロファイルページにリダイレクトされることを確認
-- [ ] ユーザー名とアバターが正しく表示されることを確認
-
-## 影響範囲
-- 認証モジュール全体
-- ユーザープロファイル表示
-
-## 関連Issue
-- closes #123
+### 2. コミット履歴の確認
+```bash
+git log ${BASE_BRANCH}..HEAD --oneline
 ```
+
+### 3. 差分の分析
+```bash
+git diff ${BASE_BRANCH}...HEAD --stat
+```
+
+### 4. PR説明を生成
+
+## Template
+```markdown
+## Summary
+<!-- 1-2文で変更の概要 -->
+
+## Changes
+<!-- 主な変更点をリスト -->
+-
+-
+
+## Type
+- [ ] feat: 新機能
+- [ ] fix: バグ修正
+- [ ] docs: ドキュメント
+- [ ] refactor: リファクタリング
+- [ ] test: テスト
+- [ ] chore: その他
+
+## Testing
+<!-- テスト方法 -->
+- [ ] ユニットテスト追加/更新
+- [ ] 手動テスト実施
+
+## Screenshots
+<!-- UI変更がある場合 -->
+
+## Related Issues
+<!-- Closes #123 -->
+```
+
+## Guidelines
+- タイトル: 50文字以内、変更内容を端的に
+- 本文: なぜこの変更が必要かを説明
+- レビュアーが理解しやすい構成に

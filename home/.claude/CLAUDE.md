@@ -1,32 +1,23 @@
-# Claude Code — Global User Configuration
+# Claude Code — User Configuration
 
-## Communication
+## Language
 - 回答・説明: 日本語
-- コミット: 日本語（Conventional Commits形式）
-- 変数・関数名: 英語
+- コミットメッセージ: 日本語（Conventional Commits）
+- コード（変数・関数名）: 英語
 
-## YOU MUST Follow These Rules
-1. 不明点は実装前に質問する（推測で実装しない）
-2. 破壊的操作（rm -rf, DROP TABLE等）は実行前に確認を求める
-3. コード変更後: typecheck → lint → 関連テスト の順で検証
-
-## Toolchain
-- **JS/TS**: pnpm, Biome (`biome check --write`)
-- **Python**: uv, ruff (`ruff check --fix && ruff format`)
-- **Runtime**: mise (`mise install node@22`)
+## Critical Rules
+1. 不明点は実装前に質問（推測で進めない）
+2. 破壊的操作は実行前に確認を求める
+3. コード変更後は必ず検証を実行（具体的な手順はプロジェクトのCLAUDE.mdを参照）
 
 ## Environment
-- macOS / Fish shell / VSCode
-- 注意: `&&` は Fish では `; and` に置換が必要
+- macOS / Fish shell (`&&` → `; and`)
+- Editor: VSCode
+- Node: mise, pnpm
+- JS/TS Formatter: Prettier（.prettierrc必須）
+- Python: uv, ruff
 
-## File Structure
-```
-~/.claude/
-├── CLAUDE.md       ← このファイル（全プロジェクト共通）
-├── settings.json   ← 権限・フック設定
-├── commands/       ← スラッシュコマンド定義
-├── agents/         ← サブエージェント定義
-└── skills/         ← スキル定義
-```
-
-プロジェクト固有設定は各リポジトリの `./CLAUDE.md` に記載。
+## Context Management
+- Skills/Commands は必要時のみ読み込まれる
+- 詳細な手順は Skills に記載
+- 常に必要な情報のみをここに記載

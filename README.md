@@ -14,9 +14,10 @@ claude-config/
 │   └── .claude/
 │       ├── CLAUDE.md       # グローバルユーザー設定
 │       ├── settings.json   # 権限・フック設定
-│       ├── commands/       # スラッシュコマンド
-│       ├── agents/         # サブエージェント
-│       └── skills/         # スキル
+│       ├── rules/          # 条件付きルール（パス指定可能）
+│       ├── skills/         # スキル（自動発動）
+│       ├── commands/       # スラッシュコマンド（手動実行）
+│       └── agents/         # サブエージェント（並列実行用）
 ├── templates/               # プロジェクト用テンプレート
 │   ├── GUIDE.md            # プロジェクト CLAUDE.md 作成ガイド
 │   ├── minimal/            # 最小限の設定
@@ -100,35 +101,50 @@ claude mcp add --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOKEN}' gi
 
 ## 含まれる設定
 
-### スラッシュコマンド
+### ルール（rules/）
+
+パス指定による条件付きルール。該当ファイル編集時のみ適用。
+
+| ルール | 対象パス | 内容 |
+|--------|---------|------|
+| `typescript.md` | `**/*.ts`, `**/*.tsx` | TypeScript 規約 |
+| `python.md` | `**/*.py` | Python 規約 |
+| `react.md` | `**/*.tsx`, `**/components/**` | React 規約 |
+| `testing.md` | `**/*.test.*`, `**/tests/**` | テスト規約 |
+| `security.md` | 全ファイル | セキュリティチェックリスト |
+
+### スキル（skills/）
+
+自動発動するタスク専門スキル。Claude が必要と判断した時に読み込まれる。
+
+| スキル | 発動トリガー例 |
+|--------|---------------|
+| `commit-message` | 「コミットして」「commit」 |
+| `pr-description` | 「PR作成」「プルリクエスト」 |
+| `code-review` | 「レビュー」「コードチェック」 |
+| `refactoring` | 「リファクタ」「整理」 |
+| `test-generation` | 「テスト書いて」「テスト追加」 |
+| `planning` | 「計画」「設計」 |
+| `documentation` | 「ドキュメント」「README」 |
+
+### コマンド（commands/）
+
+手動実行のショートカット。
 
 | コマンド | 説明 |
 |----------|------|
-| `/commit` | ステージ済み変更からコミットメッセージを生成 |
-| `/pr` | PR 説明文を生成 |
-| `/review` | コードレビューを実行 |
-| `/plan` | タスクの実行計画を策定 |
-| `/test` | テストを実行 |
-| `/docs` | ドキュメントを生成 |
-| `/refactor` | リファクタリング提案を実行 |
+| `/quick-commit` | 小さな変更を確認なしでコミット |
+| `/gh-issue` | GitHub Issue を分析して修正 |
 
-### サブエージェント
+### サブエージェント（agents/）
 
-| エージェント | 説明 |
+並列実行・権限制限が必要な場合に使用。
+
+| エージェント | 用途 |
 |--------------|------|
-| `@code-reviewer` | コードレビュー専門 |
-| `@explainer` | コード説明専門 |
-| `@security-reviewer` | セキュリティレビュー専門 |
-| `@performance-analyzer` | パフォーマンス分析専門 |
-| `@refactoring-advisor` | リファクタリング提案専門 |
-
-### スキル
-
-| スキル | 説明 |
-|--------|------|
-| `commit-message` | Conventional Commits 形式のコミットメッセージ生成 |
-| `pr-description` | PR 説明文のフォーマットルール |
-| `documentation-style` | JSDoc/docstring/rustdoc のスタイルガイド |
+| `researcher` | 読み取り専用の調査・分析 |
+| `implementer` | 計画に基づく実装 |
+| `error-investigator` | 試行錯誤を伴うエラー調査 |
 
 ### テンプレート
 
@@ -148,11 +164,18 @@ claude mcp add --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOKEN}' gi
 
 | カテゴリ | ツール |
 |---------|--------|
-| JS/TS リンター/フォーマッター | **Biome**（新規）、ESLint + Prettier（既存） |
+| JS/TS フォーマッター | **Prettier**（`.prettierrc` 必須） |
 | Python パッケージ | **uv** |
 | Python リンター/フォーマッター | **ruff** |
 | ランタイムバージョン管理 | **mise** |
 | シェル | **Fish** |
+
+## 設計哲学
+
+> **ユーザーレベルは「賢いデフォルト」、プロジェクトレベルは「具体的なオーバーライド」**
+
+- **ユーザーレベル**: 汎用的なワークフロー、言語共通のベストプラクティス
+- **プロジェクトレベル**: プロジェクト固有のビルドコマンド、アーキテクチャ、ドメイン知識
 
 ## カスタマイズ
 
@@ -165,3 +188,4 @@ claude mcp add --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOKEN}' gi
 - `settings.json` の `"Skill"` 許可がないと Skill が発火しない
 - MCP サーバーは `claude mcp add` コマンドで管理（設定ファイル直接編集ではない）
 - Fish shell では zsh/bash のコマンドがそのまま動かない場合があるので注意
+- 個人固有のプロジェクト設定は `CLAUDE.local.md` に分離（自動で gitignore）
