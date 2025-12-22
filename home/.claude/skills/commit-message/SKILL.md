@@ -22,31 +22,20 @@ description: |
 <footer>
 ```
 
-## Type Reference
-| Type | 用途 | Emoji (optional) |
-|------|------|------------------|
-| feat | 新機能 | ✨ |
-| fix | バグ修正 | 🐛 |
-| docs | ドキュメント | 📝 |
-| style | フォーマット | 🎨 |
-| refactor | リファクタリング | ♻️ |
-| perf | パフォーマンス | ⚡ |
-| test | テスト | ✅ |
-| chore | 雑務 | 🔧 |
-| ci | CI設定 | 👷 |
-
 ## Rules
 - subject: 50文字以内、現在形、末尾ピリオドなし
 - body: 「なぜ」を説明、72文字折り返し
 - 日本語メッセージでも type は英語
 - Breaking change: `!` を付与 (例: `feat!:`)
 
-## Examples
-```
-feat(auth): GitHubのOAuth2認証を追加
+## Quick Reference
+| Type | 用途 |
+|------|------|
+| feat | 新機能 |
+| fix | バグ修正 |
+| docs | ドキュメント |
+| refactor | リファクタリング |
+| test | テスト |
+| chore | 雑務 |
 
-既存のパスワード認証と併用可能なGitHub OAuthを実装。
-ユーザーはGitHubアカウントを連携できるようになった。
-
-Closes #123
-```
+**詳細な Type 一覧と例**: `type-reference.md` を参照

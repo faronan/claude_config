@@ -11,10 +11,7 @@ description: |
 
 ### 1. デフォルトブランチの検出
 ```bash
-# リモートのデフォルトブランチを取得
 BASE_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
-
-# 取得できない場合はリモートに問い合わせ
 if [ -z "$BASE_BRANCH" ]; then
   BASE_BRANCH=$(git remote show origin | grep 'HEAD branch' | awk '{print $NF}')
 fi
@@ -32,37 +29,9 @@ git diff ${BASE_BRANCH}...HEAD --stat
 
 ### 4. PR説明を生成
 
-## Template
-```markdown
-## Summary
-<!-- 1-2文で変更の概要 -->
-
-## Changes
-<!-- 主な変更点をリスト -->
--
--
-
-## Type
-- [ ] feat: 新機能
-- [ ] fix: バグ修正
-- [ ] docs: ドキュメント
-- [ ] refactor: リファクタリング
-- [ ] test: テスト
-- [ ] chore: その他
-
-## Testing
-<!-- テスト方法 -->
-- [ ] ユニットテスト追加/更新
-- [ ] 手動テスト実施
-
-## Screenshots
-<!-- UI変更がある場合 -->
-
-## Related Issues
-<!-- Closes #123 -->
-```
-
 ## Guidelines
 - タイトル: 50文字以内、変更内容を端的に
 - 本文: なぜこの変更が必要かを説明
 - レビュアーが理解しやすい構成に
+
+**テンプレート**: `template.md` を参照（標準、機能追加、バグ修正、大規模変更用）

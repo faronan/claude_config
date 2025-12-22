@@ -15,28 +15,7 @@ description: |
 - **Avoid**: 自明なコードへのコメント
 
 ### 2. README.md
-```markdown
-# Project Name
-
-Brief description.
-
-## Quick Start
-\`\`\`bash
-# Installation
-# Usage
-\`\`\`
-
-## Features
-- Feature 1
-- Feature 2
-
-## Development
-- Prerequisites
-- Setup
-- Testing
-
-## License
-```
+プロジェクトの概要、セットアップ手順、使い方を記載。
 
 ### 3. API Documentation
 - Endpoint, Method, Path
@@ -54,3 +33,5 @@ Brief description.
 - 例を含める
 - 最新の状態を維持
 - 対象読者を意識（初心者/経験者）
+
+**テンプレート集**: `templates.md` を参照
