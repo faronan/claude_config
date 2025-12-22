@@ -14,7 +14,7 @@
 - macOS / Fish shell (`&&` → `; and`)
 - Editor: VSCode
 - Node: mise, pnpm
-- JS/TS Formatter: Prettier（.prettierrc必須）
+- JS/TS Formatter: Biome (Primary), Prettier (Markdown/YAML/SCSSのみ)
 - Python: uv, ruff
 
 ## Context Management
