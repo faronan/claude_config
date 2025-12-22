@@ -3,6 +3,14 @@ name: test-generation
 description: |
   Generate comprehensive tests for code.
   Auto-invoke when: "テスト", "test", "テストを書いて", adding new functions/components.
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
+  - Write
+  - Bash(npm run:*)
+  - Bash(pnpm:*)
+  - Bash(pytest:*)
 ---
 
 # Test Generation Skill

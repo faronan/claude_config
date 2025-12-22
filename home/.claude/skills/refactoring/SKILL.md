@@ -3,6 +3,13 @@ name: refactoring
 description: |
   Guide and execute code refactoring safely.
   Auto-invoke when: "リファクタ", "refactor", "整理", "改善", code smell detection.
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
+  - Edit
+  - Bash(npm run:*)
+  - Bash(pnpm:*)
 ---
 
 # Refactoring Skill

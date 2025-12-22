@@ -3,6 +3,11 @@ name: commit-message
 description: |
   Generate and execute git commits following Conventional Commits.
   Auto-invoke when: "commit", "コミット", staging changes, or after completing a feature.
+allowed-tools:
+  - Bash(git status)
+  - Bash(git diff:*)
+  - Bash(git add:*)
+  - Bash(git commit:*)
 ---
 
 # Commit Message Skill

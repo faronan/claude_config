@@ -3,6 +3,11 @@ name: planning
 description: |
   Create implementation plans for complex tasks.
   Auto-invoke when: "計画", "plan", "設計", complex feature requests, architectural decisions.
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
+  - mcp__sequential-thinking__*
 ---
 
 # Planning Skill

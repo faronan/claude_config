@@ -3,6 +3,11 @@ name: documentation
 description: |
   Generate and maintain documentation.
   Auto-invoke when: "ドキュメント", "docs", "README", "JSDoc", API documentation requests.
+allowed-tools:
+  - Read
+  - Glob
+  - Write
+  - Edit
 ---
 
 # Documentation Skill

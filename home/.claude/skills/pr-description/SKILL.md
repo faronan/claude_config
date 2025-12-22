@@ -3,6 +3,11 @@ name: pr-description
 description: |
   Generate comprehensive PR descriptions.
   Auto-invoke when: "PR", "プルリクエスト", "pull request", creating PRs.
+allowed-tools:
+  - Bash(git log:*)
+  - Bash(git diff:*)
+  - Bash(git branch:*)
+  - Bash(gh pr create:*)
 ---
 
 # PR Description Skill
