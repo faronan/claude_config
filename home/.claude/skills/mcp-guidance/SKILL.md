@@ -3,11 +3,11 @@ name: mcp-guidance
 description: |
   Guidance for selecting and using MCP servers effectively.
   Auto-invoke when: choosing between MCPs, "どのMCPを使う", optimizing tool usage.
-  Covers: context7, sequential-thinking, playwright.
+  Covers: context7, sequential-thinking, github.
 allowed-tools:
   - mcp__context7__*
   - mcp__sequential-thinking__*
-  - mcp__playwright__*
+  - mcp__github__*
 ---
 
 # MCP Server ガイダンス
