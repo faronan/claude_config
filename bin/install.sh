@@ -96,9 +96,9 @@ setup_mcp_servers() {
     log "Claude Code not found. Skipping MCP setup."
     log ""
     log "After installing Claude Code, run these commands:"
-    log "  claude mcp add --scope user context7 -- npx -y @upstash/context7-mcp"
-    log "  claude mcp add --scope user sequential-thinking -- npx -y @modelcontextprotocol/server-sequential-thinking"
-    log "  claude mcp add --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='\${GITHUB_TOKEN}' github -- npx -y @modelcontextprotocol/server-github"
+    log "  claude mcp add context7 --scope user -- npx -y @upstash/context7-mcp"
+    log "  claude mcp add sequential-thinking --scope user -- npx -y @modelcontextprotocol/server-sequential-thinking"
+    log "  claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='\${GITHUB_TOKEN}' -- npx -y @modelcontextprotocol/server-github"
     return
   fi
 
@@ -114,19 +114,19 @@ setup_mcp_servers() {
 
   # Context7（最新ドキュメント取得）
   claude mcp remove context7 --scope user 2>/dev/null || true
-  claude mcp add --scope user context7 -- npx -y @upstash/context7-mcp
+  claude mcp add context7 --scope user -- npx -y @upstash/context7-mcp
   log "  ✓ context7 added"
 
   # Sequential Thinking（複雑な問題の構造化思考）
   claude mcp remove sequential-thinking --scope user 2>/dev/null || true
-  claude mcp add --scope user sequential-thinking -- npx -y @modelcontextprotocol/server-sequential-thinking
+  claude mcp add sequential-thinking --scope user -- npx -y @modelcontextprotocol/server-sequential-thinking
   log "  ✓ sequential-thinking added"
 
   # Note: fetch MCP は不要（Claude Code 組み込みの Fetch/WebFetch で十分）
 
   # GitHub（常に追加、実行時に環境変数を評価）
   claude mcp remove github --scope user 2>/dev/null || true
-  claude mcp add --scope user -e 'GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}' github -- npx -y @modelcontextprotocol/server-github
+  claude mcp add github --scope user -e 'GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}' -- npx -y @modelcontextprotocol/server-github
   log "  ✓ github added (requires GITHUB_TOKEN at runtime)"
   if [ -z "${GITHUB_TOKEN:-}" ]; then
     log "    Note: GITHUB_TOKEN is not currently set. Set it before using GitHub MCP."
