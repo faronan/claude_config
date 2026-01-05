@@ -126,6 +126,7 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 | `test-generation` | 「テスト書いて」「テスト追加」 |
 | `planning` | 「計画」「設計」 |
 | `documentation` | 「ドキュメント」「README」 |
+| `web-research` | 「調べて」「research」「比較」 |
 
 ### コマンド（commands/）
 
@@ -135,6 +136,7 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 |----------|------|
 | `/quick-commit` | 小さな変更を確認なしでコミット |
 | `/gh-issue` | GitHub Issue を分析して修正 |
+| `/handoff` | セッション進捗まとめ・引継ぎ |
 
 ### サブエージェント（agents/）
 
@@ -145,6 +147,8 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 | `researcher` | 読み取り専用の調査・分析 |
 | `implementer` | 計画に基づく実装 |
 | `error-investigator` | 試行錯誤を伴うエラー調査 |
+| `verify-app` | テスト実行・動作検証 |
+| `web-researcher` | Web情報収集・技術調査 |
 
 ### テンプレート
 
