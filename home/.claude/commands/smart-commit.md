@@ -1,0 +1,70 @@
+---
+description: |
+  Split changes into logical commits with Conventional Commits format.
+---
+
+git diffの変更を論理的なグループに分割し、適切な粒度で複数の独立したコミットを作成する。
+
+## Workflow
+
+1. `git status` で全変更を確認
+2. `git diff` で詳細な差分を取得
+3. 変更を論理的なグループに分類
+4. 分類結果をユーザーに提示（グループ一覧とコミット順序）
+5. 承認後、各グループごとに:
+   - `git add <files>` でステージング
+   - Conventional Commits形式でメッセージ生成
+   - `git commit` 実行
+6. 全コミット完了後、`git log --oneline -n <count>` で結果表示
+
+## Grouping Strategy
+
+### 優先順位
+
+1. **機能単位**: 同じ機能に関する複数ファイルの変更をまとめる
+2. **目的単位**: feat/fix/refactor などタイプが同じ変更をまとめる
+3. **依存関係**: 設定ファイル → 実装コードの順序で整理
+
+### 分類の例
+
+```
+グループ1: feat(auth) - OAuth認証の追加
+  - src/auth/oauth.ts (新規)
+  - src/auth/index.ts (変更)
+  - tests/auth/oauth.test.ts (新規)
+
+グループ2: fix(ui) - ボタンのスタイル修正
+  - src/components/Button.tsx (変更)
+  - src/styles/button.css (変更)
+
+グループ3: chore(deps) - 依存関係の更新
+  - package.json (変更)
+  - pnpm-lock.yaml (変更)
+```
+
+## Commit Message Format
+
+```
+<type>(<scope>): <subject>
+
+<body>
+```
+
+- **subject**: 50文字以内、日本語、現在形
+- **body**: 「なぜ」を説明、72文字折り返し
+- **type/scope**: 英語
+
+詳細は `skills/commit-message/type-reference.md` を参照
+
+## User Confirmation
+
+各ステップでユーザー確認を求める:
+
+1. **分類確認**: グループ一覧を提示し、順序変更や統合・分割を許可
+2. **コミット確認**: 各コミット前にメッセージを確認
+
+## Notes
+
+- 単一の変更しかない場合は通常のコミットを推奨
+- ステージ済みの変更がある場合は警告を表示
+- 途中でキャンセル可能（コミット済みのものは残る）
