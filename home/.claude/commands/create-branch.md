@@ -1,6 +1,5 @@
 ---
-description: |
-  Create branch with Conventional Branch naming from current changes.
+description: Create branch with Conventional Branch naming from current changes.
 ---
 
 現在のgit差分を分析し、Conventional Branch形式でブランチ名を生成・作成する。

@@ -1,6 +1,5 @@
 ---
-description: |
-  Split changes into logical commits with Conventional Commits format.
+description: Split changes into logical commits with Conventional Commits format.
 ---
 
 git diffの変更を論理的なグループに分割し、適切な粒度で複数の独立したコミットを作成する。
