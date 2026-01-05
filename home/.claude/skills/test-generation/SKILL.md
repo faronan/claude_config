@@ -1,8 +1,9 @@
 ---
 name: test-generation
 description: |
-  Generate comprehensive tests for code.
-  Auto-invoke when: "テスト", "test", "テストを書いて", adding new functions/components.
+  Generate unit tests, integration tests, and test cases covering edge cases and error handling.
+  Use when the user asks to write tests, add test coverage, create test cases,
+  or mentions "テスト", "test", "テストを書いて", "テストケース", "カバレッジ".
 allowed-tools:
   - Read
   - Glob

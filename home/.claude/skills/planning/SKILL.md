@@ -1,8 +1,9 @@
 ---
 name: planning
 description: |
-  Create implementation plans for complex tasks.
-  Auto-invoke when: "計画", "plan", "設計", complex feature requests, architectural decisions.
+  Create step-by-step implementation plans for features, refactoring, or architectural changes.
+  Use when the user asks to plan, design, or break down a task, mentions "計画", "plan", "設計",
+  "どう実装する", or when a task involves multiple files or needs careful coordination.
 allowed-tools:
   - Read
   - Glob

@@ -1,9 +1,9 @@
 ---
 name: code-review
 description: |
-  Comprehensive code review for quality, security, and maintainability.
-  Auto-invoke when: "レビュー", "review", PR作成前, マージ前, コード変更の確認時.
-  Use for all PR reviews.
+  Review code for bugs, security vulnerabilities, performance issues, and maintainability.
+  Use when the user asks to review code, check changes before merging, inspect a PR,
+  or mentions "レビュー", "review", "check this code", "look at my changes".
 allowed-tools:
   - Read
   - Grep

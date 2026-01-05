@@ -1,8 +1,9 @@
 ---
 name: refactoring
 description: |
-  Guide and execute code refactoring safely.
-  Auto-invoke when: "リファクタ", "refactor", "整理", "改善", code smell detection.
+  Identify code smells and safely refactor code while preserving behavior.
+  Use when the user asks to refactor, clean up, or improve code structure,
+  or mentions "リファクタ", "refactor", "整理", "改善", "コードを綺麗に", "重複を削除".
 allowed-tools:
   - Read
   - Glob

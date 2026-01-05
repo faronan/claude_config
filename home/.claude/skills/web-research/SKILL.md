@@ -1,8 +1,9 @@
 ---
 name: web-research
 description: |
-  Web-based technical research and comparison.
-  Auto-invoke when: "調べて", "research", "比較", "最新の", ライブラリ選定, 技術調査.
+  Research libraries, frameworks, APIs, and technical solutions from the web.
+  Use when the user asks to compare options, find documentation, research a topic,
+  says "調べて", "research", "比較", "最新の", "どっちがいい", or needs current information.
 allowed-tools:
   - WebFetch
   - WebSearch

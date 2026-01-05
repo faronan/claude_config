@@ -1,8 +1,9 @@
 ---
 name: pr-description
 description: |
-  Generate comprehensive PR descriptions.
-  Auto-invoke when: "PR", "プルリクエスト", "pull request", creating PRs.
+  Generate comprehensive pull request descriptions by analyzing commits and diffs.
+  Use when the user wants to create a PR, needs a PR description, asks to summarize changes,
+  or mentions "PR作成", "プルリクエスト", "pull request", "PR説明を書いて".
 allowed-tools:
   - Bash(git log:*)
   - Bash(git diff:*)

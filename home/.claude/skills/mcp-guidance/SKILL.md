@@ -1,9 +1,9 @@
 ---
 name: mcp-guidance
 description: |
-  Guidance for selecting and using MCP servers effectively.
-  Auto-invoke when: choosing between MCPs, "どのMCPを使う", optimizing tool usage.
-  Covers: context7, sequential-thinking, github.
+  Guide selection and usage of MCP servers (Context7, Sequential Thinking, GitHub).
+  Use when the user asks which MCP to use, how to use an MCP effectively,
+  or mentions "どのMCPを使う", "MCP選択", "Context7", "Sequential Thinking の使い方".
 allowed-tools:
   - mcp__context7__*
   - mcp__sequential-thinking__*

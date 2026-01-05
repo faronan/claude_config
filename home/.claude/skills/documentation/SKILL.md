@@ -1,8 +1,9 @@
 ---
 name: documentation
 description: |
-  Generate and maintain documentation.
-  Auto-invoke when: "ドキュメント", "docs", "README", "JSDoc", API documentation requests.
+  Generate README, API docs, JSDoc comments, and architecture documentation.
+  Use when the user asks to document code, create a README, add JSDoc/docstrings,
+  or mentions "ドキュメント", "docs", "README", "説明を書いて", "コメントを追加".
 allowed-tools:
   - Read
   - Glob

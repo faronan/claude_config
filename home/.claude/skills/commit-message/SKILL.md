@@ -1,8 +1,9 @@
 ---
 name: commit-message
 description: |
-  Generate and execute git commits following Conventional Commits.
-  Auto-invoke when: "commit", "コミット", staging changes, or after completing a feature.
+  Generate git commit messages following Conventional Commits format in Japanese.
+  Use when the user wants to commit changes, asks for a commit message, says "コミット",
+  "commit", "変更をコミット", or after completing code changes that should be committed.
 allowed-tools:
   - Bash(git status)
   - Bash(git diff:*)
