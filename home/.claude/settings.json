@@ -53,6 +53,7 @@
       "mcp__playwright__*"
     ],
     "ask": [
+      "Bash(mkdir:*)",
       "Bash(git commit:*)",
       "Bash(git stash:*)",
       "Bash(git rebase:*)",
@@ -80,16 +81,23 @@
       "Read(**/.env)",
       "Read(**/.env.*)",
       "Read(**/secrets/**)",
-      "Read(**/credentials.json)"
+      "Read(**/credentials.json)",
+      "Write(//tmp/**)",
+      "Write(//var/**)",
+      "Write(//etc/**)",
+      "Edit(//tmp/**)",
+      "Edit(//var/**)",
+      "Edit(//etc/**)"
     ]
   },
   "hooks": {
-    "Notification": [
+    "PreToolUse": [
       {
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "osascript -e 'display notification \"Claude待機中\" with title \"Claude Code\"' 2>/dev/null || true"
+            "command": "~/.claude/hooks/validate-project-scope.sh"
           }
         ]
       }
