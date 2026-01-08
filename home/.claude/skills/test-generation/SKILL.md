@@ -2,8 +2,9 @@
 name: test-generation
 description: |
   Generate unit tests, integration tests, and test cases covering edge cases and error handling.
-  Use when the user asks to write tests, add test coverage, create test cases,
-  or mentions "テスト", "test", "テストを書いて", "テストケース", "カバレッジ".
+  Use when the user asks to write tests, add test coverage, or create test cases.
+  Trigger words: "テスト", "test", "テストを書いて", "テストケース", "カバレッジ",
+  "単体テスト", "ユニットテスト", "spec", "検証", "テスト追加", "write tests".
 allowed-tools:
   - Read
   - Glob

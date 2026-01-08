@@ -2,8 +2,9 @@
 name: github-pr-review
 description: |
   Review GitHub pull requests and add inline comments using gh CLI with accurate line numbers.
-  Use when the user asks to review a PR, add comments to a pull request, check PR status,
-  or mentions "PRレビュー", "PR review", "レビューして", "PR #123 を見て".
+  Use when the user asks to review a PR, add comments to a pull request, or check PR changes.
+  Trigger words: "PRレビュー", "PR review", "プルリクレビュー", "PR見て", "PR確認",
+  "プルリク確認", "差分確認", "マージ前確認", "PR #", "pull request review".
 allowed-tools:
   - Bash(gh:*)
   - Read

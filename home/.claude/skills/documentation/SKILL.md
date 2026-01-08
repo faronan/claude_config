@@ -2,8 +2,9 @@
 name: documentation
 description: |
   Generate README, API docs, JSDoc comments, and architecture documentation.
-  Use when the user asks to document code, create a README, add JSDoc/docstrings,
-  or mentions "ドキュメント", "docs", "README", "説明を書いて", "コメントを追加".
+  Use when the user asks to document code, create a README, add comments, or explain usage.
+  Trigger words: "ドキュメント", "docs", "README", "説明を書いて", "コメントを追加",
+  "使い方", "API仕様", "仕様書", "JSDoc", "docstring", "how to use", "documentation".
 allowed-tools:
   - Read
   - Glob

@@ -2,8 +2,9 @@
 name: code-review
 description: |
   Review code for bugs, security vulnerabilities, performance issues, and maintainability.
-  Use when the user asks to review code, check changes before merging, inspect a PR,
-  or mentions "レビュー", "review", "check this code", "look at my changes".
+  Use when the user asks to review code, check changes, inspect code quality, or before merging.
+  Trigger words: "レビュー", "review", "見て", "チェック", "確認して", "check this code",
+  "問題ない?", "バグある?", "おかしいところ", "コード確認", "品質チェック", "look at my changes".
 allowed-tools:
   - Read
   - Grep

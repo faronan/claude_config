@@ -2,8 +2,9 @@
 name: planning
 description: |
   Create step-by-step implementation plans for features, refactoring, or architectural changes.
-  Use when the user asks to plan, design, or break down a task, mentions "計画", "plan", "設計",
-  "どう実装する", or when a task involves multiple files or needs careful coordination.
+  Use when the user asks to plan, design, break down a task, or figure out how to implement something.
+  Trigger words: "計画", "plan", "設計", "どう実装する", "進め方", "どうすればいい",
+  "実装方法", "アプローチ", "手順", "ステップ", "how to implement", "breakdown".
 allowed-tools:
   - Read
   - Glob

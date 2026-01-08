@@ -2,8 +2,9 @@
 name: web-research
 description: |
   Research libraries, frameworks, APIs, and technical solutions from the web.
-  Use when the user asks to compare options, find documentation, research a topic,
-  says "調べて", "research", "比較", "最新の", "どっちがいい", or needs current information.
+  Use when the user asks to compare options, find documentation, research a topic, or needs current information.
+  Trigger words: "調べて", "research", "比較", "最新の", "どっちがいい", "検索して",
+  "教えて", "おすすめ", "何がいい", "ベストプラクティス", "look up", "find out".
 allowed-tools:
   - WebFetch
   - WebSearch

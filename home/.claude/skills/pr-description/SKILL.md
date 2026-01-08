@@ -2,8 +2,9 @@
 name: pr-description
 description: |
   Generate comprehensive pull request descriptions by analyzing commits and diffs.
-  Use when the user wants to create a PR, needs a PR description, asks to summarize changes,
-  or mentions "PR作成", "プルリクエスト", "pull request", "PR説明を書いて".
+  Use when the user wants to create a PR, needs a PR description, or summarize changes for review.
+  Trigger words: "PR作成", "プルリクエスト", "pull request", "PR説明を書いて", "PR本文",
+  "変更まとめ", "サマリー", "PR description", "create PR".
 allowed-tools:
   - Bash(git log:*)
   - Bash(git diff:*)
