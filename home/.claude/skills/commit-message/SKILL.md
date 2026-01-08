@@ -34,7 +34,6 @@ allowed-tools:
 - subject: 50文字以内、現在形、末尾ピリオドなし
 - body: 「なぜ」を説明、72文字折り返し
 - 日本語メッセージでも type は英語
-- Breaking change: `!` を付与 (例: `feat!:`)
 
 ## Quick Reference
 | Type | 用途 |
