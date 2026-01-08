@@ -8,9 +8,9 @@ description: |
   Also use after completing code changes that need to be committed.
 allowed-tools:
   - Bash(git status)
-  - Bash(git diff:*)
-  - Bash(git add:*)
-  - Bash(git commit:*)
+  - Bash(git diff *)
+  - Bash(git add *)
+  - Bash(git commit *)
 ---
 
 # Commit Message Skill

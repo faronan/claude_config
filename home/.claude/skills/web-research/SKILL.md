@@ -1,5 +1,6 @@
 ---
 name: web-research
+context: fork
 description: |
   Research libraries, frameworks, APIs, and technical solutions from the web.
   Use when the user asks to compare options, find documentation, research a topic, or needs current information.

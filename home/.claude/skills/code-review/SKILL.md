@@ -1,5 +1,6 @@
 ---
 name: code-review
+context: fork
 description: |
   Review code for bugs, security vulnerabilities, performance issues, and maintainability.
   Use when the user asks to review code, check changes, inspect code quality, or before merging.

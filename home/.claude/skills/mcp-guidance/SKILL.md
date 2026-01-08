@@ -1,5 +1,6 @@
 ---
 name: mcp-guidance
+user-invocable: false
 description: |
   Guide selection and usage of MCP servers (Context7, Sequential Thinking, GitHub).
   Use when the user asks which tool or MCP to use, or needs guidance on MCP selection.

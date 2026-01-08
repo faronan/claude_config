@@ -1,5 +1,6 @@
 ---
 name: planning
+context: fork
 description: |
   Create step-by-step implementation plans for features, refactoring, or architectural changes.
   Use when the user asks to plan, design, break down a task, or figure out how to implement something.

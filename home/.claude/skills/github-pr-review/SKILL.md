@@ -1,5 +1,6 @@
 ---
 name: github-pr-review
+context: fork
 description: |
   Review GitHub pull requests and add inline comments using gh CLI with accurate line numbers.
   Use when the user asks to review a PR, add comments to a pull request, or check PR changes.
