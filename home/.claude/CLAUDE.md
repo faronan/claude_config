@@ -11,7 +11,8 @@
 3. コード変更後は必ず検証を実行（具体的な手順はプロジェクトのCLAUDE.mdを参照）
 
 ## Environment
-- macOS / Fish shell (`&&` → `; and`)
+- macOS / Fish shell（ユーザーのターミナル環境）
+- Note: Claude Code の Bash ツールは bash で実行される（`&&` を使用）
 - Editor: VSCode
 - Node: mise, pnpm
 - JS/TS Formatter: Biome (Primary), Prettier (Markdown/YAML/SCSSのみ)
