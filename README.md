@@ -17,6 +17,7 @@ claude-config/
 │       ├── rules/          # 条件付きルール（パス指定可能）
 │       ├── skills/         # スキル（自動発動）
 │       ├── commands/       # スラッシュコマンド（手動実行）
+│       ├── hooks/          # フック（セキュリティ検証等）
 │       └── agents/         # サブエージェント（並列実行用）
 ├── templates/               # プロジェクト用テンプレート
 │   ├── GUIDE.md            # プロジェクト CLAUDE.md 作成ガイド
@@ -101,6 +102,14 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 
 ## 含まれる設定
 
+### フック（hooks/）
+
+セキュリティ検証用のフックスクリプト。
+
+| フック | 用途 |
+|--------|------|
+| `validate-project-scope.sh` | プロジェクト外への書き込みをブロック |
+
 ### ルール（rules/）
 
 パス指定による条件付きルール。該当ファイル編集時のみ適用。
@@ -127,6 +136,8 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 | `planning` | 「計画」「設計」 |
 | `documentation` | 「ドキュメント」「README」 |
 | `web-research` | 「調べて」「research」「比較」 |
+| `github-pr-review` | 「PRレビュー」「PR見て」 |
+| `mcp-guidance` | 「どのMCPを使う」「ツール選び」 |
 
 ### コマンド（commands/）
 
@@ -135,7 +146,13 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 | コマンド | 説明 |
 |----------|------|
 | `/quick-commit` | 小さな変更を確認なしでコミット |
+| `/smart-commit` | 変更を論理的に分割して複数コミット |
+| `/create-branch` | Conventional Branch形式でブランチ作成 |
 | `/gh-issue` | GitHub Issue を分析して修正 |
+| `/implement` | 実装ワークフロー（計画→実装→テスト→レビュー） |
+| `/fix-bug` | バグ修正ワークフロー（調査→修正→検証） |
+| `/wf-refactoring` | リファクタリングワークフロー |
+| `/wf-research` | 調査ワークフロー（コードベース+Web） |
 | `/handoff` | セッション進捗まとめ・引継ぎ |
 
 ### サブエージェント（agents/）
@@ -168,7 +185,7 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 
 | カテゴリ | ツール |
 |---------|--------|
-| JS/TS フォーマッター | **Prettier**（`.prettierrc` 必須） |
+| JS/TS フォーマッター | **Biome**（Primary）、Prettier（MD/YAML/SCSSのみ） |
 | Python パッケージ | **uv** |
 | Python リンター/フォーマッター | **ruff** |
 | ランタイムバージョン管理 | **mise** |
@@ -193,3 +210,5 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 - MCP サーバーは `claude mcp add` コマンドで管理（設定ファイル直接編集ではない）
 - Fish shell では zsh/bash のコマンドがそのまま動かない場合があるので注意
 - 個人固有のプロジェクト設定は `CLAUDE.local.md` に分離（自動で gitignore）
+- `settings.json` の `hooks` でセキュリティフックを設定可能（PreToolUse, Stop等）
+- `statusLine` 設定で Claude Code 2.1.0+ のステータスライン表示をカスタマイズ可能
