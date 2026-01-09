@@ -149,8 +149,8 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 | `/smart-commit` | 変更を論理的に分割して複数コミット |
 | `/create-branch` | Conventional Branch形式でブランチ作成 |
 | `/gh-issue` | GitHub Issue を分析して修正 |
-| `/implement` | 実装ワークフロー（計画→実装→テスト→レビュー） |
-| `/fix-bug` | バグ修正ワークフロー（調査→修正→検証） |
+| `/wf-implement` | 実装ワークフロー（計画→実装→テスト→レビュー） |
+| `/wf-fix-bug` | バグ修正ワークフロー（調査→修正→検証） |
 | `/wf-refactoring` | リファクタリングワークフロー |
 | `/wf-research` | 調査ワークフロー（コードベース+Web） |
 | `/handoff` | セッション進捗まとめ・引継ぎ |

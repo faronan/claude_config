@@ -2,8 +2,10 @@
 name: planning
 context: fork
 description: |
-  Create step-by-step implementation plans for features, refactoring, or architectural changes.
-  Use when the user asks to plan, design, break down a task, or figure out how to implement something.
+  Create step-by-step implementation plans using Sequential Thinking MCP.
+  Use when detailed step-by-step planning with analysis is needed.
+  NOTE: Different from Claude Code's built-in /plan command (mode switch).
+  This skill creates structured plans with goal/analysis/options/steps.
   Trigger words: "計画", "plan", "設計", "どう実装する", "進め方", "どうすればいい",
   "実装方法", "アプローチ", "手順", "ステップ", "how to implement", "breakdown".
 allowed-tools:
