@@ -23,7 +23,8 @@ claude-config/
 │   ├── GUIDE.md            # プロジェクト CLAUDE.md 作成ガイド
 │   ├── minimal/            # 最小限の設定
 │   ├── typescript-web/     # TypeScript + React（Playwright MCP 付き）
-│   └── python-data/        # Python データ分析（Jupyter MCP 付き）
+│   ├── python-data/        # Python データ分析（Jupyter MCP 付き）
+│   └── project-skills/     # プロジェクト用スキルテンプレート
 ├── bin/
 │   └── install.sh          # デプロイスクリプト
 └── README.md
@@ -148,6 +149,7 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 | `/quick-commit` | 小さな変更を確認なしでコミット |
 | `/smart-commit` | 変更を論理的に分割して複数コミット |
 | `/create-branch` | Conventional Branch形式でブランチ作成 |
+| `/create-pr` | Push済みの変更からPR作成（会話コンテキスト活用） |
 | `/gh-issue` | GitHub Issue を分析して修正 |
 | `/wf-implement` | 実装ワークフロー（計画→実装→テスト→レビュー） |
 | `/wf-fix-bug` | バグ修正ワークフロー（調査→修正→検証） |
@@ -176,6 +178,20 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 | `python-data` | Python データ分析 | Jupyter |
 
 テンプレートの `.mcp.json` はプロジェクトスコープで自動読み込みされます。
+
+### プロジェクト用スキル（project-skills/）
+
+プロジェクト固有の `.claude/skills/` に配置するスキルテンプレート。
+
+| スキル | 用途 |
+|--------|------|
+| `agent-memory` | セッション跨ぎの記憶・文脈永続化 |
+
+使用方法:
+```bash
+cp -r templates/project-skills/agent-memory .claude/skills/
+mkdir -p .claude/skills/agent-memory/memories
+```
 
 プロジェクト固有の `CLAUDE.md` を作成する際は **[templates/GUIDE.md](templates/GUIDE.md)** を参照してください。
 
