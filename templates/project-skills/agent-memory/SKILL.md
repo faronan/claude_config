@@ -10,6 +10,7 @@ allowed-tools:
   - Write
   - Grep
   - Glob
+  - "Bash(mkdir -p:*memories*)"
 ---
 
 # Agent Memory Skill
