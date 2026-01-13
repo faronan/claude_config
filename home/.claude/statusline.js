@@ -27,23 +27,39 @@ process.stdin.on("end", () => {
       (usage.cache_creation_input_tokens || 0) +
       (usage.cache_read_input_tokens || 0);
 
-    // compaction閾値（context_window_sizeの80%）
-    const compactionThreshold = contextWindowSize * 0.8;
-    const percentage = Math.min(
-      100,
-      Math.round((totalTokens / compactionThreshold) * 100)
-    );
+    // コンテキスト使用率（2.1.6+: 新フィールド使用、フォールバック付き）
+    const percentage =
+      contextWindow.used_percentage != null
+        ? Math.round(contextWindow.used_percentage)
+        : Math.min(
+            100,
+            Math.round((totalTokens / (contextWindowSize * 0.8)) * 100)
+          );
 
     const tokenDisplay = formatTokenCount(totalTokens);
 
-    // コンテキスト使用率の色
+    // コンテキスト使用率の色と警告
     let ctxColor = "\x1b[32m"; // 緑
+    let ctxWarning = "";
     if (percentage >= 70) ctxColor = "\x1b[33m"; // 黄
     if (percentage >= 90) ctxColor = "\x1b[31m"; // 赤
 
+    // 200K超過警告（2.0.72+）
+    if (data.exceeds_200k_tokens) {
+      ctxWarning = " [!200K]";
+    }
+
     // コスト情報
     const cost = data.cost?.total_cost_usd || 0;
-    const costDisplay = cost > 0 ? ` | $${cost.toFixed(4)}` : "";
+    const costDisplay = cost > 0 ? `$${cost.toFixed(4)}` : null;
+
+    // 残りコンテキスト表示（2.1.6+）
+    const remainingPct =
+      contextWindow.remaining_percentage != null
+        ? Math.round(contextWindow.remaining_percentage)
+        : null;
+    const remainingDisplay =
+      remainingPct != null ? `(残${remainingPct}%)` : "";
 
     // 出力を組み立て
     const parts = [
@@ -51,8 +67,9 @@ process.stdin.on("end", () => {
       dirName,
       gitInfo,
       `${tokenDisplay}`,
-      `${ctxColor}${percentage}%\x1b[0m${costDisplay}`,
-    ].filter(Boolean);
+      `${ctxColor}${percentage}%${remainingDisplay}${ctxWarning}\x1b[0m`,
+      costDisplay,
+    ].filter((v) => v != null && v !== "");
 
     console.log(parts.join(" | "));
   } catch (e) {
