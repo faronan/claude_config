@@ -24,7 +24,7 @@ allowed-tools:
 ユーザーが「記憶して」「保存して」と指示した場合:
 
 1. 現在の作業内容・決定事項を要約
-2. `memories/` フォルダにマークダウンファイルとして保存
+2. `.claude/skills/agent-memory/memories/` フォルダにマークダウンファイルとして保存
 3. ファイル名: `YYYY-MM-DD-{slug}.md`
 
 **フォーマット:**
@@ -51,13 +51,13 @@ tags:
 
 ユーザーが「思い出して」「○○について何か覚えてる？」と指示した場合:
 
-1. `memories/` フォルダ内の `summary:` フィールドを検索
+1. `.claude/skills/agent-memory/memories/` フォルダ内の `summary:` フィールドを検索
 2. 関連するファイルを特定
 3. 必要なファイルのみ読み込んで文脈を復元
 
 **検索コマンド例:**
 ```bash
-rg "summary:.*キーワード" memories/
+rg "summary:.*キーワード" .claude/skills/agent-memory/memories/
 ```
 
 ## 使用例
@@ -65,7 +65,7 @@ rg "summary:.*キーワード" memories/
 ### 記憶の保存
 ```
 ユーザー: この調査結果を記憶して
-Claude: memories/2025-01-11-authentication-investigation.md に保存しました
+Claude: .claude/skills/agent-memory/memories/2025-01-11-authentication-investigation.md に保存しました
 ```
 
 ### 記憶の想起
@@ -85,6 +85,6 @@ mkdir -p .claude/skills/agent-memory/memories
 
 ## Notes
 
-- memories/ は .gitignore に追加済み（個人の作業メモのため）
+- `.claude/skills/agent-memory/memories/` は .gitignore に追加推奨（個人の作業メモのため）
 - チーム共有したい場合は .gitignore から除外
 - 定期的に古い記憶を整理することを推奨
