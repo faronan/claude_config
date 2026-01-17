@@ -9,8 +9,7 @@ description: Create branch with Conventional Branch naming from current changes.
 1. `git status` で現在の状態を確認
 2. 変更がある場合、`git diff` (未ステージ) または `git diff --staged` (ステージ済み) で内容を分析
 3. 変更内容から適切な type と description を決定
-4. ブランチ名を提案してユーザー確認を求める
-5. 承認後、`git checkout -b <branch-name>` で作成・切り替え
+4. `git switch -c <branch-name>` で作成・切り替え（Bashコマンド確認で承認）
 
 ## Naming Convention
 
