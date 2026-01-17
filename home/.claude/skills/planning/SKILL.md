@@ -57,4 +57,6 @@ allowed-tools:
 
 ## Output Format
 Markdown形式で、チェックボックス付きのステップリストを含める。
-ユーザーが承認してから実装を開始。
+
+AskUserQuestion でユーザー承認を取得:
+- 選択肢: 「承認して実装へ」「計画を修正」「キャンセル」

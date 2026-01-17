@@ -13,7 +13,7 @@ description: Execute implementation workflow with planning, coding, testing, and
 
 ┌─────────────────────────────────────────────────────────┐
 │  1. Planning (planning skill)                           │
-│     └→ 実装計画を作成、ユーザー承認を得る               │
+│     └→ 実装計画を作成、AskUserQuestionで承認            │
 ├─────────────────────────────────────────────────────────┤
 │  2. Implementation (implementer agent)                  │
 │     └→ 計画に基づいてコードを実装                       │
@@ -41,7 +41,8 @@ planning skill を使用して実装計画を作成:
 - Current State Analysis（関連ファイル、既存パターン）
 - Implementation Steps（具体的な手順）
 
-**ユーザー承認を得てから次へ進む**
+**AskUserQuestion でユーザー承認を取得:**
+- 選択肢: 「実装へ進む」「計画を修正」「キャンセル」
 
 ### 2. Implementation Phase
 

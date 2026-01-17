@@ -19,7 +19,8 @@ allowed-tools:
 ## Workflow
 1. 現状分析（Code Smells の特定）
 2. リファクタリング計画の提示
-3. ユーザー承認
+3. AskUserQuestion でユーザー承認を取得
+   - 選択肢: 「実行」「計画を修正」「キャンセル」
 4. 段階的に実行（各ステップでテスト）
 
 ## Common Code Smells

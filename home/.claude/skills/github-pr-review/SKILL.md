@@ -84,4 +84,4 @@ gh api repos/{owner}/{repo}/pulls/<PR番号>/comments \
 ## Constraints
 - インラインコメントは**必ず `gh api` コマンドで追加**（推測で行番号を指定しない）
 - コメント追加前に `gh pr diff` で行番号を確認
-- 破壊的な操作（PR close, merge）は実行前に確認を求める
+- 破壊的な操作（PR close, merge）は実行前にAskUserQuestionで確認を取得

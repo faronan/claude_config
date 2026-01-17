@@ -38,7 +38,8 @@ error-investigator agent を使用:
 - 仮説の立案と検証
 - 根本原因の特定
 
-**調査結果をユーザーに報告してから修正へ進む**
+**AskUserQuestion で調査結果を報告し、修正への承認を取得:**
+- 選択肢: 「修正へ進む」「追加調査」「キャンセル」
 
 ### 2. Fix Implementation Phase
 

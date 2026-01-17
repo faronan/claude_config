@@ -19,7 +19,7 @@ allowed-tools:
 1. `git diff --staged` で変更内容を確認（未ステージなら `git status` を案内）
 2. 変更内容を分析し、適切な type と scope を決定
 3. メッセージを生成して表示
-4. ユーザー承認後に `git commit` を実行
+4. `git commit` を実行（Bashコマンド確認で承認）
 
 ## Format
 ```
