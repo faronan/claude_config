@@ -155,6 +155,7 @@
     ]
   },
   "env": {
-    "EDITOR": "code"
+    "EDITOR": "code",
+    "CLAUDE_CODE_TMPDIR": "/Users/toshiki.ito/.claude/tmp"
   }
 }
