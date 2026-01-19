@@ -1,5 +1,6 @@
 {
   "plansDirectory": ".claude/plans",
+  "disabledMcpjsonServers": [],
   "permissions": {
     "allow": [
       "Read",

@@ -1,5 +1,6 @@
 {
   "plansDirectory": ".claude/plans",
+  "disabledMcpjsonServers": [],
   "permissions": {
     "allow": ["Read", "Write", "Edit", "Bash(npm:*)", "Bash(pnpm:*)"],
     "deny": ["Bash(rm -rf:*)"]
