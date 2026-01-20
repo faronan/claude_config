@@ -1,0 +1,64 @@
+#!/bin/bash
+# PostToolUse フック: 編集後の自動lint/format チェック
+# Exit codes: 0=成功（警告のみ）
+
+set -euo pipefail
+
+# Claude CodeからのJSON入力を読み取り
+input=$(cat)
+
+# tool_inputからファイルパスを取得（Edit/Write共通）
+file_path=$(echo "$input" | jq -r '.tool_input.file_path // empty')
+
+if [[ -z "$file_path" ]]; then
+  exit 0
+fi
+
+# ファイルが存在しない場合はスキップ
+if [[ ! -f "$file_path" ]]; then
+  exit 0
+fi
+
+extension="${file_path##*.}"
+
+case "$extension" in
+  ts|tsx|js|jsx|json)
+    # Biome check (グローバルインストール済み)
+    if command -v biome &> /dev/null; then
+      result=$(biome check "$file_path" 2>&1) || {
+        echo "[Lint] Biome issues detected in $file_path:" >&2
+        echo "$result" >&2
+      }
+    fi
+
+    # console.log 警告（JS/TSのみ）
+    if [[ "$extension" =~ ^(ts|tsx|js|jsx)$ ]]; then
+      if grep -n "console\.log" "$file_path" 2>/dev/null; then
+        echo "[Warning] console.log found in $file_path - consider removing before commit" >&2
+      fi
+    fi
+    ;;
+
+  py)
+    # Ruff check (グローバルインストール済み)
+    if command -v ruff &> /dev/null; then
+      ruff_result=$(ruff check "$file_path" 2>&1) || {
+        echo "[Lint] Ruff issues detected in $file_path:" >&2
+        echo "$ruff_result" >&2
+      }
+
+      format_result=$(ruff format --check "$file_path" 2>&1) || {
+        echo "[Format] Ruff format issues in $file_path:" >&2
+        echo "$format_result" >&2
+      }
+    fi
+
+    # print() 警告
+    if grep -n "^[^#]*print(" "$file_path" 2>/dev/null | grep -v "# noqa"; then
+      echo "[Warning] print() found in $file_path - consider removing before commit" >&2
+    fi
+    ;;
+esac
+
+# 常に成功（警告表示のみ、ブロックはしない）
+exit 0
