@@ -166,8 +166,78 @@ project/
 
 ---
 
+## MCP（Model Context Protocol）管理
+
+### 推奨ガイドライン
+
+| 項目 | 推奨値 | 理由 |
+|------|--------|------|
+| 有効MCP数 | **10個以下** | ツール選択の混乱を防ぐ |
+| 総ツール数 | **80個以下** | プロンプトサイズの最適化 |
+
+### disabledMcpjsonServers の活用（MCP無効化）
+
+`settings.json` で不要なMCPを無効化:
+- **グローバル**: `~/.claude/settings.json`
+- **プロジェクト**: `.claude/settings.json`
+
+```json
+{
+  "disabledMcpjsonServers": [
+    "playwright",
+    "github"
+  ]
+}
+```
+
+**ユースケース別の有効化例:**
+
+| プロジェクトタイプ | 有効にするMCP |
+|------------------|--------------|
+| Web開発 | context7, playwright |
+| API開発 | context7, github |
+| データ分析 | context7, sequential-thinking |
+| ドキュメント作成 | context7 |
+
+### プロジェクトごとのMCP追加
+
+`.mcp.json`（プロジェクトルート）でMCPを追加:
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@anthropic/mcp-playwright"]
+    }
+  }
+}
+```
+
+### 設定ファイルの役割整理
+
+| ファイル | 役割 | 用途 |
+|---------|------|------|
+| `.mcp.json` | MCP**追加** | プロジェクト固有MCPの定義 |
+| `settings.json` の `disabledMcpjsonServers` | MCP**無効化** | 不要なMCPの除外 |
+
+### MCP選択のベストプラクティス
+
+1. **必要最小限を有効化**: 使わないMCPは無効にする
+2. **プロジェクト固有設定**: グローバルは汎用、プロジェクトで追加
+3. **定期的な見直し**: 使用頻度が低いMCPは無効化を検討
+
+### 注意事項
+
+- MCPが多すぎると応答が遅くなる可能性
+- 同じ機能を持つMCPは1つに絞る
+- 開発中のMCPはプロジェクト単位でのみ有効化
+
+---
+
 ## 参考リンク
 
 - [Claude Code Best Practices](https://www.anthropic.com/engineering/claude-code-best-practices) - Anthropic公式
 - [Writing a Good CLAUDE.md](https://www.humanlayer.dev/blog/writing-a-good-claude-md) - HumanLayer
 - [CLAUDE.md Optimization](https://arize.com/blog/claude-md-best-practices-learned-from-optimizing-claude-code-with-prompt-learning/) - Arize
+- [Everything Claude Code](https://github.com/affaan-m/everything-claude-code) - ハッカソン優勝設定集
