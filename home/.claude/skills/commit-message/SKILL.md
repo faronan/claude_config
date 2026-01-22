@@ -1,5 +1,6 @@
 ---
 name: commit-message
+argument-hint: [files to commit]
 description: |
   Generate git commit messages following Conventional Commits format in Japanese.
   Use when the user wants to commit changes, create a commit message, or save changes to git.
