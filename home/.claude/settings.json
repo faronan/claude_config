@@ -45,6 +45,8 @@
       "Bash(fzf *)",
       "Bash(rg *)",
       "Bash(fd *)",
+      "Bash(grep *)",
+      "Bash(find *)",
       "Bash(jq *)",
       "Bash(gh pr view *)",
       "Bash(gh pr list *)",
