@@ -104,15 +104,58 @@
 2. または手動で `CLAUDE.local.md` を作成し、`.gitignore` に追加
 
 ### CLAUDE.local.md の例
+
+**基本テンプレート:**
 ```markdown
 # Personal Settings
 
 ## 個人環境
 - Editor: Cursor（チームはVSCode）
+- 追加ツール: tmux, lazygit
 
 ## 作業スタイル
 - コード変更前に必ず計画を見せてほしい
 - 詳細な説明を日本語でお願いします
+```
+
+**詳細テンプレート（フル機能）:**
+```markdown
+# CLAUDE.local.md - Personal Development Preferences
+
+## Working Style
+- 大きな変更前は計画を確認させてほしい
+- コミットは細かく分割して作成
+
+## My Environment
+- Terminal: WezTerm + tmux
+- Shell: Fish（Claude Code は Bash）
+- Git GUI: lazygit
+
+## Communication
+- 説明は日本語で詳しくお願いします
+- エラー時は原因と対策を両方教えてほしい
+
+## Current Focus
+<!-- 現在取り組んでいるタスクをメモ -->
+- [ ] 認証機能のリファクタリング
+- [ ] テストカバレッジ80%達成
+```
+
+### settings.local.json の例
+
+個人的な権限設定やフックのオーバーライド:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(lazygit:*)"
+    ]
+  },
+  "env": {
+    "EDITOR": "cursor"
+  }
+}
 ```
 
 ---
@@ -138,6 +181,26 @@ project/
 └── tests/
     └── CLAUDE.md       # テスト固有のコンテキスト
 ```
+
+### @ インポート（ファイル直接参照）
+
+`@path/to/file` 構文で、**常に読み込むべき重要ファイル**を直接参照できます:
+
+```markdown
+## References
+- Project overview: @README.md
+- Available scripts: @package.json
+- API documentation: @docs/api.md
+```
+
+**使い分け:**
+
+| 記法 | 用途 | 例 |
+|------|------|-----|
+| `@file.md` | 常に読み込む重要ファイル | `@README.md`, `@docs/api.md` |
+| `詳細は dir/ を参照` | 必要に応じて探索するディレクトリ | `詳細は docs/ を参照` |
+
+**注意**: @ インポートはファイルを直接読み込むため、大きなファイルや多数のファイルを参照するとトークンを消費します。本当に毎回必要なファイルのみを指定してください。
 
 ---
 
