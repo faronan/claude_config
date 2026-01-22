@@ -4,5 +4,17 @@
   "permissions": {
     "allow": ["Read", "Write", "Edit", "Bash(npm:*)", "Bash(pnpm:*)"],
     "deny": ["Bash(rm -rf:*)"]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/session-start.sh"
+          }
+        ]
+      }
+    ]
   }
 }
