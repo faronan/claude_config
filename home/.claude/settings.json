@@ -104,12 +104,7 @@
       "Read(~/.aws/**)",
       "Read(~/.kube/**)",
       "Read(**/*.pem)",
-      "Read(**/*.key)",
-      "Write(//var/**)",
-      "Write(//etc/**)",
-      "Edit(//tmp/**)",
-      "Edit(//var/**)",
-      "Edit(//etc/**)"
+      "Read(**/*.key)"
     ]
   },
   "hooks": {
