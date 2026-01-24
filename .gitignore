@@ -11,6 +11,9 @@ home/.claude/statsig/
 home/.claude/backups/
 home/.claude/.credentials.json
 
+.claude/settings.local.json
+.claude/CLAUDE.local.md
+
 # OS 固有
 .DS_Store
 Thumbs.db
