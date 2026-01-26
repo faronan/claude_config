@@ -2,6 +2,9 @@
 # Stop フック: タスク完了通知（非同期実行用）
 # async: true で実行されることを想定
 
+export LANG=ja_JP.UTF-8
+export LC_ALL=ja_JP.UTF-8
+
 input=$(cat)
 
 # transcript_pathから会話ログを取得
@@ -13,16 +16,20 @@ subtitle="タスク完了"
 message="完了しました"
 
 if [[ -n "$transcript_path" && -f "$transcript_path" ]]; then
-  # 最初のユーザー依頼を取得（40文字まで）
-  user_request=$(grep -m1 '"type":"human"' "$transcript_path" 2>/dev/null | \
+  # 最初のユーザー依頼を取得
+  user_request=$(grep -m1 '"type":"user"' "$transcript_path" 2>/dev/null | \
     jq -r '.message.content // "" | if type == "array" then .[0].text // "" else . end' 2>/dev/null | \
-    tr '\n' ' ' | head -c 40) || true
+    tr '\n' ' ') || true
+  # 文字数で切る（バイトではなく）
+  user_request="${user_request:0:40}"
 
-  # 最後のアシスタント出力の冒頭を取得（60文字まで）
+  # 最後のアシスタント出力の冒頭を取得
   # macOSでは tail -r を使用（tacの代替）
   assistant_output=$(tail -r "$transcript_path" 2>/dev/null | grep -m1 '"type":"assistant"' | \
     jq -r '.message.content // "" | if type == "array" then .[0].text // "" else . end' 2>/dev/null | \
-    tr '\n' ' ' | head -c 60) || true
+    tr '\n' ' ') || true
+  # 文字数で切る（バイトではなく）
+  assistant_output="${assistant_output:0:60}"
 
   [[ -n "$user_request" ]] && subtitle="$user_request"
   [[ -n "$assistant_output" ]] && message="$assistant_output"
