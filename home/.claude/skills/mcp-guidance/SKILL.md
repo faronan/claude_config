@@ -4,8 +4,6 @@ user-invocable: false
 description: |
   Guide selection and usage of MCP servers (Context7, Sequential Thinking, GitHub).
   Use when the user asks which tool or MCP to use, or needs guidance on MCP selection.
-  Trigger words: "どのMCPを使う", "MCP選択", "ツール選び", "何を使えばいい",
-  "Context7の使い方", "Sequential Thinkingの使い方", "MCPの使い分け", "which MCP".
 allowed-tools:
   - mcp__context7__*
   - mcp__sequential-thinking__*
