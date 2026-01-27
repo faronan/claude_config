@@ -1,5 +1,6 @@
 ---
 name: code-review
+argument-hint: "[file or directory]"
 context: fork
 description: |
   Review code for bugs, security vulnerabilities, performance issues, and maintainability.

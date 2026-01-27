@@ -1,5 +1,6 @@
 ---
 name: refactoring
+argument-hint: "[target to refactor]"
 description: |
   Identify code smells and safely refactor code while preserving behavior.
   Use when the user asks to refactor, clean up, improve structure, or remove duplication.

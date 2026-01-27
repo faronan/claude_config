@@ -1,5 +1,6 @@
 ---
 name: github-pr-review
+argument-hint: "[PR number]"
 context: fork
 description: |
   Review GitHub pull requests and add inline comments using gh CLI with accurate line numbers.

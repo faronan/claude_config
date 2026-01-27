@@ -1,5 +1,6 @@
 ---
 name: planning
+argument-hint: "[task to plan]"
 context: fork
 description: |
   Create step-by-step implementation plans using Sequential Thinking MCP.

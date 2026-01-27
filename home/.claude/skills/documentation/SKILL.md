@@ -1,5 +1,6 @@
 ---
 name: documentation
+argument-hint: "[target file or topic]"
 description: |
   Generate README, API docs, JSDoc comments, and architecture documentation.
   Use when the user asks to document code, create a README, add comments, or explain usage.

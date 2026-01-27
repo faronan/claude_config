@@ -1,5 +1,6 @@
 ---
 name: test-generation
+argument-hint: "[target file or function]"
 description: |
   Generate unit tests, integration tests, and test cases covering edge cases and error handling.
   Use when the user asks to write tests, add test coverage, or create test cases.

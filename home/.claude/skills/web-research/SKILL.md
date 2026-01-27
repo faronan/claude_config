@@ -1,5 +1,6 @@
 ---
 name: web-research
+argument-hint: "[topic or question]"
 context: fork
 description: |
   Research libraries, frameworks, APIs, and technical solutions from the web.
