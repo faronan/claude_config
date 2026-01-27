@@ -1,12 +1,11 @@
 ---
 name: commit-message
 argument-hint: [files to commit]
+user-invocable: false
 description: |
   Generate git commit messages following Conventional Commits format in Japanese.
-  Use when the user wants to commit changes, create a commit message, or save changes to git.
-  Trigger words: "コミット", "commit", "変更をコミット", "git commit", "コミットメッセージ",
-  "変更を保存", "変更を記録", "変更を確定", "メッセージ作成", "commit message".
-  Also use after completing code changes that need to be committed.
+  Internal skill used by quick-commit and smart-commit.
+  For direct commit operations, use /quick-commit (small changes) or /smart-commit (multiple logical commits).
 allowed-tools:
   - Bash(git status)
   - Bash(git diff *)
