@@ -15,8 +15,7 @@ claude-config/
 │       ├── CLAUDE.md       # グローバルユーザー設定
 │       ├── settings.json   # 権限・フック設定
 │       ├── rules/          # 条件付きルール（パス指定可能）
-│       ├── skills/         # スキル（自動発動）
-│       ├── commands/       # スラッシュコマンド（手動実行）
+│       ├── skills/         # スキル（/コマンド + 自動発動）
 │       ├── hooks/          # フック（セキュリティ検証等）
 │       └── agents/         # サブエージェント（並列実行用）
 ├── templates/               # プロジェクト用テンプレート
@@ -125,12 +124,29 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 
 ### スキル（skills/）
 
-自動発動するタスク専門スキル。Claude が必要と判断した時に読み込まれる。
+すべてのスキルは `/skill-name` で手動実行可能。一部は Claude が自動で呼び出す。
+
+#### 手動実行専用（/コマンド）
+
+| スキル | 説明 |
+|--------|------|
+| `/quick-commit` | 小さな変更を確認なしでコミット |
+| `/smart-commit` | 変更を論理的に分割して複数コミット |
+| `/switch-branch` | Conventional Branch形式でブランチ作成 |
+| `/gh-pr` | Push済みの変更からPR作成（会話コンテキスト活用） |
+| `/gh-issue` | GitHub Issue を分析して修正 |
+| `/security-review` | OWASP Top 10 に基づくセキュリティレビュー |
+| `/wf-implement` | 実装ワークフロー（計画→実装→テスト→レビュー） |
+| `/wf-fix-bug` | バグ修正ワークフロー（調査→修正→検証） |
+| `/wf-refactoring` | リファクタリングワークフロー |
+| `/wf-research` | 調査ワークフロー（コードベース+Web） |
+| `/wf-tdd` | TDDワークフロー（RED→GREEN→REFACTOR） |
+| `/handoff` | セッション進捗まとめ・引継ぎ |
+
+#### 自動発動（Claude が判断）
 
 | スキル | 発動トリガー例 |
 |--------|---------------|
-| `commit-message` | 「コミットして」「commit」 |
-| `pr-description` | 「PR作成」「プルリクエスト」 |
 | `code-review` | 「レビュー」「コードチェック」 |
 | `refactoring` | 「リファクタ」「整理」 |
 | `test-generation` | 「テスト書いて」「テスト追加」 |
@@ -138,24 +154,14 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 | `documentation` | 「ドキュメント」「README」 |
 | `web-research` | 「調べて」「research」「比較」 |
 | `github-pr-review` | 「PRレビュー」「PR見て」 |
-| `mcp-guidance` | 「どのMCPを使う」「ツール選び」 |
+| `ask-claude-code` | 「Claude Code の使い方」「API の仕様」 |
 
-### コマンド（commands/）
+#### 内部スキル（他スキルから呼び出し）
 
-手動実行のショートカット。
-
-| コマンド | 説明 |
-|----------|------|
-| `/quick-commit` | 小さな変更を確認なしでコミット |
-| `/smart-commit` | 変更を論理的に分割して複数コミット |
-| `/create-branch` | Conventional Branch形式でブランチ作成 |
-| `/create-pr` | Push済みの変更からPR作成（会話コンテキスト活用） |
-| `/gh-issue` | GitHub Issue を分析して修正 |
-| `/wf-implement` | 実装ワークフロー（計画→実装→テスト→レビュー） |
-| `/wf-fix-bug` | バグ修正ワークフロー（調査→修正→検証） |
-| `/wf-refactoring` | リファクタリングワークフロー |
-| `/wf-research` | 調査ワークフロー（コードベース+Web） |
-| `/handoff` | セッション進捗まとめ・引継ぎ |
+| スキル | 用途 |
+|--------|------|
+| `commit-message` | Conventional Commits 形式のメッセージ生成 |
+| `mcp-guidance` | MCP サーバーの選択ガイダンス |
 
 ### サブエージェント（agents/）
 
@@ -168,6 +174,9 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 | `error-investigator` | 試行錯誤を伴うエラー調査 |
 | `verify-app` | テスト実行・動作検証 |
 | `web-researcher` | Web情報収集・技術調査 |
+| `security-reviewer` | セキュリティ脆弱性の検出 |
+| `planner` | 複雑な機能の実装計画 |
+| `architect` | システム設計・技術選定 |
 
 ### テンプレート
 
