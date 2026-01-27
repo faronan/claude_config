@@ -1,6 +1,22 @@
 ---
+name: wf-tdd
+argument-hint: "[feature description]"
 description: Execute TDD workflow with RED → GREEN → REFACTOR cycle.
+disable-model-invocation: true
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
+  - Edit
+  - Write
+  - Bash(npm run:*)
+  - Bash(pnpm:*)
+  - Bash(pytest:*)
+  - Task
+  - AskUserQuestion
 ---
+
+# TDD Workflow
 
 指定された機能に対して、テスト駆動開発（TDD）のサイクルを実行する。
 テストファーストのアプローチで品質の高いコードを実装する。
@@ -11,6 +27,7 @@ description: Execute TDD workflow with RED → GREEN → REFACTOR cycle.
 
 ## Workflow
 
+```
 ┌─────────────────────────────────────────────────────────┐
 │  TDD Cycle: RED → GREEN → REFACTOR                      │
 │                                                          │
@@ -23,6 +40,7 @@ description: Execute TDD workflow with RED → GREEN → REFACTOR cycle.
 │       └───────────────────────────────────────────┘    │
 │                     次の機能へ                          │
 └─────────────────────────────────────────────────────────┘
+```
 
 ## Step Details
 

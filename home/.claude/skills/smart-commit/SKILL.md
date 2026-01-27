@@ -1,12 +1,27 @@
 ---
+name: smart-commit
 description: Split changes into logical commits with Conventional Commits format.
+disable-model-invocation: true
+allowed-tools:
+  - Bash(git status:*)
+  - Bash(git diff:*)
+  - Bash(git add:*)
+  - Bash(git commit:*)
+  - Bash(git log:*)
+  - AskUserQuestion
 ---
+
+# Smart Commit
 
 git diffの変更を論理的なグループに分割し、適切な粒度で複数の独立したコミットを作成する。
 
+## Current State
+- Status: !`git status --porcelain`
+- Diff stat: !`git diff --stat`
+
 ## Workflow
 
-1. `git status` で全変更を確認
+1. 上記の Current State を確認
 2. `git diff` で詳細な差分を取得
 3. 変更を論理的なグループに分類
 4. 分類結果をユーザーに提示（グループ一覧とコミット順序）

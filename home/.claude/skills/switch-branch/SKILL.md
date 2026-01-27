@@ -1,12 +1,26 @@
 ---
+name: switch-branch
 description: Create branch with Conventional Branch naming from current changes.
+disable-model-invocation: true
+allowed-tools:
+  - Bash(git status:*)
+  - Bash(git diff:*)
+  - Bash(git branch:*)
+  - Bash(git switch:*)
 ---
+
+# Switch Branch
 
 現在のgit差分を分析し、Conventional Branch形式でブランチ名を生成・作成する。
 
+## Current State
+- Current branch: !`git branch --show-current`
+- Status: !`git status --porcelain`
+- Diff summary: !`git diff --stat`
+
 ## Workflow
 
-1. `git status` で現在の状態を確認
+1. 上記の Current State を確認
 2. 変更がある場合、`git diff` (未ステージ) または `git diff --staged` (ステージ済み) で内容を分析
 3. 変更内容から適切な type と description を決定
 4. `git switch -c <branch-name>` で作成・切り替え（Bashコマンド確認で承認）

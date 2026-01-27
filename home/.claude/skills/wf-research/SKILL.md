@@ -1,6 +1,19 @@
 ---
+name: wf-research
+argument-hint: "[research topic]"
 description: Execute research workflow combining codebase analysis and web research.
+disable-model-invocation: true
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
+  - WebFetch
+  - WebSearch
+  - Task
+  - mcp__context7__*
 ---
+
+# Research Workflow
 
 指定された質問に対して、コードベース調査とWeb調査を組み合わせて回答する。
 
@@ -10,6 +23,7 @@ description: Execute research workflow combining codebase analysis and web resea
 
 ## Workflow
 
+```
 ┌─────────────────────────────────────────────────────────┐
 │  1. Codebase Research (researcher agent)                │
 │     └→ コードベース内の関連情報を調査                   │
@@ -20,6 +34,7 @@ description: Execute research workflow combining codebase analysis and web resea
 │  3. Synthesis                                           │
 │     └→ 調査結果を統合してレポート                       │
 └─────────────────────────────────────────────────────────┘
+```
 
 ## Step Details
 
@@ -47,6 +62,7 @@ web-research skill を使用:
 
 ## Output Format
 
+```markdown
 ## 調査結果: [トピック]
 
 ### コードベース分析
@@ -64,6 +80,7 @@ web-research skill を使用:
 
 1. [アクション1]
 2. [アクション2]
+```
 
 ## Notes
 

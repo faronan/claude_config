@@ -1,6 +1,19 @@
 ---
+name: gh-pr
+argument-hint: "[options: --base, --draft]"
 description: Push済みの変更からPRを作成する
+disable-model-invocation: true
+allowed-tools:
+  - Bash(git log:*)
+  - Bash(git diff:*)
+  - Bash(git branch:*)
+  - Bash(git symbolic-ref:*)
+  - Bash(gh pr create:*)
+  - Bash(gh repo view:*)
+  - Read
 ---
+
+# GitHub PR Create
 
 Push済みのブランチからPull Requestを作成する。
 会話コンテキストとgit情報を組み合わせて、充実したPR説明文を生成する。
@@ -11,8 +24,14 @@ Push済みのブランチからPull Requestを作成する。
   - `--base <branch>`: マージ先ブランチ（省略時: デフォルトブランチ）
   - `--draft`: ドラフトPRとして作成
 
+## PR Context
+- Current branch: !`git branch --show-current`
+- Commits: !`git log origin/main..HEAD --oneline`
+- Changed files: !`git diff --stat origin/main...HEAD`
+
 ## Workflow
 
+```
 ┌─────────────────────────────────────────────────────────┐
 │  1. Gather Information                                  │
 │     ├→ ブランチ情報取得（現在 + マージ先）              │
@@ -25,6 +44,7 @@ Push済みのブランチからPull Requestを作成する。
 │  3. Create PR                                           │
 │     └→ gh pr create でPR作成・URL表示                   │
 └─────────────────────────────────────────────────────────┘
+```
 
 ## Step Details
 
@@ -62,7 +82,7 @@ git diff ${BASE_BRANCH}...HEAD
 
 ### 2. Generate PR Description
 
-`skills/pr-description/template.md` を参考に、以下の構造でPR説明文を生成:
+`template.md` を参考に、以下の構造でPR説明文を生成:
 
 ```markdown
 ## Summary
@@ -115,6 +135,14 @@ EOF
 **Base**: main ← feature-branch
 **Status**: Open / Draft
 ```
+
+## Guidelines
+
+- タイトル: 50文字以内、変更内容を端的に
+- 本文: なぜこの変更が必要かを説明
+- レビュアーが理解しやすい構成に
+
+**テンプレート集**: `template.md` を参照（標準、機能追加、バグ修正、大規模変更用）
 
 ## Notes
 

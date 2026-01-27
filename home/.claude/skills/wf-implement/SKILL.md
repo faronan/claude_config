@@ -1,6 +1,23 @@
 ---
+name: wf-implement
+argument-hint: "[task description]"
 description: Execute implementation workflow with planning, coding, testing, and review loop.
+disable-model-invocation: true
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
+  - Edit
+  - Write
+  - Bash(npm run:*)
+  - Bash(pnpm:*)
+  - Bash(pytest:*)
+  - Task
+  - AskUserQuestion
+  - mcp__sequential-thinking__*
 ---
+
+# Implementation Workflow
 
 指定されたタスクに対して、計画→実装→テスト→レビューのループを実行する。
 レビューで問題が見つかった場合は修正して再度検証する。
@@ -11,6 +28,7 @@ description: Execute implementation workflow with planning, coding, testing, and
 
 ## Workflow
 
+```
 ┌─────────────────────────────────────────────────────────┐
 │  1. Planning (planning skill)                           │
 │     └→ 実装計画を作成、AskUserQuestionで承認            │
@@ -31,6 +49,7 @@ description: Execute implementation workflow with planning, coding, testing, and
 │     ├→ 問題あり: Step 2 に戻る                          │
 │     └→ 問題なし: 完了                                   │
 └─────────────────────────────────────────────────────────┘
+```
 
 ## Step Details
 

@@ -1,6 +1,21 @@
 ---
+name: wf-refactoring
+argument-hint: "[refactoring target]"
 description: Execute refactoring workflow with analysis, safe changes, and verification loop.
+disable-model-invocation: true
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
+  - Edit
+  - Bash(npm run:*)
+  - Bash(pnpm:*)
+  - Bash(pytest:*)
+  - Task
+  - AskUserQuestion
 ---
+
+# Refactoring Workflow
 
 指定された対象に対して、分析→リファクタリング→検証のループを実行する。
 振る舞いを変えずにコード品質を改善する。
@@ -11,6 +26,7 @@ description: Execute refactoring workflow with analysis, safe changes, and verif
 
 ## Workflow
 
+```
 ┌─────────────────────────────────────────────────────────┐
 │  1. Analysis (refactoring skill)                        │
 │     └→ Code Smells を特定、リファクタリング計画を作成   │
@@ -28,6 +44,7 @@ description: Execute refactoring workflow with analysis, safe changes, and verif
 │     ├→ 追加改善あり: Step 2 に戻る                      │
 │     └→ 完了                                             │
 └─────────────────────────────────────────────────────────┘
+```
 
 ## Step Details
 
@@ -75,6 +92,7 @@ code-review skill を使用:
 
 ## Output Format
 
+```markdown
 ## リファクタリング完了: [対象]
 
 ### 実施した改善
@@ -91,9 +109,10 @@ code-review skill を使用:
 
 - テスト: ✅ 全パス
 - 振る舞い: ✅ 変更なし
+```
 
 ## Notes
 
-- 振る舞いを変える変更は `/implement` を使用
+- 振る舞いを変える変更は `/wf-implement` を使用
 - テストがない場合は先にテスト追加を提案
 - 大規模リファクタリングは段階的に実施

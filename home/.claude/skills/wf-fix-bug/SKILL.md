@@ -1,6 +1,22 @@
 ---
+name: wf-fix-bug
+argument-hint: "[bug description]"
 description: Execute bug fix workflow with investigation, fix, and verification loop.
+disable-model-invocation: true
+allowed-tools:
+  - Read
+  - Glob
+  - Grep
+  - Edit
+  - Write
+  - Bash(npm run:*)
+  - Bash(pnpm:*)
+  - Bash(pytest:*)
+  - Task
+  - AskUserQuestion
 ---
+
+# Bug Fix Workflow
 
 指定されたバグに対して、原因調査→修正→検証のループを実行する。
 
@@ -10,6 +26,7 @@ description: Execute bug fix workflow with investigation, fix, and verification 
 
 ## Workflow
 
+```
 ┌─────────────────────────────────────────────────────────┐
 │  1. Investigation (error-investigator agent)            │
 │     └→ エラーを解析、根本原因を特定                     │
@@ -27,6 +44,7 @@ description: Execute bug fix workflow with investigation, fix, and verification 
 │     ├→ バグ未解決: Step 1 に戻る                        │
 │     └→ バグ解決: 完了                                   │
 └─────────────────────────────────────────────────────────┘
+```
 
 ## Step Details
 
@@ -69,6 +87,7 @@ verify-app agent を使用:
 
 ## Output Format
 
+```markdown
 ## バグ修正完了: [概要]
 
 ### 原因
@@ -87,6 +106,7 @@ verify-app agent を使用:
 
 - 対象バグ: ✅ 修正確認
 - 回帰テスト: ✅ 全パス
+```
 
 ## Notes
 
