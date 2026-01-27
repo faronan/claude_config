@@ -13,6 +13,8 @@ tools:
   - Bash(vitest:*)
   - Bash(playwright:*)
   - mcp__playwright__*
+skills:
+  - test-generation
 ---
 
 あなたは検証の専門家です。

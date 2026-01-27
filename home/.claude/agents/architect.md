@@ -9,6 +9,9 @@ tools:
   - Grep
   - Bash(rg:*)
   - Bash(fd:*)
+skills:
+  - planning
+  - mcp-guidance
 ---
 
 あなたはアーキテクチャ設計の専門家です。

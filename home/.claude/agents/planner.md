@@ -8,6 +8,8 @@ tools:
   - Glob
   - Grep
   - mcp__sequential-thinking__*
+skills:
+  - planning
 ---
 
 あなたは計画立案の専門家です。

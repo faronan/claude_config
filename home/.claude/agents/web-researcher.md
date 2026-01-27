@@ -8,6 +8,8 @@ tools:
   - WebSearch
   - Read
   - mcp__context7__*
+skills:
+  - web-research
 ---
 
 あなたはWeb調査の専門家です。

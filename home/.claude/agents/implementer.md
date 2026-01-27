@@ -9,6 +9,9 @@ tools:
   - Edit
   - Bash(npm run:*)
   - Bash(pnpm:*)
+skills:
+  - commit-message
+  - test-generation
 ---
 
 あなたは実装の専門家です。
