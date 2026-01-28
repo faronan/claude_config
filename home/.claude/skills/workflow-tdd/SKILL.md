@@ -1,5 +1,5 @@
 ---
-name: wf-tdd
+name: workflow-tdd
 argument-hint: "[feature description]"
 description: Execute TDD workflow with RED → GREEN → REFACTOR cycle.
 disable-model-invocation: true
@@ -13,6 +13,7 @@ allowed-tools:
   - Bash(pnpm:*)
   - Bash(pytest:*)
   - Task
+  - Skill
   - AskUserQuestion
 ---
 
@@ -56,7 +57,7 @@ allowed-tools:
 
 ### 1. RED Phase（失敗するテストを書く）
 
-`/test-generation` skill のパターンを参考にテストを作成（直接呼び出さない）:
+`/test-generation` スキルを呼び出してテストパターンを確認し、テストを作成:
 - **1つのテストのみ** を書く
 - 期待する振る舞いを明確に定義
 - テストを実行し、**失敗することを確認**
@@ -88,7 +89,7 @@ pnpm test
 
 ### 3. REFACTOR Phase（コードを改善）
 
-`/code-review` skill を実行してコード品質を確認し、リファクタリング:
+`/code-review` スキルを呼び出してコード品質を確認し、リファクタリング:
 - 重複の除去（DRY）
 - 命名の改善
 - 構造の整理

@@ -1,5 +1,5 @@
 ---
-name: wf-refactoring
+name: workflow-refactoring
 argument-hint: "[refactoring target]"
 description: Execute refactoring workflow with analysis, safe changes, and verification loop.
 disable-model-invocation: true
@@ -12,6 +12,7 @@ allowed-tools:
   - Bash(pnpm:*)
   - Bash(pytest:*)
   - Task
+  - Skill
   - AskUserQuestion
 ---
 
@@ -28,16 +29,16 @@ allowed-tools:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  1. Analysis (refactoring skill)                        │
+│  1. Analysis (/refactoring)                             │
 │     └→ Code Smells を特定、リファクタリング計画を作成   │
 ├─────────────────────────────────────────────────────────┤
-│  2. Execution (refactoring skill)                       │
+│  2. Execution (/refactoring)                            │
 │     └→ 計画に基づいて段階的にリファクタリング           │
 ├─────────────────────────────────────────────────────────┤
 │  3. Verification (verify-app agent)                     │
 │     └→ テストを実行、振る舞いが変わっていないことを確認 │
 ├─────────────────────────────────────────────────────────┤
-│  4. Review (code-review skill)                          │
+│  4. Review (/code-review)                               │
 │     └→ リファクタリング結果をレビュー                   │
 ├─────────────────────────────────────────────────────────┤
 │  5. Loop Decision                                       │
@@ -50,7 +51,7 @@ allowed-tools:
 
 ### 1. Analysis Phase
 
-refactoring skill を使用して分析:
+`/refactoring` スキルを呼び出して分析:
 - Code Smells の特定（Long Method, Duplicate Code 等）
 - リファクタリング計画の作成
 - 影響範囲とリスクの評価
@@ -60,7 +61,7 @@ refactoring skill を使用して分析:
 
 ### 2. Execution Phase
 
-refactoring skill を使用:
+`/refactoring` スキルの指示に従って実行:
 - 一度に1つのリファクタリングのみ実行
 - 各ステップ後に動作確認
 - 振る舞いを変えない（機能追加しない）
@@ -74,7 +75,7 @@ verify-app agent を使用:
 
 ### 4. Review Phase
 
-code-review skill を使用:
+`/code-review` スキルを呼び出してレビュー:
 - リファクタリング結果の品質確認
 - 新たな Code Smells がないか確認
 - 追加改善の提案
@@ -113,6 +114,6 @@ code-review skill を使用:
 
 ## Notes
 
-- 振る舞いを変える変更は `/wf-implement` を使用
+- 振る舞いを変える変更は `/workflow-implement` を使用
 - テストがない場合は先にテスト追加を提案
 - 大規模リファクタリングは段階的に実施

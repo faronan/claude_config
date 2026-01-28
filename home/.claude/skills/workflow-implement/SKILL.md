@@ -1,5 +1,5 @@
 ---
-name: wf-implement
+name: workflow-implement
 argument-hint: "[task description]"
 description: Execute implementation workflow with planning, coding, testing, and review loop.
 disable-model-invocation: true
@@ -13,6 +13,7 @@ allowed-tools:
   - Bash(pnpm:*)
   - Bash(pytest:*)
   - Task
+  - Skill
   - AskUserQuestion
   - mcp__sequential-thinking__*
 ---
@@ -30,19 +31,19 @@ allowed-tools:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  1. Planning (planning skill)                           │
+│  1. Planning (planner agent)                            │
 │     └→ 実装計画を作成、AskUserQuestionで承認            │
 ├─────────────────────────────────────────────────────────┤
 │  2. Implementation (implementer agent)                  │
 │     └→ 計画に基づいてコードを実装                       │
 ├─────────────────────────────────────────────────────────┤
-│  3. Test Generation (test-generation skill)             │
+│  3. Test Generation (/test-generation)                  │
 │     └→ 必要なテストを作成                               │
 ├─────────────────────────────────────────────────────────┤
 │  4. Verification (verify-app agent)                     │
 │     └→ テストを実行、結果を分析                         │
 ├─────────────────────────────────────────────────────────┤
-│  5. Code Review (code-review skill)                     │
+│  5. Code Review (/code-review)                          │
 │     └→ コードをレビュー、問題を指摘                     │
 ├─────────────────────────────────────────────────────────┤
 │  6. Loop Decision                                       │
@@ -55,7 +56,7 @@ allowed-tools:
 
 ### 1. Planning Phase
 
-planning skill を使用して実装計画を作成:
+planner agent を使用して実装計画を作成:
 - Goal Definition（何を達成するか）
 - Current State Analysis（関連ファイル、既存パターン）
 - Implementation Steps（具体的な手順）
@@ -72,7 +73,7 @@ implementer agent を使用:
 
 ### 3. Test Generation Phase
 
-test-generation skill を使用:
+`/test-generation` スキルを呼び出してテストを作成:
 - Happy Path、Edge Cases、Error Cases をカバー
 - 既存テストのパターンに合わせる
 
@@ -85,7 +86,7 @@ verify-app agent を使用:
 
 ### 5. Review Phase
 
-code-review skill を使用:
+`/code-review` スキルを呼び出してレビュー:
 - Correctness、Security、Performance、Maintainability をチェック
 - 問題を優先度順に報告（Critical → Warning → Suggestion）
 

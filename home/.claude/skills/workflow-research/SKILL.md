@@ -1,5 +1,5 @@
 ---
-name: wf-research
+name: workflow-research
 argument-hint: "[research topic]"
 description: Execute research workflow combining codebase analysis and web research.
 disable-model-invocation: true
@@ -28,7 +28,7 @@ allowed-tools:
 │  1. Codebase Research (code-researcher agent)           │
 │     └→ コードベース内の関連情報を調査                   │
 ├─────────────────────────────────────────────────────────┤
-│  2. Web Research (web-research skill)                   │
+│  2. Web Research (web-researcher agent)                 │
 │     └→ 外部ドキュメント・ベストプラクティスを調査       │
 ├─────────────────────────────────────────────────────────┤
 │  3. Synthesis                                           │
@@ -48,7 +48,7 @@ code-researcher agent を使用:
 
 ### 2. Web Research Phase
 
-web-research skill を使用:
+web-researcher agent を使用:
 - 公式ドキュメントの参照（Context7 MCP）
 - 最新のベストプラクティス調査
 - ライブラリ・ツールの比較（該当時）

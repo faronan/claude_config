@@ -1,5 +1,5 @@
 ---
-name: wf-fix-bug
+name: workflow-fix-bug
 argument-hint: "[bug description]"
 description: Execute bug fix workflow with investigation, fix, and verification loop.
 disable-model-invocation: true
@@ -13,6 +13,7 @@ allowed-tools:
   - Bash(pnpm:*)
   - Bash(pytest:*)
   - Task
+  - Skill
   - AskUserQuestion
 ---
 
@@ -34,7 +35,7 @@ allowed-tools:
 │  2. Fix Implementation (implementer agent)              │
 │     └→ 原因に基づいて修正を実装                         │
 ├─────────────────────────────────────────────────────────┤
-│  3. Regression Test (test-generation skill)             │
+│  3. Regression Test (/test-generation)                  │
 │     └→ 回帰テストを追加                                 │
 ├─────────────────────────────────────────────────────────┤
 │  4. Verification (verify-app agent)                     │
@@ -68,7 +69,7 @@ implementer agent を使用:
 
 ### 3. Regression Test Phase
 
-test-generation skill を使用:
+`/test-generation` スキルを呼び出してテストを作成:
 - バグを再現するテストケースを追加
 - 修正後にテストがパスすることを確認
 - 関連するエッジケースもカバー
