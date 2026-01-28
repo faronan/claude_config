@@ -8,8 +8,6 @@ tools:
   - Glob
   - Grep
   - Bash(rg:*)
-skills:
-  - code-review
 ---
 
 あなたはセキュリティレビューの専門家です。
