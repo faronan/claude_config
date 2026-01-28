@@ -169,7 +169,7 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 
 | エージェント | 用途 |
 |--------------|------|
-| `researcher` | 読み取り専用の調査・分析 |
+| `code-researcher` | 読み取り専用の調査・分析 |
 | `implementer` | 計画に基づく実装 |
 | `error-investigator` | 試行錯誤を伴うエラー調査 |
 | `verify-app` | テスト実行・動作検証 |

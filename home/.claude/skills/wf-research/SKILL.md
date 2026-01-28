@@ -25,7 +25,7 @@ allowed-tools:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  1. Codebase Research (researcher agent)                │
+│  1. Codebase Research (code-researcher agent)           │
 │     └→ コードベース内の関連情報を調査                   │
 ├─────────────────────────────────────────────────────────┤
 │  2. Web Research (web-research skill)                   │
@@ -40,7 +40,7 @@ allowed-tools:
 
 ### 1. Codebase Research Phase
 
-researcher agent を使用:
+code-researcher agent を使用:
 - 関連ファイルの特定
 - 既存の実装パターンの発見
 - 依存関係の分析
