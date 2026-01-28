@@ -8,9 +8,9 @@ allowed-tools:
   - Bash(git diff:*)
   - Bash(git branch:*)
   - Bash(git symbolic-ref:*)
-  - Bash(gh pr create:*)
   - Bash(gh repo view:*)
   - Read
+# Note: gh pr create は allowed-tools に含めない（実行前に確認を求める）
 ---
 
 # GitHub PR Create
@@ -26,8 +26,9 @@ Push済みのブランチからPull Requestを作成する。
 
 ## PR Context
 - Current branch: !`git branch --show-current`
-- Commits: !`git log origin/main..HEAD --oneline`
-- Changed files: !`git diff --stat origin/main...HEAD`
+- Default branch: !`gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'`
+
+**Note**: Commits と diff はワークフロー実行時にベースブランチを取得してから実行する。
 
 ## Workflow
 
