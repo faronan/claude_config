@@ -1,5 +1,5 @@
 ---
-name: gh-issue
+name: gh-issue-fix
 argument-hint: "[issue number]"
 description: Analyze and fix GitHub issue
 disable-model-invocation: true
@@ -55,4 +55,4 @@ GitHub Issue を分析して修正する。
 
 - Issue番号は `$ARGUMENTS` から取得
 - Issue が見つからない場合はエラーを報告
-- 複雑な Issue は wf-implement または wf-fix-bug へ誘導
+- 複雑な Issue は workflow-implement または workflow-fix-bug へ誘導

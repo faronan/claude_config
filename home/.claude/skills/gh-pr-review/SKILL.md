@@ -1,5 +1,5 @@
 ---
-name: github-pr-review
+name: gh-pr-review
 argument-hint: "[PR number]"
 context: fork
 description: |

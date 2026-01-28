@@ -1,5 +1,5 @@
 ---
-name: gh-pr
+name: gh-pr-create
 argument-hint: "[options: --base, --draft]"
 description: Push済みの変更からPRを作成する
 disable-model-invocation: true
