@@ -8,6 +8,9 @@ allowed-tools:
   - Bash(git diff:*)
   - Bash(git branch:*)
   - Bash(git symbolic-ref:*)
+  - Bash(git ls-remote:*)
+  - Bash(git fetch:*)
+  - Bash(git status:*)
   - Bash(gh repo view:*)
   - Read
 # Note: gh pr create は allowed-tools に含めない（実行前に確認を求める）
@@ -28,12 +31,22 @@ Push済みのブランチからPull Requestを作成する。
 - Current branch: !`git branch --show-current`
 - Default branch: !`gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'`
 
+## Pre-Check Results（自動実行）
+- Working tree status: !`git status --porcelain | head -5 || echo "(clean)"`
+- Remote branch exists: !`git ls-remote --exit-code origin $(git branch --show-current) &>/dev/null && echo "yes" || echo "no"`
+- Unpushed commits: !`git fetch origin $(git branch --show-current) --quiet 2>/dev/null; git log origin/$(git branch --show-current)..HEAD --oneline 2>/dev/null || echo "(remote branch not found)"`
+
 **Note**: Commits と diff はワークフロー実行時にベースブランチを取得してから実行する。
 
 ## Workflow
 
 ```
 ┌─────────────────────────────────────────────────────────┐
+│  0. Pre-Check                                           │
+│     ├→ リモートブランチの存在確認                       │
+│     ├→ push状態の確認（未pushなら中断）                 │
+│     └→ 未コミットの変更がないか確認                     │
+├─────────────────────────────────────────────────────────┤
 │  1. Gather Information                                  │
 │     ├→ ブランチ情報取得（現在 + マージ先）              │
 │     ├→ git diff / git log で差分・履歴を取得           │
@@ -48,6 +61,20 @@ Push済みのブランチからPull Requestを作成する。
 ```
 
 ## Step Details
+
+### 0. Pre-Check
+
+**重要**: このスキルはpush済みの状態で実行することを前提とする。**pushは絶対に実行しない**。
+
+上記「Pre-Check Results」セクションの事前実行結果を確認し、以下の条件を満たしているか判断する：
+
+| チェック項目 | 期待値 | NGの場合 |
+|-------------|--------|----------|
+| Working tree status | `(clean)` | 「先にコミットしてください」と伝えて中断 |
+| Remote branch exists | `yes` | 「先に `git push -u origin <branch>` を実行してください」と伝えて中断 |
+| Unpushed commits | （空） | 「先に `git push` を実行してください」と伝えて中断 |
+
+**チェックに失敗した場合**: ユーザーに状態を報告し、PR作成を中断する。**pushを代わりに実行してはいけない**。
 
 ### 1. Gather Information
 
@@ -147,7 +174,8 @@ EOF
 
 ## Notes
 
-- このコマンドはpush済みの状態で実行することを想定
-- 未push/未コミットの変更がある場合は警告を表示
+- **重要**: このスキルはpush済みの状態で実行することを前提とする
+- **禁止事項**: `git push` を実行してはいけない（ユーザーが自分でpushする）
+- 未push/未コミットの変更がある場合は警告を表示して**中断**する
 - PR説明文は HEREDOC 形式で渡してフォーマットを維持
 - 会話コンテキストに該当情報がない場合、そのセクションは省略可
