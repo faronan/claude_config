@@ -1,8 +1,9 @@
 ---
-name: verify-app
+name: app-verifier
 description: |
   Verification specialist for testing and validating application behavior.
   Use proactively after implementation to ensure quality through test execution.
+  Use for: test suite execution, E2E testing, regression testing, test result analysis.
 memory: user
 tools:
   - Read
