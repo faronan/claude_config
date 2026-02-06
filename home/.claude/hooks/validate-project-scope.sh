@@ -9,8 +9,9 @@ if [[ -z "$command" ]]; then
   exit 0
 fi
 
-# 禁止ディレクトリパターン
+# 禁止ディレクトリパターン（システムディレクトリ + ホームディレクトリ直下）
 FORBIDDEN_DIRS="^/(tmp|var|etc|dev|sys|proc|opt|usr|Library|System)"
+HOME_PATTERNS="(~|\\\$HOME|\\\$\{HOME\})/"
 
 # ファイル書き込みパターンを検出
 WRITE_PATTERNS=(
@@ -28,6 +29,28 @@ for pattern in "${WRITE_PATTERNS[@]}"; do
   if echo "$command" | grep -qE "$pattern"; then
     cat <<EOF >&2
 [Security] プロジェクト外のディレクトリへの書き込みは許可されていません。
+コマンド: $command
+プロジェクト内のディレクトリを使用してください。
+EOF
+    exit 2
+  fi
+done
+
+# ホームディレクトリ（~/、$HOME/）への書き込みパターンを検出
+HOME_WRITE_PATTERNS=(
+  ">\s*${HOME_PATTERNS}"
+  ">>\s*${HOME_PATTERNS}"
+  "tee\s+${HOME_PATTERNS}"
+  "cp\s+.*\s+${HOME_PATTERNS}"
+  "mv\s+.*\s+${HOME_PATTERNS}"
+  "mkdir\s+(-p\s+)?${HOME_PATTERNS}"
+  "touch\s+${HOME_PATTERNS}"
+)
+
+for pattern in "${HOME_WRITE_PATTERNS[@]}"; do
+  if echo "$command" | grep -qE "$pattern"; then
+    cat <<EOF >&2
+[Security] ホームディレクトリへの直接書き込みは許可されていません。
 コマンド: $command
 プロジェクト内のディレクトリを使用してください。
 EOF
