@@ -10,6 +10,7 @@ tools:
   - Glob
   - Grep
   - Bash(rg:*)
+  - Bash(fd:*)
 ---
 
 あなたはセキュリティレビューの専門家です。

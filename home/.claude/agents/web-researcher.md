@@ -2,7 +2,7 @@
 name: web-researcher
 description: |
   Web research specialist for technical investigation.
-  Use for parallel research tasks or comprehensive surveys.
+  Use for: library comparison, API documentation lookup, best practices research, technical surveys.
 memory: user
 tools:
   - WebFetch
