@@ -43,9 +43,17 @@ if [[ -n "$transcript_path" && -f "$transcript_path" ]]; then
   [[ -n "$assistant_output" ]] && message="$assistant_output"
 fi
 
+# AppleScript文字列のサニタイズ（" と \ をエスケープ）
+sanitize() {
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//\"/\\\"}"
+  printf '%s' "$s"
+}
+
 # macOS通知（osascript）
 if [[ "$(uname)" == "Darwin" ]]; then
-  osascript -e "display notification \"$message\" with title \"$title\" subtitle \"$subtitle\"" 2>/dev/null || true
+  osascript -e "display notification \"$(sanitize "$message")\" with title \"$(sanitize "$title")\" subtitle \"$(sanitize "$subtitle")\"" 2>/dev/null || true
 fi
 
 exit 0
