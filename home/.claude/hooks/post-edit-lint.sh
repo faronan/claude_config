@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # PostToolUse フック: 編集後の自動lint/format チェック
 # Exit codes: 0=成功（警告のみ）
 
@@ -56,6 +56,15 @@ case "$extension" in
     # print() 警告
     if grep -n "^[^#]*print(" "$file_path" 2>/dev/null | grep -v "# noqa"; then
       echo "[Warning] print() found in $file_path - consider removing before commit" >&2
+    fi
+    ;;
+
+  md|yaml|yml|scss|css)
+    if command -v prettier &> /dev/null; then
+      result=$(prettier --check "$file_path" 2>&1) || {
+        echo "[Format] Prettier issues in $file_path:" >&2
+        echo "$result" >&2
+      }
     fi
     ;;
 esac
