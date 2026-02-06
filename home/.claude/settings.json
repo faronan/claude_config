@@ -1,10 +1,9 @@
 {
-  "language": "japanese",
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "respectGitignore": true,
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/statusline.js",
-    "padding": 0
+  "env": {
+    "EDITOR": "code",
+    "CLAUDE_CODE_TMPDIR": "/Users/toshiki.ito/.claude/tmp"
   },
   "permissions": {
     "allow": [
@@ -61,26 +60,6 @@
       "mcp__github__*",
       "mcp__playwright__*"
     ],
-    "ask": [
-      "Bash(mkdir *)",
-      "Bash(rm *)",
-      "Bash(mv *)",
-      "Bash(git commit *)",
-      "Bash(git stash *)",
-      "Bash(git rebase *)",
-      "Bash(git push *)",
-      "Bash(git merge *)",
-      "Bash(git tag *)",
-      "Bash(git branch -D *)",
-      "Bash(docker *)",
-      "Bash(kubectl *)",
-      "Bash(npm install *)",
-      "Bash(pnpm add *)",
-      "Bash(brew install *)",
-      "Bash(gh pr create *)",
-      "Bash(gh pr merge *)",
-      "Bash(gh issue create *)"
-    ],
     "deny": [
       "Bash(*| bash)",
       "Bash(*| sh)",
@@ -105,16 +84,48 @@
       "Read(~/.kube/**)",
       "Read(**/*.pem)",
       "Read(**/*.key)"
+    ],
+    "ask": [
+      "Bash(mkdir *)",
+      "Bash(rm *)",
+      "Bash(mv *)",
+      "Bash(git commit *)",
+      "Bash(git stash *)",
+      "Bash(git rebase *)",
+      "Bash(git push *)",
+      "Bash(git merge *)",
+      "Bash(git tag *)",
+      "Bash(git branch -D *)",
+      "Bash(docker *)",
+      "Bash(kubectl *)",
+      "Bash(npm install *)",
+      "Bash(pnpm add *)",
+      "Bash(brew install *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr merge *)",
+      "Bash(gh issue create *)"
     ]
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/session-start.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/validate-project-scope.sh"
+            "command": "~/.claude/hooks/validate-project-scope.sh",
+            "timeout": 15
           }
         ]
       }
@@ -125,8 +136,8 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/notify-completion.sh",
-            "async": true,
-            "timeout": 10
+            "timeout": 10,
+            "async": true
           }
         ]
       }
@@ -137,8 +148,8 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/notify-input-required.sh",
-            "async": true,
-            "timeout": 10
+            "timeout": 10,
+            "async": true
           }
         ]
       }
@@ -150,15 +161,17 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/post-edit-lint.sh",
-            "async": true,
-            "timeout": 30
+            "timeout": 30,
+            "async": true
           }
         ]
       }
     ]
   },
-  "env": {
-    "EDITOR": "code",
-    "CLAUDE_CODE_TMPDIR": "/Users/toshiki.ito/.claude/tmp"
-  }
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.js",
+    "padding": 0
+  },
+  "language": "japanese"
 }
