@@ -18,4 +18,5 @@
 - Formatter: Biome (TS/JS), Prettier (MD/YAML/SCSS)
 
 ## Notes
-詳細は rules/, skills/, commands/ を参照。
+詳細は rules/, skills/, agents/ を参照。
+プロジェクト固有の CLAUDE.md では @import で選択的にルールを参照可能。
