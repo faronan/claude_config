@@ -32,7 +32,7 @@ Push済みのブランチからPull Requestを作成する。
 - Default branch: !`gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'`
 
 ## Pre-Check Results（自動実行）
-- Working tree status: !`git status --porcelain | head -5 || echo "(clean)"`
+- Working tree status: !`git status --porcelain`
 - Current branch: !`git branch --show-current`
 
 **Note**: リモートブランチの存在確認・未pushコミットの確認は Step 0 で順次実行する。
@@ -84,7 +84,7 @@ git log origin/<branch-name>..HEAD --oneline
 
 | チェック項目 | 期待値 | NGの場合 |
 |-------------|--------|----------|
-| Working tree status | `(clean)` | 「先にコミットしてください」と伝えて中断 |
+| Working tree status | （空） | 「先にコミットしてください」と伝えて中断 |
 | Remote branch exists | 出力あり | 「先に `git push -u origin <branch>` を実行してください」と伝えて中断 |
 | Unpushed commits | （空） | 「先に `git push` を実行してください」と伝えて中断 |
 
