@@ -17,6 +17,10 @@
 - Python: uv, ruff
 - Formatter: Biome (TS/JS), Prettier (MD/YAML/SCSS)
 
+## Model
+- Task tool（サブエージェント）で model パラメータを指定しない（親モデルを継承させる）
+- コスト最適化のためのモデルダウングレードは行わない
+
 ## Notes
 詳細は rules/, skills/, agents/ を参照。
 プロジェクト固有の CLAUDE.md では @import で選択的にルールを参照可能。
