@@ -1,7 +1,9 @@
 ---
 name: workflow-research
 argument-hint: "[research topic]"
-description: Execute research workflow combining codebase analysis and web research.
+description: |
+  Execute research workflow combining codebase analysis and web research.
+  Trigger words: "調査ワークフロー", "技術調査", "research workflow", "分析して", "コードベース調査".
 disable-model-invocation: true
 allowed-tools:
   - Read
@@ -11,6 +13,7 @@ allowed-tools:
   - WebSearch
   - Task
   - mcp__context7__*
+  - AskUserQuestion
 ---
 
 # Research Workflow
@@ -87,3 +90,22 @@ web-researcher agent を使用:
 - コードベース調査を先に行い、外部調査の焦点を絞る
 - 情報のソースを必ず明記
 - 不明点は明示する
+
+## Completion Criteria
+
+以下をすべて満たした時点で完了:
+- [ ] コードベース分析が完了
+- [ ] 外部調査が完了
+- [ ] レポートがまとまっている
+- [ ] 推奨アクションが明記されている
+
+## Agent References
+
+- **code-researcher**: コードベース調査、依存関係分析
+- **web-researcher**: 外部ドキュメント・ベストプラクティス調査
+
+## Error Handling
+
+- **コードベースに関連情報がない**: 外部調査の比重を上げ、類似プロジェクトの事例を調査
+- **Web検索で有用な情報が見つからない**: 検索キーワードを変更し、公式ドキュメントやGitHub Issuesに範囲を拡大
+- **調査結果が矛盾する**: 情報源の信頼性を評価し、矛盾点を明記してユーザーに判断を委ねる

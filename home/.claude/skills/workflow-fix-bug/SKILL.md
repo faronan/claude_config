@@ -1,7 +1,9 @@
 ---
 name: workflow-fix-bug
 argument-hint: "[bug description]"
-description: Execute bug fix workflow with investigation, fix, and verification loop.
+description: |
+  Execute bug fix workflow with investigation, fix, and verification loop.
+  Trigger words: "バグ修正", "バグを直して", "fix bug", "デバッグ", "エラー調査", "不具合修正".
 disable-model-invocation: true
 allowed-tools:
   - Read
@@ -114,3 +116,23 @@ verify-app agent を使用:
 - 原因特定を最優先（推測で修正しない）
 - 修正は最小限に（関連しない変更を含めない）
 - ループは最大3回まで（超過時はユーザーに相談）
+
+## Completion Criteria
+
+以下をすべて満たした時点で完了:
+- [ ] 根本原因が特定されている
+- [ ] 修正が実装されている
+- [ ] 回帰テストが追加されている
+- [ ] 全テストがパス
+
+## Agent References
+
+- **error-investigator**: エラー解析、根本原因特定
+- **implementer**: 修正実装
+- **app-verifier**: テスト実行、検証
+
+## Error Handling
+
+- **再現できないバグ**: ログ・環境情報を収集し、仮説ベースで調査を進める
+- **修正後も別のテストが失敗**: 影響範囲を再調査し、副作用がないか確認
+- **ループ上限（3回）到達**: ユーザーに状況を報告し、方針転換を相談

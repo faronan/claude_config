@@ -1,7 +1,9 @@
 ---
 name: workflow-implement
 argument-hint: "[task description]"
-description: Execute implementation workflow with planning, coding, testing, and review loop.
+description: |
+  Execute implementation workflow with planning, coding, testing, and review loop.
+  Trigger words: "実装して", "機能追加", "implement", "開発して", "作って", "ビルドして".
 disable-model-invocation: true
 allowed-tools:
   - Read
@@ -107,3 +109,15 @@ verify-app agent を使用:
 - 各フェーズの結果をユーザーに報告
 - 問題発生時は原因と対策を明示
 - ループは最大3回まで（超過時はユーザーに相談）
+
+## Agent References
+
+- **planner**: 実装計画の作成
+- **implementer**: コード実装
+- **app-verifier**: テスト実行、検証
+
+## Error Handling
+
+- **計画と実装の乖離**: 計画を見直し、必要に応じて再計画フェーズに戻る
+- **テスト失敗が解消しない**: 失敗原因を分析し、実装アプローチの変更を検討
+- **ループ上限（3回）到達**: ユーザーに状況を報告し、スコープ縮小や方針転換を相談

@@ -1,7 +1,9 @@
 ---
 name: workflow-tdd
 argument-hint: "[feature description]"
-description: Execute TDD workflow with RED → GREEN → REFACTOR cycle.
+description: |
+  Execute TDD workflow with RED → GREEN → REFACTOR cycle.
+  Trigger words: "TDD", "テスト駆動", "テストファースト", "RED GREEN REFACTOR", "TDDで実装".
 disable-model-invocation: true
 allowed-tools:
   - Read
@@ -152,3 +154,13 @@ pytest --cov=src --cov-report=term-missing
 - テスト失敗時は原因を明示
 - 複雑な機能は小さなテストに分解
 - 詰まった場合はユーザーに相談
+
+## Agent References
+
+- **implementer**: GREEN Phase での最小実装
+
+## Error Handling
+
+- **RED Phase でテストが通ってしまう**: テスト条件を見直し、未実装部分を正しく検証するテストに修正
+- **GREEN Phase で最小実装が困難**: 機能をさらに小さな単位に分解し、段階的に実装
+- **REFACTOR Phase でテストが壊れる**: リファクタリングを取り消し、より小さな変更単位で再試行

@@ -1,7 +1,9 @@
 ---
 name: workflow-refactoring
 argument-hint: "[refactoring target]"
-description: Execute refactoring workflow with analysis, safe changes, and verification loop.
+description: |
+  Execute refactoring workflow with analysis, safe changes, and verification loop.
+  Trigger words: "大規模リファクタ", "構造改善ワークフロー", "refactoring workflow", "アーキテクチャ改善".
 disable-model-invocation: true
 allowed-tools:
   - Read
@@ -117,3 +119,22 @@ verify-app agent を使用:
 - 振る舞いを変える変更は `/workflow-implement` を使用
 - テストがない場合は先にテスト追加を提案
 - 大規模リファクタリングは段階的に実施
+
+## Completion Criteria
+
+以下をすべて満たした時点で完了:
+- [ ] 計画したリファクタリングが完了
+- [ ] 全テストがパス
+- [ ] Critical/Warning 指摘なし
+- [ ] 品質指標が改善（行数、複雑度など）
+
+## Agent References
+
+- **implementer**: リファクタリング実行
+- **app-verifier**: テスト実行、検証
+
+## Error Handling
+
+- **テストが存在しない対象**: リファクタリング前にテスト追加を提案し、承認を得てから実施
+- **リファクタリング後にテスト失敗**: 直前の変更を取り消し、より小さな単位で再実施
+- **振る舞いの変更が必要と判明**: `/workflow-implement` への切り替えを提案
