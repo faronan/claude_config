@@ -64,24 +64,7 @@ allowed-tools:
 
 ## Output Format
 
-security-reviewer エージェントの出力形式に準拠:
-
-```
-## セキュリティレビュー結果
-
-### サマリー
-- 重大: X件 / 高: X件 / 中: X件 / 低: X件
-
-### 発見事項
-#### [重大度] 問題タイトル
-- **ファイル**: path/to/file:行番号
-- **OWASP**: カテゴリ
-- **説明**: 問題の説明
-- **推奨**: 修正方法
-
-### 推奨アクション（優先度順）
-1. [即座に対応すべき項目]
-```
+security-reviewer エージェントの出力形式に従う。詳細は `agents/security-reviewer.md` の Output Format セクションを参照。
 
 ## Error Handling
 

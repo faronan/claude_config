@@ -24,7 +24,7 @@ allowed-tools:
     ├── 複数の論理的変更が混在
     │   └── /smart-commit → グループ分割して複数コミット
     └── 通常の変更（単一の論理変更）
-        └── commit-message（本スキル）を直接参照
+        └── Claude が本スキルを内部的に使用（ユーザー操作不要）
 ```
 
 ## Workflow

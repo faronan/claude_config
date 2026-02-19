@@ -4,7 +4,6 @@ argument-hint: "[diagram type] [target file or module]"
 description: |
   Generate Mermaid diagrams from codebase analysis.
   Trigger words: "Mermaid", "ダイアグラム", "クラス図", "シーケンス図", "フローチャート", "ER図", "図を生成", "diagram".
-context: fork
 allowed-tools:
   - Read
   - Glob
@@ -93,7 +92,6 @@ Read/Grep でコードを解析:
 
 ## Notes
 
-- 読み取り専用（`context: fork`）
 - 大規模なコードベースでは対象を絞ることを推奨
 - 詳細な図種別パターンは `references/diagram-patterns.md` を参照
 - 基本テンプレートは `skills/documentation/templates.md` も参照
