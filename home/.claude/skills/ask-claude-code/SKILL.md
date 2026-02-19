@@ -1,6 +1,6 @@
 ---
 name: ask-claude-code
-argument-hint: [question about Claude Code/API/SDK]
+argument-hint: "question about Claude Code/API/SDK"
 context: fork
 agent: claude-code-guide
 description: |

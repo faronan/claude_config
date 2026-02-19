@@ -1,6 +1,6 @@
 ---
 name: commit-message
-argument-hint: [files to commit]
+argument-hint: "[files to commit]"
 user-invocable: false
 description: |
   Generate git commit messages following Conventional Commits format in Japanese.
