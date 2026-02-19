@@ -2,6 +2,12 @@
 
 Claude Code のグローバル設定ディレクトリ `~/.claude` を Git 管理するためのリポジトリ。
 
+**25 スキル・10 エージェント・6 フック・6 ルール** を統合し、3 つの設計原則で全体を設計しています。
+
+- **Progressive Disclosure** — 必要な情報を必要な時に（CLAUDE.md は 27 行）
+- **最小権限と関心の分離** — 10 エージェント中 8 エージェントが指示レベルで読み取り専用
+- **重層防御** — deny / ask / hooks / rules の 4 層で安全を確保
+
 ## 概要
 
 新しいマシンでも `git clone` + `install.sh` で同一の Claude Code 環境を再現可能。
@@ -14,9 +20,11 @@ claude-config/
 │   └── .claude/
 │       ├── CLAUDE.md       # グローバルユーザー設定
 │       ├── settings.json   # 権限・フック設定
+│       ├── statusline.js   # ステータスライン表示カスタマイズ
 │       ├── rules/          # 条件付きルール（パス指定可能）
 │       ├── skills/         # スキル（/コマンド + 自動発動）
 │       ├── hooks/          # フック（セキュリティ検証等）
+│       │   └── lib/        # フック共通ライブラリ
 │       └── agents/         # サブエージェント（並列実行用）
 ├── templates/               # プロジェクト用テンプレート
 │   ├── GUIDE.md            # プロジェクト CLAUDE.md 作成ガイド
@@ -104,23 +112,29 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 
 ### フック（hooks/）
 
-セキュリティ検証用のフックスクリプト。
+セキュリティ検証・自動化用のフックスクリプト。
 
-| フック | 用途 |
-|--------|------|
-| `validate-project-scope.sh` | プロジェクト外への書き込みをブロック |
+| フック                      | トリガー                  | 用途                                 | async |
+| --------------------------- | ------------------------- | ------------------------------------ | ----- |
+| `session-start.sh`          | SessionStart              | ツール確認、Git/ランタイム情報表示   | -     |
+| `validate-project-scope.sh` | PreToolUse (Bash)         | プロジェクト外への書き込みをブロック | -     |
+| `context-guard.sh`          | PreToolUse (Read\|Glob)   | node_modules 等の読み込みをブロック  | -     |
+| `post-edit-lint.sh`         | PostToolUse (Edit\|Write) | 編集後の自動 lint/format             | Yes   |
+| `notify-completion.sh`      | Stop                      | セッション完了通知                   | Yes   |
+| `notify-input-required.sh`  | Notification              | 入力必要時通知                       | Yes   |
 
 ### ルール（rules/）
 
 パス指定による条件付きルール。該当ファイル編集時のみ適用。
 
-| ルール | 対象パス | 内容 |
-|--------|---------|------|
-| `typescript.md` | `**/*.ts`, `**/*.tsx` | TypeScript 規約 |
-| `python.md` | `**/*.py` | Python 規約 |
-| `react.md` | `**/*.tsx`, `**/components/**` | React 規約 |
-| `testing.md` | `**/*.test.*`, `**/tests/**` | テスト規約 |
-| `security.md` | 全ファイル | セキュリティチェックリスト |
+| ルール          | 対象パス                                                                  | 内容                                 |
+| --------------- | ------------------------------------------------------------------------- | ------------------------------------ |
+| `typescript.md` | `**/*.ts`, `**/*.tsx`                                                     | TypeScript 規約                      |
+| `python.md`     | `**/*.py`                                                                 | Python 規約                          |
+| `react.md`      | `**/*.{tsx,jsx}`, `**/components/**`, `**/hooks/**`                       | React 規約                           |
+| `testing.md`    | `**/*.{test,spec}.*`, `**/tests/**`, `**/__tests__/**`, `**/*_test.py` 等 | テスト規約                           |
+| `security.md`   | 全ファイル（`**/*`）                                                      | セキュリティチェックリスト           |
+| `git.md`        | 全ファイル（`**/*`）                                                      | ブランチ保護、マージ戦略、Scope 規約 |
 
 ### スキル（skills/）
 
@@ -128,63 +142,72 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 
 #### 手動実行専用（/コマンド）
 
-| スキル | 説明 |
-|--------|------|
-| `/quick-commit` | 小さな変更を確認なしでコミット |
-| `/smart-commit` | 変更を論理的に分割して複数コミット |
-| `/switch-branch` | Conventional Branch形式でブランチ作成 |
-| `/gh-pr` | Push済みの変更からPR作成（会話コンテキスト活用） |
-| `/gh-issue` | GitHub Issue を分析して修正 |
-| `/security-review` | OWASP Top 10 に基づくセキュリティレビュー |
-| `/wf-implement` | 実装ワークフロー（計画→実装→テスト→レビュー） |
-| `/wf-fix-bug` | バグ修正ワークフロー（調査→修正→検証） |
-| `/wf-refactoring` | リファクタリングワークフロー |
-| `/wf-research` | 調査ワークフロー（コードベース+Web） |
-| `/wf-tdd` | TDDワークフロー（RED→GREEN→REFACTOR） |
-| `/handoff` | セッション進捗まとめ・引継ぎ |
+| スキル                  | 説明                                             |
+| ----------------------- | ------------------------------------------------ |
+| `/quick-commit`         | 小さな変更を確認なしでコミット                   |
+| `/smart-commit`         | 変更を論理的に分割して複数コミット               |
+| `/switch-branch`        | Conventional Branch形式でブランチ作成            |
+| `/gh-pr-create`         | Push済みの変更からPR作成（会話コンテキスト活用） |
+| `/gh-issue-fix`         | GitHub Issue を分析して修正                      |
+| `/security-review`      | OWASP Top 10 に基づくセキュリティレビュー        |
+| `/workflow-implement`   | 実装ワークフロー（計画→実装→テスト→レビュー）    |
+| `/workflow-fix-bug`     | バグ修正ワークフロー（調査→修正→検証）           |
+| `/workflow-refactoring` | リファクタリングワークフロー                     |
+| `/workflow-research`    | 調査ワークフロー（コードベース+Web）             |
+| `/workflow-tdd`         | TDDワークフロー（RED→GREEN→REFACTOR）            |
+| `/handoff`              | セッション進捗まとめ・引継ぎ                     |
 
 #### 自動発動（Claude が判断）
 
-| スキル | 発動トリガー例 |
-|--------|---------------|
-| `code-review` | 「レビュー」「コードチェック」 |
-| `refactoring` | 「リファクタ」「整理」 |
-| `test-generation` | 「テスト書いて」「テスト追加」 |
-| `planning` | 「計画」「設計」 |
-| `documentation` | 「ドキュメント」「README」 |
-| `web-research` | 「調べて」「research」「比較」 |
-| `github-pr-review` | 「PRレビュー」「PR見て」 |
-| `ask-claude-code` | 「Claude Code の使い方」「API の仕様」 |
+| スキル              | 発動トリガー例                          |
+| ------------------- | --------------------------------------- |
+| `code-review`       | 「レビュー」「コードチェック」          |
+| `refactoring`       | 「リファクタ」「整理」                  |
+| `test-generation`   | 「テスト書いて」「テスト追加」          |
+| `planning`          | 「計画」「設計」                        |
+| `documentation`     | 「ドキュメント」「README」              |
+| `web-research`      | 「調べて」「research」「比較」          |
+| `gh-pr-review`      | 「PRレビュー」「PR見て」                |
+| `ask-claude-code`   | 「Claude Code の使い方」「API の仕様」  |
+| `api-test`          | 「API」「curl」「エンドポイント」       |
+| `mermaid-generator` | 「Mermaid」「ダイアグラム」「クラス図」 |
+| `skill-creator`     | 「スキル作成」「create skill」          |
 
 #### 内部スキル（他スキルから呼び出し）
 
-| スキル | 用途 |
-|--------|------|
+| スキル           | 用途                                      |
+| ---------------- | ----------------------------------------- |
 | `commit-message` | Conventional Commits 形式のメッセージ生成 |
-| `mcp-guidance` | MCP サーバーの選択ガイダンス |
+| `mcp-guidance`   | MCP サーバーの選択ガイダンス              |
 
 ### サブエージェント（agents/）
 
-並列実行・権限制限が必要な場合に使用。
+並列実行・権限制限が必要な場合に使用。全エージェントが `memory: user` でセッション跨ぎの学習を行う。
 
-| エージェント | 用途 |
-|--------------|------|
-| `code-researcher` | 読み取り専用の調査・分析 |
-| `implementer` | 計画に基づく実装 |
-| `error-investigator` | 試行錯誤を伴うエラー調査 |
-| `verify-app` | テスト実行・動作検証 |
-| `web-researcher` | Web情報収集・技術調査 |
-| `security-reviewer` | セキュリティ脆弱性の検出 |
-| `planner` | 複雑な機能の実装計画 |
-| `architect` | システム設計・技術選定 |
+> **Note**: `memory: user` は Write/Edit を自動追加するため、ツールレベルでは全エージェントが書き込み可能。
+> 8 エージェントは `tools:` allowlist でプロジェクトファイル編集用ツールを意図的に除外し、
+> エージェント指示で「読み取り専用」として運用している。
+
+| エージェント         | 用途                         | 実装権限 |
+| -------------------- | ---------------------------- | -------- |
+| `code-researcher`    | 読み取り専用の調査・分析     | 調査のみ |
+| `implementer`        | 計画に基づく実装             | 実装可   |
+| `error-investigator` | 試行錯誤を伴うエラー調査     | 調査のみ |
+| `app-verifier`       | テスト実行・動作検証         | 検証のみ |
+| `web-researcher`     | Web情報収集・技術調査        | 調査のみ |
+| `security-reviewer`  | セキュリティ脆弱性の検出     | 調査のみ |
+| `planner`            | 複雑な機能の実装計画         | 計画のみ |
+| `architect`          | システム設計・技術選定       | 設計のみ |
+| `log-analyzer`       | ログファイル分析・エラー追跡 | 分析のみ |
+| `git-analyst`        | Git 履歴分析・ブランチ戦略   | 分析のみ |
 
 ### テンプレート
 
-| テンプレート | 用途 | MCP サーバー |
-|--------------|------|-------------|
-| `minimal` | 最小限の設定 | なし |
+| テンプレート     | 用途               | MCP サーバー             |
+| ---------------- | ------------------ | ------------------------ |
+| `minimal`        | 最小限の設定       | なし                     |
 | `typescript-web` | TypeScript + React | Playwright（E2E テスト） |
-| `python-data` | Python データ分析 | Jupyter |
+| `python-data`    | Python データ分析  | Jupyter                  |
 
 テンプレートの `.mcp.json` はプロジェクトスコープで自動読み込みされます。
 
@@ -192,11 +215,12 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 
 プロジェクト固有の `.claude/skills/` に配置するスキルテンプレート。
 
-| スキル | 用途 |
-|--------|------|
+| スキル         | 用途                             |
+| -------------- | -------------------------------- |
 | `agent-memory` | セッション跨ぎの記憶・文脈永続化 |
 
 使用方法:
+
 ```bash
 cp -r templates/project-skills/agent-memory .claude/skills/
 mkdir -p .claude/skills/agent-memory/memories
@@ -204,24 +228,32 @@ mkdir -p .claude/skills/agent-memory/memories
 
 プロジェクト固有の `CLAUDE.md` を作成する際は **[templates/GUIDE.md](templates/GUIDE.md)** を参照してください。
 
-## 推奨ツールチェーン（2025年）
+## 推奨ツールチェーン（2026年）
 
 この設定は以下のツールチェーンを前提としています:
 
-| カテゴリ | ツール |
-|---------|--------|
-| JS/TS フォーマッター | **Biome**（Primary）、Prettier（MD/YAML/SCSSのみ） |
-| Python パッケージ | **uv** |
-| Python リンター/フォーマッター | **ruff** |
-| ランタイムバージョン管理 | **mise** |
-| シェル | **Fish** |
+| カテゴリ                       | ツール                                             |
+| ------------------------------ | -------------------------------------------------- |
+| JS/TS フォーマッター           | **Biome**（Primary）、Prettier（MD/YAML/SCSSのみ） |
+| Python パッケージ              | **uv**                                             |
+| Python リンター/フォーマッター | **ruff**                                           |
+| ランタイムバージョン管理       | **mise**                                           |
+| シェル                         | **Fish**                                           |
 
 ## 設計哲学
 
 > **ユーザーレベルは「賢いデフォルト」、プロジェクトレベルは「具体的なオーバーライド」**
 
-- **ユーザーレベル**: 汎用的なワークフロー、言語共通のベストプラクティス
-- **プロジェクトレベル**: プロジェクト固有のビルドコマンド、アーキテクチャ、ドメイン知識
+- **ユーザーレベル（`~/.claude/`）**: 汎用的なワークフロー、言語共通のベストプラクティス、全プロジェクト共通のセキュリティ・品質ポリシー
+- **プロジェクトレベル（`./.claude/`）**: プロジェクト固有のビルドコマンド、アーキテクチャ、ドメイン知識。`@import` で選択的にルール参照可能
+
+### 3 つの設計原則
+
+| 原則                       | 内容                                                                                                     |
+| -------------------------- | -------------------------------------------------------------------------------------------------------- |
+| **Progressive Disclosure** | CLAUDE.md（27行）→ rules/ → skills/（→ skills/\*/references/）の 3〜4 層で、必要な情報を必要な時にロード |
+| **最小権限と関心の分離**   | settings.json permissions / skills の allowed-tools / agents の tools の 3 スコープで権限を制御          |
+| **重層防御**               | deny（絶対禁止）→ ask（都度確認）→ hooks（実行時検証）→ rules（LLM レベルの知識）の 4 層で安全を確保     |
 
 ## カスタマイズ
 
