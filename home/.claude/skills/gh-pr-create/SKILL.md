@@ -27,169 +27,112 @@ Push済みのブランチからPull Requestを作成する。
   - `--base <branch>`: マージ先ブランチ（省略時: デフォルトブランチ）
   - `--draft`: ドラフトPRとして作成
 
-## PR Context
+## Context（自動収集）
+
 - Current branch: !`git branch --show-current`
 - Default branch: !`gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'`
-
-## Pre-Check Results（自動実行）
-- Working tree status: !`git status --porcelain`
-- Current branch: !`git branch --show-current`
-
-**Note**: リモートブランチの存在確認・未pushコミットの確認は Step 0 で順次実行する。
-
-**Note**: Commits と diff はワークフロー実行時にベースブランチを取得してから実行する。
+- Working tree: !`git status --porcelain`
+- Upstream status: !`git log --oneline @{upstream}..HEAD 2>&1`
+- Commits: !`git log $(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name')..HEAD --oneline 2>/dev/null`
+- Diff stat: !`git diff $(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name')...HEAD --stat 2>/dev/null`
 
 ## Workflow
 
-```
-┌─────────────────────────────────────────────────────────┐
-│  0. Pre-Check                                           │
-│     ├→ リモートブランチの存在確認                       │
-│     ├→ push状態の確認（未pushなら中断）                 │
-│     └→ 未コミットの変更がないか確認                     │
-├─────────────────────────────────────────────────────────┤
-│  1. Gather Information                                  │
-│     ├→ ブランチ情報取得（現在 + マージ先）              │
-│     ├→ git diff / git log で差分・履歴を取得           │
-│     └→ 会話コンテキストから情報を抽出                   │
-├─────────────────────────────────────────────────────────┤
-│  2. Generate PR Description                             │
-│     └→ 情報を統合してPR説明文を生成                     │
-├─────────────────────────────────────────────────────────┤
-│  3. Create PR                                           │
-│     └→ gh pr create でPR作成・URL表示                   │
-└─────────────────────────────────────────────────────────┘
-```
+### 1. Validate
 
-## Step Details
-
-### 0. Pre-Check
-
-**重要**: このスキルはpush済みの状態で実行することを前提とする。**pushは絶対に実行しない**。
-
-上記「Pre-Check Results」セクションの事前実行結果を確認し、さらに以下のコマンドを**順次実行**してチェックする：
-
-```bash
-# 1. Pre-Check Results の Working tree status を確認
-
-# 2. Pre-Check Results の Current branch でブランチ名を取得
-
-# 3. リモートブランチの存在確認（ブランチ名を直接指定）
-git ls-remote --exit-code origin <branch-name>
-
-# 4. 未pushコミットの確認
-git fetch origin <branch-name> --quiet
-git log origin/<branch-name>..HEAD --oneline
-```
+Context の結果を確認し、NGなら理由を伝えて **中断** する。
 
 | チェック項目 | 期待値 | NGの場合 |
 |-------------|--------|----------|
-| Working tree status | （空） | 「先にコミットしてください」と伝えて中断 |
-| Remote branch exists | 出力あり | 「先に `git push -u origin <branch>` を実行してください」と伝えて中断 |
-| Unpushed commits | （空） | 「先に `git push` を実行してください」と伝えて中断 |
+| Working tree | 空（変更なし） | 「先にコミットしてください」 |
+| Upstream status | コミット一覧 or 空 | エラー出力なら「先に `git push -u origin <branch>` してください」 |
+| Unpushed commits | 空（全てpush済み） | 「先に `git push` してください」 |
+| Current branch | main/master 以外 | 「featureブランチで実行してください」 |
 
-**チェックに失敗した場合**: ユーザーに状態を報告し、PR作成を中断する。**pushを代わりに実行してはいけない**。
+**禁止**: `git push` を代わりに実行してはいけない。
 
-### 1. Gather Information
+### 2. Gather & Generate
 
-#### Git情報の取得
+#### ベースブランチ
 
-```bash
-# 現在のブランチ
-git branch --show-current
+- `--base` 指定あり → その値を使用（Context の Default branch と異なる場合は diff/log を再取得）
+- 指定なし → Context の Default branch を使用
 
-# マージ先ブランチ（デフォルトブランチ）
-git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'
-# または
-gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'
+#### PR テンプレートの検出
 
-# コミット履歴
-git log ${BASE_BRANCH}..HEAD --oneline
+リポジトリに PR テンプレートがあれば **そのフォーマットに従う**（優先順）:
 
-# 差分の統計
-git diff ${BASE_BRANCH}...HEAD --stat
+1. `.github/PULL_REQUEST_TEMPLATE.md`
+2. `.github/pull_request_template.md`
+3. `docs/pull_request_template.md`
 
-# 差分の詳細（必要に応じて）
-git diff ${BASE_BRANCH}...HEAD
+テンプレートが見つからない場合は `template.md` を参照する。
+
+#### 変更種別の自動判定
+
+コミットメッセージの Conventional Commits 接頭辞から変更種別を判定し、テンプレート選択に活用する:
+
+| 接頭辞パターン | テンプレート | 追加セクション |
+|---------------|-------------|---------------|
+| `feat:` が主 | 機能追加用 | Motivation, How to Test |
+| `fix:` が主 | バグ修正用 | Root Cause, Solution |
+| `refactor:` or 大量ファイル変更 | 大規模変更用 | Scope, Migration Guide |
+| その他 | 標準 | — |
+
+#### PR説明文の生成
+
+以下のソースを統合して説明文を生成する:
+
+- **git 情報**: Context の diff stat・commits、必要に応じて `git diff` で詳細取得
+- **会話コンテキスト**: 実装の背景・目的、動作確認結果、設計判断、既知の制限事項
+
+該当情報がないセクションは省略する。
+
+### 3. Preview & Confirm
+
+生成した内容を **ユーザーに提示** し、承認を得てから次へ進む:
+
+```
+## PR プレビュー
+
+**Title**: PRタイトル
+**Base**: main <- feature-branch
+**Draft**: Yes / No
+
+---
+
+(PR説明文の全文)
+
+---
+
+この内容でPRを作成しますか？
 ```
 
-#### 会話コンテキストから抽出する情報
+修正要望があれば反映してから再提示する。
 
-以下の項目を会話履歴から抽出する（該当する情報がある場合のみ）:
+### 4. Create PR
 
-- **実装の背景・目的**: なぜこの変更をしたか
-- **動作確認の結果**: テストしたこと、確認したこと
-- **設計上の判断**: 代替案があれば、なぜこの方法を選んだか
-- **既知の制限事項・注意点**: 現時点での制限や将来の課題
+ユーザー承認後、`gh pr create` を実行する。
 
-### 2. Generate PR Description
-
-`template.md` を参考に、以下の構造でPR説明文を生成:
-
-```markdown
-## Summary
-<!-- 変更の概要（What）と理由（Why） -->
-<!-- 会話コンテキストの「背景・目的」+ git log から生成 -->
-
-## Changes
-<!-- 主な変更点をリスト形式で -->
-<!-- git diff --stat から生成 -->
-
-## Background
-<!-- 会話コンテキストから抽出した背景情報 -->
-<!-- 設計上の判断、代替案の検討などがあれば記載 -->
-
-## How to Test
-<!-- 動作確認方法 -->
-<!-- 会話コンテキストの「動作確認の結果」から生成 -->
-
-## Notes
-<!-- 既知の制限事項、注意点など -->
-<!-- 該当がなければ省略 -->
-
-## Related Issues
-<!-- 会話で言及されたIssue番号があれば -->
-```
-
-### 3. Create PR
-
-```bash
-# 通常PR
-gh pr create --base ${BASE_BRANCH} --title "${TITLE}" --body "$(cat <<'EOF'
-${PR_BODY}
-EOF
-)"
-
-# ドラフトPR（--draft 指定時）
-gh pr create --draft --base ${BASE_BRANCH} --title "${TITLE}" --body "$(cat <<'EOF'
-${PR_BODY}
-EOF
-)"
-```
-
-## Output Format
+- PR説明文は HEREDOC 形式で渡してフォーマットを維持
+- 作成完了後、以下の形式で結果を表示:
 
 ```
 ## PR作成完了
 
 **URL**: https://github.com/owner/repo/pull/123
 **Title**: PRタイトル
-**Base**: main ← feature-branch
+**Base**: main <- feature-branch
 **Status**: Open / Draft
 ```
 
 ## Guidelines
 
 - タイトル: 50文字以内、変更内容を端的に
-- 本文: なぜこの変更が必要かを説明
-- レビュアーが理解しやすい構成に
-
-**テンプレート集**: `template.md` を参照（標準、機能追加、バグ修正、大規模変更用）
+- 本文: **なぜ**この変更が必要かを重視
+- テンプレート集: `template.md` 参照（リポジトリにテンプレートがない場合のフォールバック）
 
 ## Notes
 
 - **重要**: このスキルはpush済みの状態で実行することを前提とする
-- **禁止事項**: `git push` を実行してはいけない（ユーザーが自分でpushする）
-- 未push/未コミットの変更がある場合は警告を表示して**中断**する
-- PR説明文は HEREDOC 形式で渡してフォーマットを維持
-- 会話コンテキストに該当情報がない場合、そのセクションは省略可
+- **禁止**: `git push` を実行してはいけない（ユーザーが自分でpushする）
