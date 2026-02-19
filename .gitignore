@@ -13,6 +13,7 @@ home/.claude/.credentials.json
 
 .claude/settings.local.json
 .claude/CLAUDE.local.md
+.claude/plans
 .claude/tmp
 
 # OS 固有
