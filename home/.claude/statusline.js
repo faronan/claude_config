@@ -61,10 +61,18 @@ process.stdin.on("end", () => {
     const remainingDisplay =
       remainingPct != null ? `(残${remainingPct}%)` : "";
 
+    // 追加ディレクトリ表示（v2.1.47+: workspace.added_dirs）
+    const addedDirs = data.workspace?.added_dirs || [];
+    const addedDirsDisplay =
+      addedDirs.length > 0
+        ? `+${addedDirs.map((d) => path.basename(d)).join(",")}`
+        : null;
+
     // 出力を組み立て
     const parts = [
       `\x1b[36m[${model}]\x1b[0m`,
       dirName,
+      addedDirsDisplay,
       gitInfo,
       `${tokenDisplay}`,
       `${ctxColor}${percentage}%${remainingDisplay}${ctxWarning}\x1b[0m`,
