@@ -118,3 +118,9 @@ allowed-tools:
 | 新ライブラリ導入判断 | Context7（調査）→ Sequential（比較分析） |
 | バグ修正 PR 作成 | Sequential（原因分析）→ GitHub（PR作成） |
 | フレームワーク移行 | Context7（新旧ドキュメント）→ Sequential（計画策定） |
+
+## Error Handling
+
+- **MCP サーバーが未設定**: 設定方法を案内（settings.json の mcpServers セクション）
+- **接続エラー**: MCP サーバーの起動状態とパスを確認
+- **該当する MCP がない**: Claude Code ネイティブツールでの代替方法を提案
