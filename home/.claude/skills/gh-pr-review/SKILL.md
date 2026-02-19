@@ -11,6 +11,7 @@ allowed-tools:
   - Bash(gh:*)
   - Read
   - Grep
+  - AskUserQuestion
 ---
 
 # GitHub PR Review Skill
@@ -86,3 +87,9 @@ gh api repos/{owner}/{repo}/pulls/<PR番号>/comments \
 - インラインコメントは**必ず `gh api` コマンドで追加**（推測で行番号を指定しない）
 - コメント追加前に `gh pr diff` で行番号を確認
 - 破壊的な操作（PR close, merge）は実行前にAskUserQuestionで確認を取得
+
+## Error Handling
+
+- **PR番号が無効**: `gh pr view` のエラーメッセージを表示し、正しい番号を確認
+- **行番号の特定に失敗**: `gh pr diff` を再取得し、ハンク情報から再計算
+- **コメント投稿に失敗**: API エラーメッセージを確認し、権限・パラメータを見直す

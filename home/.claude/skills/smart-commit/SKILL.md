@@ -1,6 +1,8 @@
 ---
 name: smart-commit
-description: Split changes into logical commits with Conventional Commits format.
+description: |
+  Split changes into logical commits with Conventional Commits format.
+  Trigger words: "分割コミット", "スマートコミット", "コミット分けて", "smart commit", "論理コミット".
 disable-model-invocation: true
 allowed-tools:
   - Bash(git status:*)
@@ -86,3 +88,10 @@ AskUserQuestion ツールを使用してインラインで確認（対話を終�
 - 単一の変更しかない場合は通常のコミットを推奨
 - ステージ済みの変更がある場合は警告を表示
 - 途中でキャンセル可能（コミット済みのものは残る）
+
+## Error Handling
+
+- **変更がない**: `git status` の結果を表示し、変更がないことを通知
+- **単一の変更のみ**: `/quick-commit` の使用を案内
+- **ステージ済みの変更あり**: 警告を表示し、既存のステージングをどうするか確認
+- **コミット途中で失敗**: 完了済みコミットの一覧を表示し、残りの対応を案内

@@ -1,7 +1,9 @@
 ---
 name: gh-pr-create
 argument-hint: "[options: --base, --draft]"
-description: Push済みの変更からPRを作成する
+description: |
+  Push済みの変更からPRを作成する。
+  Trigger words: "PR作成", "PRを作って", "create PR", "プルリク作成", "pull request".
 disable-model-invocation: true
 allowed-tools:
   - Bash(git log:*)
@@ -13,6 +15,7 @@ allowed-tools:
   - Bash(git status:*)
   - Bash(gh repo view:*)
   - Read
+  - AskUserQuestion
 # Note: gh pr create は allowed-tools に含めない（実行前に確認を求める）
 ---
 
@@ -136,3 +139,10 @@ Context の結果を確認し、NGなら理由を伝えて **中断** する。
 
 - **重要**: このスキルはpush済みの状態で実行することを前提とする
 - **禁止**: `git push` を実行してはいけない（ユーザーが自分でpushする）
+
+## Error Handling
+
+- **未push のコミットがある**: `git push` を案内し、スキルを中断
+- **Working tree が dirty**: 先にコミットするよう案内して中断
+- **main/master ブランチで実行**: feature ブランチへの切り替えを案内して中断
+- **gh pr create 失敗**: エラーメッセージを表示し、原因（権限・ネットワーク等）を案内

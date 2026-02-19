@@ -1,6 +1,8 @@
 ---
 name: switch-branch
-description: Create branch with Conventional Branch naming from current changes.
+description: |
+  Create branch with Conventional Branch naming from current changes.
+  Trigger words: "ブランチ作成", "ブランチ切り替え", "switch branch", "新しいブランチ".
 disable-model-invocation: true
 allowed-tools:
   - Bash(git status:*)
@@ -63,3 +65,9 @@ allowed-tools:
 - 既存のブランチ名と重複しないよう確認する
 - mainやdevelopにいる場合のみ実行を推奨
 - 変更がない場合は、作業内容の説明を求める
+
+## Error Handling
+
+- **ブランチ名が既存と重複**: 別名を提案するか、ユーザーに確認
+- **変更がない状態**: 作業内容の説明を求め、手動でブランチ名を決定
+- **ブランチ作成失敗**: エラーメッセージを表示し、原因（不正な文字等）を案内

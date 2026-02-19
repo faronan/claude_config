@@ -1,7 +1,9 @@
 ---
 name: gh-issue-fix
 argument-hint: "[issue number]"
-description: Analyze and fix GitHub issue
+description: |
+  Analyze and fix GitHub issue.
+  Trigger words: "Issue修正", "Issueを直して", "fix issue", "Issue対応", "#".
 disable-model-invocation: true
 allowed-tools:
   - Bash(gh issue:*)
@@ -13,6 +15,7 @@ allowed-tools:
   - Bash(npm run:*)
   - Bash(pnpm:*)
   - AskUserQuestion
+  - Skill
 ---
 
 # GitHub Issue Fix
@@ -56,3 +59,10 @@ GitHub Issue を分析して修正する。
 - Issue番号は `$ARGUMENTS` から取得
 - Issue が見つからない場合はエラーを報告
 - 複雑な Issue は workflow-implement または workflow-fix-bug へ誘導
+
+## Error Handling
+
+- **Issue が見つからない**: Issue 番号を再確認し、リポジトリが正しいか確認
+- **Issue がクローズ済み**: 状態をユーザーに伝え、それでも対応するか確認
+- **修正後テスト失敗**: 変更を巻き戻し、原因を分析してから再修正
+- **複雑すぎる Issue**: workflow-implement または workflow-fix-bug への誘導を案内

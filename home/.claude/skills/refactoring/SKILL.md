@@ -14,6 +14,7 @@ allowed-tools:
   - Edit
   - Bash(npm run:*)
   - Bash(pnpm:*)
+  - AskUserQuestion
 ---
 
 # Refactoring Skill
@@ -53,3 +54,9 @@ allowed-tools:
 ```
 
 **詳細なカタログと例**: `catalog.md` を参照
+
+## Error Handling
+
+- **テスト失敗**: リファクタリングを巻き戻し、原因を分析してからやり直す
+- **影響範囲が不明**: Grep/Glob で参照箇所を網羅的に確認してから変更
+- **対象ファイルが見つからない**: ユーザーに正しいパスを確認
