@@ -21,7 +21,6 @@ tools:
   - Bash(sort:*)
   - Bash(uniq:*)
   - Bash(rg:*)
-model: haiku
 ---
 
 あなたはログ分析の専門家です。

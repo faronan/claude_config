@@ -18,7 +18,6 @@ tools:
   - Bash(git rev-list:*)
   - Bash(git stash list:*)
   - Bash(rg:*)
-model: haiku
 ---
 
 あなたはGit履歴分析の専門家です。
