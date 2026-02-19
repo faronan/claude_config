@@ -15,6 +15,18 @@ allowed-tools:
 
 # Commit Message Skill
 
+## Commit Skill Selection Flow
+
+```
+コミットしたい
+    ├── 小さな変更（3ファイル以下 & 50行以下）
+    │   └── /quick-commit → 確認なしで即コミット
+    ├── 複数の論理的変更が混在
+    │   └── /smart-commit → グループ分割して複数コミット
+    └── 通常の変更（単一の論理変更）
+        └── commit-message（本スキル）を直接参照
+```
+
 ## Workflow
 1. `git diff --staged` で変更内容を確認（未ステージなら `git status` を案内）
 2. 変更内容を分析し、適切な type と scope を決定
@@ -46,3 +58,9 @@ allowed-tools:
 | chore | 雑務 |
 
 **詳細な Type 一覧と例**: `type-reference.md` を参照
+
+## Error Handling
+
+- **ステージされた変更がない**: `git status` を表示し、ステージング方法を案内
+- **変更が大きすぎる**: `/smart-commit` での分割コミットを提案
+- **git リポジトリ外**: エラーを報告し、リポジトリ内での実行を案内
