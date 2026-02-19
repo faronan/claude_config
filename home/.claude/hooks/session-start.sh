@@ -21,4 +21,17 @@ if [ ${#missing[@]} -gt 0 ]; then
   [ ${#mise_missing[@]} -gt 0 ] && install_cmds+=("mise use -g ruff@latest")
   echo "[Session] Install: $(IFS=' && '; echo "${install_cmds[*]}")"
 fi
+
+# Git 情報の表示
+if git rev-parse --is-inside-work-tree &> /dev/null; then
+  branch=$(git branch --show-current 2>/dev/null || echo "detached")
+  dirty=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
+  echo "[Session] Git: $branch (uncommitted: $dirty)"
+fi
+
+# ランタイムバージョンの表示
+node_ver=$(node --version 2>/dev/null || echo "not found")
+python_ver=$(python3 --version 2>/dev/null | awk '{print $2}' || echo "not found")
+echo "[Session] Node: $node_ver / Python: $python_ver"
+
 exit 0
