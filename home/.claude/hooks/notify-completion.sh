@@ -25,23 +25,20 @@ title="${project_name:-Claude Code}"
 subtitle="タスク完了"
 message="完了しました"
 
+# last_assistant_message フィールドから直接取得（v2.1.47+）
+assistant_output=$(echo "$input" | jq -r '.last_assistant_message // ""' | tr '\n' ' ') || true
+assistant_output="${assistant_output:0:80}"
+
+# ユーザー依頼はトランスクリプトから取得（最初の1件のみ）
 if [[ -n "$transcript_path" && -f "$transcript_path" ]]; then
-  # 最初のユーザー依頼を取得
   user_request=$(grep -m1 '"type":"user"' "$transcript_path" 2>/dev/null | \
     jq -r '.message.content // "" | if type == "array" then .[0].text // "" else . end' 2>/dev/null | \
     tr '\n' ' ') || true
   user_request="${user_request:0:50}"
-
-  # 最後のアシスタント出力の冒頭を取得
-  # macOSでは tail -r を使用（tacの代替）
-  assistant_output=$(tail -r "$transcript_path" 2>/dev/null | grep -m1 '"type":"assistant"' | \
-    jq -r '.message.content // "" | if type == "array" then .[0].text // "" else . end' 2>/dev/null | \
-    tr '\n' ' ') || true
-  assistant_output="${assistant_output:0:80}"
-
   [[ -n "$user_request" ]] && subtitle="$user_request"
-  [[ -n "$assistant_output" ]] && message="$assistant_output"
 fi
+
+[[ -n "$assistant_output" ]] && message="$assistant_output"
 
 # AppleScript文字列のサニタイズ（" と \ をエスケープ）
 sanitize() {
