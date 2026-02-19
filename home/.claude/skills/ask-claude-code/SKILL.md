@@ -15,8 +15,8 @@ allowed-tools:
   - Grep
   - WebFetch
   - WebSearch
-  - Bash(gh pr view *)
-  - Bash(gh issue view *)
+  - Bash(gh pr view:*)
+  - Bash(gh issue view:*)
   - mcp__context7__*
 ---
 
@@ -27,6 +27,7 @@ allowed-tools:
 ## 対象トピック
 
 ### Claude Code (CLI)
+
 - 機能・設定（settings.json, CLAUDE.md）
 - hooks（PreToolUse, PostToolUse, Stop など）
 - スラッシュコマンド（/help, /clear, /compact など）
@@ -37,11 +38,13 @@ allowed-tools:
 - カスタムスキル（.claude/skills/）
 
 ### Claude Agent SDK
+
 - カスタムエージェントの構築
 - Tool 定義とハンドリング
 - ワークフロー設計
 
 ### Claude API (Anthropic API)
+
 - API の使い方（Messages API）
 - Tool use の実装
 - Anthropic SDK（Python/TypeScript）の使用法

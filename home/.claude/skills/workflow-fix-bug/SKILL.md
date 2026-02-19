@@ -40,7 +40,7 @@ allowed-tools:
 │  3. Regression Test (/test-generation)                  │
 │     └→ 回帰テストを追加                                 │
 ├─────────────────────────────────────────────────────────┤
-│  4. Verification (verify-app agent)                     │
+│  4. Verification (app-verifier agent)                    │
 │     └→ テストを実行、修正を確認                         │
 ├─────────────────────────────────────────────────────────┤
 │  5. Loop Decision                                       │
@@ -78,7 +78,7 @@ implementer agent を使用:
 
 ### 4. Verification Phase
 
-verify-app agent を使用:
+app-verifier agent を使用:
 - 新規テストの実行
 - 既存テストの回帰確認
 - 結果サマリーを報告
