@@ -25,8 +25,8 @@ case "$extension" in
   ts|tsx|js|jsx|json)
     # Biome check (グローバルインストール済み)
     if command -v biome &> /dev/null; then
-      result=$(biome check "$file_path" 2>&1) || {
-        echo "[Lint] Biome issues detected in $file_path:" >&2
+      result=$(biome check --write "$file_path" 2>&1) || {
+        echo "[Lint] Biome auto-fixed in $file_path:" >&2
         echo "$result" >&2
       }
     fi
@@ -42,13 +42,13 @@ case "$extension" in
   py)
     # Ruff check (グローバルインストール済み)
     if command -v ruff &> /dev/null; then
-      ruff_result=$(ruff check "$file_path" 2>&1) || {
-        echo "[Lint] Ruff issues detected in $file_path:" >&2
+      ruff_result=$(ruff check --fix "$file_path" 2>&1) || {
+        echo "[Lint] Ruff auto-fixed in $file_path:" >&2
         echo "$ruff_result" >&2
       }
 
-      format_result=$(ruff format --check "$file_path" 2>&1) || {
-        echo "[Format] Ruff format issues in $file_path:" >&2
+      format_result=$(ruff format "$file_path" 2>&1) || {
+        echo "[Format] Ruff auto-formatted $file_path:" >&2
         echo "$format_result" >&2
       }
     fi
@@ -61,8 +61,8 @@ case "$extension" in
 
   md|yaml|yml|scss|css)
     if command -v prettier &> /dev/null; then
-      result=$(prettier --check "$file_path" 2>&1) || {
-        echo "[Format] Prettier issues in $file_path:" >&2
+      result=$(prettier --write "$file_path" 2>&1) || {
+        echo "[Format] Prettier auto-formatted $file_path:" >&2
         echo "$result" >&2
       }
     fi
