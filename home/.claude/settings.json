@@ -183,5 +183,9 @@
 		"command": "~/.claude/statusline.js",
 		"padding": 0
 	},
-	"language": "japanese"
+	"language": "japanese",
+	"enabledPlugins": {
+		"typescript-lsp@claude-plugins-official": true,
+		"pyright-lsp@claude-plugins-official": true
+	}
 }
