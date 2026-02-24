@@ -35,26 +35,32 @@ Push済みのブランチからPull Requestを作成する。
 - Current branch: !`git branch --show-current`
 - Default branch: !`gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'`
 - Working tree: !`git status --porcelain`
-- Upstream status: !`git log --oneline @{upstream}..HEAD 2>&1`
-- Commits: !`git log $(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name')..HEAD --oneline 2>/dev/null`
-- Diff stat: !`git diff $(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name')...HEAD --stat 2>/dev/null`
 
 ## Workflow
 
-### 1. Validate
+### 1. Collect Remaining Context
+
+以下のコマンドを実行して追加情報を収集する:
+
+- `git ls-remote --heads origin <current_branch>` → リモートブランチの存在確認
+- `git log origin/<current_branch>..HEAD --oneline` → Unpushed commits（リモートブランチが存在する場合のみ）
+- `git log <default_branch>..HEAD --oneline` → Commits（Default branch の値を使用）
+- `git diff <default_branch>...HEAD --stat` → Diff stat（Default branch の値を使用）
+
+### 2. Validate
 
 Context の結果を確認し、NGなら理由を伝えて **中断** する。
 
-| チェック項目 | 期待値 | NGの場合 |
-|-------------|--------|----------|
-| Working tree | 空（変更なし） | 「先にコミットしてください」 |
-| Upstream status | コミット一覧 or 空 | エラー出力なら「先に `git push -u origin <branch>` してください」 |
-| Unpushed commits | 空（全てpush済み） | 「先に `git push` してください」 |
-| Current branch | main/master 以外 | 「featureブランチで実行してください」 |
+| チェック項目       | 期待値                     | NGの場合                                         |
+| ------------------ | -------------------------- | ------------------------------------------------ |
+| Working tree       | 空（変更なし）             | 「先にコミットしてください」                     |
+| Remote branch 存在 | `git ls-remote` で結果あり | 「先に `git push origin <branch>` してください」 |
+| Unpushed commits   | 空（全てpush済み）         | 「先に `git push` してください」                 |
+| Current branch     | main/master 以外           | 「featureブランチで実行してください」            |
 
 **禁止**: `git push` を代わりに実行してはいけない。
 
-### 2. Gather & Generate
+### 3. Gather & Generate
 
 #### ベースブランチ
 
@@ -75,12 +81,12 @@ Context の結果を確認し、NGなら理由を伝えて **中断** する。
 
 コミットメッセージの Conventional Commits 接頭辞から変更種別を判定し、テンプレート選択に活用する:
 
-| 接頭辞パターン | テンプレート | 追加セクション |
-|---------------|-------------|---------------|
-| `feat:` が主 | 機能追加用 | Motivation, How to Test |
-| `fix:` が主 | バグ修正用 | Root Cause, Solution |
-| `refactor:` or 大量ファイル変更 | 大規模変更用 | Scope, Migration Guide |
-| その他 | 標準 | — |
+| 接頭辞パターン                  | テンプレート | 追加セクション          |
+| ------------------------------- | ------------ | ----------------------- |
+| `feat:` が主                    | 機能追加用   | Motivation, How to Test |
+| `fix:` が主                     | バグ修正用   | Root Cause, Solution    |
+| `refactor:` or 大量ファイル変更 | 大規模変更用 | Scope, Migration Guide  |
+| その他                          | 標準         | —                       |
 
 #### PR説明文の生成
 
@@ -91,7 +97,7 @@ Context の結果を確認し、NGなら理由を伝えて **中断** する。
 
 該当情報がないセクションは省略する。
 
-### 3. Preview & Confirm
+### 4. Preview & Confirm
 
 生成した内容を **ユーザーに提示** し、承認を得てから次へ進む:
 
@@ -113,7 +119,7 @@ Context の結果を確認し、NGなら理由を伝えて **中断** する。
 
 修正要望があれば反映してから再提示する。
 
-### 4. Create PR
+### 5. Create PR
 
 ユーザー承認後、`gh pr create` を実行する。
 
