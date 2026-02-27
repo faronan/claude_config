@@ -5,26 +5,26 @@ paths:
 
 # Git Rules
 
-Skills（commit-message, switch-branch, gh-pr-create）が操作を支援する。
+Skills（commit-message, gh-pr-create）が操作を支援する。
 本ルールはそれらが扱わない制約・方針を定義する。
 
-## Breaking Change
+## ブランチ
 
-- Footer に `BREAKING CHANGE: 説明` を記載
-- Type に `!` を付与（例: `feat!: API変更`）
+- main への直接コミット禁止（feature branch → PR 必須）
+- 命名: `<type>/<説明>` （例: `feat/add-auth`, `fix/login-error`）
 
-## ブランチ保護
+## コミット
 
-- main への直接 push 禁止（feature branch → PR 必須）
-- main への force push 禁止
+- 1コミット = 1論理変更（atomic commits）
+- Breaking Change: Type に `!` 付与 + Footer に `BREAKING CHANGE: 説明`
 
 ## マージ戦略
 
-- feature → main: squash merge（コミット履歴を整理）
+- feature → main: squash merge
 - hotfix → main: 通常 merge
 
 ## Scope
 
-- モノレポ: パッケージ名をスコープに使用（例: `feat(api): ...`）
-- 単一パッケージ: ディレクトリ名をスコープに使用（例: `fix(auth): ...`）
-- スコープは省略可能（小さな変更の場合）
+- モノレポ: パッケージ名（例: `feat(api): ...`）
+- 単一パッケージ: ディレクトリ名（例: `fix(auth): ...`）
+- 省略可（小さな変更）
