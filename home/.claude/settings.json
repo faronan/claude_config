@@ -145,6 +145,15 @@
 				"hooks": [
 					{
 						"type": "command",
+						"command": "~/.claude/hooks/post-stop-lint.sh",
+						"timeout": 30
+					}
+				]
+			},
+			{
+				"hooks": [
+					{
+						"type": "command",
 						"command": "~/.claude/hooks/notify-completion.sh",
 						"timeout": 10,
 						"async": true

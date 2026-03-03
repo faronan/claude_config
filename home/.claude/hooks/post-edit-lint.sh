@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# PostToolUse フック: 編集後の自動lint/format チェック
+# PostToolUse フック: 編集後の自動フォーマット
+# lint auto-fix は Stop hook (post-stop-lint.sh) で実行し、
+# 中間編集での未使用 import 誤削除を防止する
 # Exit codes: 0=成功（警告のみ）
 
 set -euo pipefail
@@ -23,10 +25,10 @@ extension="${file_path##*.}"
 
 case "$extension" in
   ts|tsx|js|jsx|json)
-    # Biome check (グローバルインストール済み)
+    # Biome format のみ（lint auto-fix は Stop hook で実行）
     if command -v biome &> /dev/null; then
-      result=$(biome check --write "$file_path" 2>&1) || {
-        echo "[Lint] Biome auto-fixed in $file_path:" >&2
+      result=$(biome format --write "$file_path" 2>&1) || {
+        echo "[Format] Biome auto-formatted $file_path:" >&2
         echo "$result" >&2
       }
     fi
@@ -40,13 +42,8 @@ case "$extension" in
     ;;
 
   py)
-    # Ruff check (グローバルインストール済み)
+    # Ruff format のみ（lint auto-fix は Stop hook で実行）
     if command -v ruff &> /dev/null; then
-      ruff_result=$(ruff check --fix "$file_path" 2>&1) || {
-        echo "[Lint] Ruff auto-fixed in $file_path:" >&2
-        echo "$ruff_result" >&2
-      }
-
       format_result=$(ruff format "$file_path" 2>&1) || {
         echo "[Format] Ruff auto-formatted $file_path:" >&2
         echo "$format_result" >&2
