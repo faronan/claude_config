@@ -8,7 +8,6 @@ allowed-tools:
   - Bash(git status:*)
   - Bash(git diff:*)
   - Bash(git add:*)
-  - Bash(git commit:*)
   - Bash(git log:*)
   - AskUserQuestion
 ---
@@ -18,6 +17,7 @@ allowed-tools:
 git diffの変更を論理的なグループに分割し、適切な粒度で複数の独立したコミットを作成する。
 
 ## Current State
+
 - Status: !`git status --porcelain`
 - Diff stat: !`git diff --stat`
 
