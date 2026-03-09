@@ -5,6 +5,7 @@ description: |
   Use proactively after code changes to check for security issues.
   Use for: security audits, vulnerability assessment, OWASP compliance.
 memory: user
+maxTurns: 10
 permissionMode: dontAsk
 tools:
   - Read

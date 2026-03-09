@@ -4,8 +4,8 @@ description: |
   Log analysis specialist for Docker, application, and build logs.
   Use proactively when analyzing large log outputs to prevent context pollution.
   Use for: Docker logs, application logs, build logs, CI/CD output analysis.
-  Independent context prevents polluting parent context.
 memory: user
+maxTurns: 10
 permissionMode: dontAsk
 tools:
   - Read

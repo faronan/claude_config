@@ -4,6 +4,7 @@ description: |
   Planning specialist for complex feature implementation.
   Use for: breaking down tasks, creating implementation plans, analyzing requirements.
 memory: user
+maxTurns: 15
 permissionMode: dontAsk
 tools:
   - Read

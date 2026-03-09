@@ -5,9 +5,12 @@ description: |
   Use after planning phase is complete.
   Use for: code implementation, test creation, refactoring execution.
 memory: user
+maxTurns: 20
 permissionMode: acceptEdits
 tools:
   - Read
+  - Glob
+  - Grep
   - Write
   - Edit
   - Bash(npm run:*)

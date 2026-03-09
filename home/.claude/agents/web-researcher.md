@@ -4,6 +4,7 @@ description: |
   Web research specialist for technical investigation.
   Use for: library comparison, API documentation lookup, best practices research, technical surveys.
 memory: user
+maxTurns: 15
 permissionMode: dontAsk
 tools:
   - WebFetch

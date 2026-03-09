@@ -4,6 +4,7 @@ description: |
   Research and analysis specialist with read-only access.
   Use for: codebase exploration, dependency analysis, impact assessment.
 memory: user
+maxTurns: 10
 permissionMode: dontAsk
 tools:
   - Read

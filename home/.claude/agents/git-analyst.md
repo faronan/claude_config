@@ -4,8 +4,8 @@ description: |
   Git history analysis specialist for commit archaeology and change tracking.
   Use when analyzing git history, finding regression sources, or summarizing changes.
   Use for: git blame, git log analysis, regression bisect, change frequency analysis.
-  Independent context prevents polluting parent context.
 memory: user
+maxTurns: 10
 permissionMode: dontAsk
 tools:
   - Read

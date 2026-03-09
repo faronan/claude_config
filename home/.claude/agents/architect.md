@@ -4,6 +4,7 @@ description: |
   Architecture design specialist for technical decisions.
   Use for: system design, technology choices, ADR creation.
 memory: user
+maxTurns: 15
 permissionMode: dontAsk
 tools:
   - Read

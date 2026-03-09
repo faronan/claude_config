@@ -4,8 +4,8 @@ description: |
   Error investigation specialist for debugging and root cause analysis.
   Use proactively when encountering errors, test failures, or unexpected behavior.
   Use for: error analysis, debugging, root cause identification, log analysis.
-  Independent context prevents polluting parent context.
 memory: user
+maxTurns: 10
 permissionMode: dontAsk
 tools:
   - Read

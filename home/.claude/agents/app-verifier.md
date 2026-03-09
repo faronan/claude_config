@@ -5,6 +5,7 @@ description: |
   Use proactively after implementation to ensure quality through test execution.
   Use for: test suite execution, E2E testing, regression testing, test result analysis.
 memory: user
+maxTurns: 20
 permissionMode: dontAsk
 tools:
   - Read
