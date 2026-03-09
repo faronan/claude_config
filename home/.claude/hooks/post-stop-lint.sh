@@ -46,7 +46,10 @@ if command -v ruff &>/dev/null; then
 fi
 
 # TypeScript/JavaScript: biome check --write
-if command -v biome &>/dev/null; then
+# CLAUDE_SKIP_BIOME=1 でスキップ可能
+if [[ "${CLAUDE_SKIP_BIOME:-}" == "1" ]]; then
+  : # skip
+elif command -v biome &>/dev/null; then
   js_files=$(echo "$changed_files" | grep -E '\.(ts|tsx|js|jsx)$' || true)
   if [[ -n "$js_files" ]]; then
     while IFS= read -r f; do

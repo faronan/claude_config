@@ -26,7 +26,10 @@ extension="${file_path##*.}"
 case "$extension" in
   ts|tsx|js|jsx|json)
     # Biome format のみ（lint auto-fix は Stop hook で実行）
-    if command -v biome &> /dev/null; then
+    # CLAUDE_SKIP_BIOME=1 でスキップ可能
+    if [[ "${CLAUDE_SKIP_BIOME:-}" == "1" ]]; then
+      : # skip
+    elif command -v biome &> /dev/null; then
       result=$(biome format --write "$file_path" 2>&1) || {
         echo "[Format] Biome auto-formatted $file_path:" >&2
         echo "$result" >&2
