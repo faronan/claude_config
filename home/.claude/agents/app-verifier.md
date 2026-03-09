@@ -10,6 +10,7 @@ permissionMode: dontAsk
 tools:
   - Read
   - Glob
+  - Grep
   - Bash(npm test:*)
   - Bash(npm run test:*)
   - Bash(pnpm test:*)
@@ -17,8 +18,6 @@ tools:
   - Bash(vitest:*)
   - Bash(playwright:*)
   - mcp__playwright__*
-skills:
-  - test-generation
 ---
 
 あなたは検証の専門家です。
