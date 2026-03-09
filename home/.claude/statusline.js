@@ -13,8 +13,13 @@ process.stdin.on("end", () => {
 		const currentDir = data.workspace?.current_dir || data.cwd || ".";
 		const dirName = path.basename(currentDir);
 
-		// Git ブランチ情報
-		const gitInfo = getGitInfo(currentDir);
+		// Worktree 情報（v2.1.69+: --worktree 使用時に提供される）
+		const worktree = data.worktree || null;
+
+		// Git ブランチ情報（worktree 時はそちらを優先）
+		const gitInfo = worktree
+			? getWorktreeInfo(worktree)
+			: getGitInfo(currentDir);
 
 		// context_window の中にあるトークン情報
 		const contextWindow = data.context_window || {};
@@ -83,6 +88,13 @@ process.stdin.on("end", () => {
 		console.log(`[Error] ${e.message}`);
 	}
 });
+
+function getWorktreeInfo(worktree) {
+	const name = worktree.name || "";
+	const branch = worktree.branch || name;
+	if (!branch) return null;
+	return `\x1b[35m${branch}[wt]\x1b[0m`; // マゼンタで worktree を区別
+}
 
 function getGitInfo(dir) {
 	try {
