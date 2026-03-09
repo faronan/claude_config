@@ -1,45 +1,57 @@
 {
-  "env": {
-    "CLAUDE_CODE_TASK_LIST_ID": "PROJECT_NAME"
-  },
-  "plansDirectory": ".claude/plans",
-  "disabledMcpjsonServers": [],
-  "permissions": {
-    "allow": [
-      "Read",
-      "Write",
-      "Edit",
-      "Bash(pnpm:*)",
-      "Bash(npm run:*)",
-      "Bash(npx:*)",
-      "Bash(tsc:*)",
-      "Bash(node:*)"
-    ],
-    "deny": [
-      "Bash(rm -rf:*)"
-    ]
-  },
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": ".claude/hooks/session-start.sh"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write(*.ts)|Write(*.tsx)|Write(*.js)|Write(*.jsx)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "prettier --write $CLAUDE_FILE_PATH 2>/dev/null || true"
-          }
-        ]
-      }
-    ]
-  }
+	"env": {
+		"CLAUDE_CODE_TASK_LIST_ID": "PROJECT_NAME"
+	},
+	"plansDirectory": ".claude/plans",
+	"disabledMcpjsonServers": [],
+	"sandbox": {
+		"enabled": false,
+		"autoAllowBashIfSandboxed": false,
+		"allowUnsandboxedCommands": false,
+		"excludedCommands": ["docker"],
+		"network": {
+			"allowedDomains": [
+				"github.com",
+				"*.githubusercontent.com",
+				"*.npmjs.org",
+				"registry.npmjs.org"
+			]
+		}
+	},
+	"permissions": {
+		"allow": [
+			"Read",
+			"Write",
+			"Edit",
+			"Bash(pnpm:*)",
+			"Bash(npm run:*)",
+			"Bash(npx:*)",
+			"Bash(tsc:*)",
+			"Bash(node:*)"
+		],
+		"deny": ["Bash(rm -rf:*)"]
+	},
+	"hooks": {
+		"SessionStart": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": ".claude/hooks/session-start.sh"
+					}
+				]
+			}
+		],
+		"PostToolUse": [
+			{
+				"matcher": "Write(*.ts)|Write(*.tsx)|Write(*.js)|Write(*.jsx)",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "prettier --write $CLAUDE_FILE_PATH 2>/dev/null || true"
+					}
+				]
+			}
+		]
+	}
 }

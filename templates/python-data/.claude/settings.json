@@ -1,45 +1,57 @@
 {
-  "env": {
-    "CLAUDE_CODE_TASK_LIST_ID": "PROJECT_NAME"
-  },
-  "plansDirectory": ".claude/plans",
-  "disabledMcpjsonServers": [],
-  "permissions": {
-    "allow": [
-      "Read",
-      "Write",
-      "Edit",
-      "Bash(uv:*)",
-      "Bash(python:*)",
-      "Bash(pytest:*)",
-      "Bash(ruff:*)",
-      "mcp__jupyter__*"
-    ],
-    "deny": [
-      "Bash(rm -rf:*)"
-    ]
-  },
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": ".claude/hooks/session-start.sh"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write(*.py)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ruff check --fix \"$CLAUDE_FILE_PATH\" 2>/dev/null; ruff format \"$CLAUDE_FILE_PATH\" 2>/dev/null || true"
-          }
-        ]
-      }
-    ]
-  }
+	"env": {
+		"CLAUDE_CODE_TASK_LIST_ID": "PROJECT_NAME"
+	},
+	"plansDirectory": ".claude/plans",
+	"disabledMcpjsonServers": [],
+	"sandbox": {
+		"enabled": false,
+		"autoAllowBashIfSandboxed": false,
+		"allowUnsandboxedCommands": false,
+		"excludedCommands": ["docker"],
+		"network": {
+			"allowedDomains": [
+				"github.com",
+				"*.githubusercontent.com",
+				"pypi.org",
+				"files.pythonhosted.org"
+			]
+		}
+	},
+	"permissions": {
+		"allow": [
+			"Read",
+			"Write",
+			"Edit",
+			"Bash(uv:*)",
+			"Bash(python:*)",
+			"Bash(pytest:*)",
+			"Bash(ruff:*)",
+			"mcp__jupyter__*"
+		],
+		"deny": ["Bash(rm -rf:*)"]
+	},
+	"hooks": {
+		"SessionStart": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": ".claude/hooks/session-start.sh"
+					}
+				]
+			}
+		],
+		"PostToolUse": [
+			{
+				"matcher": "Write(*.py)",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "ruff check --fix \"$CLAUDE_FILE_PATH\" 2>/dev/null; ruff format \"$CLAUDE_FILE_PATH\" 2>/dev/null || true"
+					}
+				]
+			}
+		]
+	}
 }

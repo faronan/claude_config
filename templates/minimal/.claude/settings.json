@@ -1,23 +1,32 @@
 {
-  "env": {
-    "CLAUDE_CODE_TASK_LIST_ID": "PROJECT_NAME"
-  },
-  "plansDirectory": ".claude/plans",
-  "disabledMcpjsonServers": [],
-  "permissions": {
-    "allow": ["Read", "Write", "Edit", "Bash(npm:*)", "Bash(pnpm:*)"],
-    "deny": ["Bash(rm -rf:*)"]
-  },
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": ".claude/hooks/session-start.sh"
-          }
-        ]
-      }
-    ]
-  }
+	"env": {
+		"CLAUDE_CODE_TASK_LIST_ID": "PROJECT_NAME"
+	},
+	"plansDirectory": ".claude/plans",
+	"disabledMcpjsonServers": [],
+	"sandbox": {
+		"enabled": false,
+		"autoAllowBashIfSandboxed": false,
+		"allowUnsandboxedCommands": false,
+		"excludedCommands": ["docker"],
+		"network": {
+			"allowedDomains": ["github.com", "*.githubusercontent.com"]
+		}
+	},
+	"permissions": {
+		"allow": ["Read", "Write", "Edit", "Bash(npm:*)", "Bash(pnpm:*)"],
+		"deny": ["Bash(rm -rf:*)"]
+	},
+	"hooks": {
+		"SessionStart": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": ".claude/hooks/session-start.sh"
+					}
+				]
+			}
+		]
+	}
 }
