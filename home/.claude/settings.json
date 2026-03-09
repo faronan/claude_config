@@ -189,8 +189,7 @@
 					{
 						"type": "command",
 						"command": "~/.claude/hooks/post-edit-lint.sh",
-						"timeout": 30,
-						"async": true
+						"timeout": 30
 					}
 				]
 			}
