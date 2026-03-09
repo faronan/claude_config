@@ -13,7 +13,6 @@ tools:
   - Bash(rg:*)
   - Bash(fd:*)
 skills:
-  - planning
   - mcp-guidance
 ---
 
