@@ -33,10 +33,10 @@ allowed-tools:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  1. Planning (planner agent)                            │
+│  1. Planning (task-planner agent)                            │
 │     └→ 実装計画を作成、AskUserQuestionで承認            │
 ├─────────────────────────────────────────────────────────┤
-│  2. Implementation (implementer agent)                  │
+│  2. Implementation (code-implementer agent)                  │
 │     └→ 計画に基づいてコードを実装                       │
 ├─────────────────────────────────────────────────────────┤
 │  3. Test Generation (/test-generation)                  │
@@ -58,17 +58,20 @@ allowed-tools:
 
 ### 1. Planning Phase
 
-planner agent を使用して実装計画を作成:
+task-planner agent を使用して実装計画を作成:
+
 - Goal Definition（何を達成するか）
 - Current State Analysis（関連ファイル、既存パターン）
 - Implementation Steps（具体的な手順）
 
 **AskUserQuestion でユーザー承認を取得:**
+
 - 選択肢: 「実装へ進む」「計画を修正」「キャンセル」
 
 ### 2. Implementation Phase
 
-implementer agent を使用:
+code-implementer agent を使用:
+
 - 計画に基づいてコードを実装
 - 計画外の変更は提案のみ（実行しない）
 - 破壊的変更は確認を求める
@@ -76,12 +79,14 @@ implementer agent を使用:
 ### 3. Test Generation Phase
 
 `/test-generation` スキルを呼び出してテストを作成:
+
 - Happy Path、Edge Cases、Error Cases をカバー
 - 既存テストのパターンに合わせる
 
 ### 4. Verification Phase
 
 verify-app agent を使用:
+
 - テストスイートを実行
 - 失敗があれば原因を分析
 - 結果サマリーを報告
@@ -89,17 +94,19 @@ verify-app agent を使用:
 ### 5. Review Phase
 
 `/code-review` スキルを呼び出してレビュー:
+
 - Correctness、Security、Performance、Maintainability をチェック
 - 問題を優先度順に報告（Critical → Warning → Suggestion）
 
 ### 6. Loop Decision
 
-- **Critical/Warning がある場合**: implementer agent で修正 → 再度 Verification → Review
+- **Critical/Warning がある場合**: code-implementer agent で修正 → 再度 Verification → Review
 - **Suggestion のみ or 問題なし**: 完了
 
 ## Completion Criteria
 
 以下をすべて満たした時点で完了:
+
 - [ ] 全テストがパス
 - [ ] Critical/Warning レベルの指摘がない
 - [ ] 計画した機能が実装されている
@@ -112,8 +119,8 @@ verify-app agent を使用:
 
 ## Agent References
 
-- **planner**: 実装計画の作成
-- **implementer**: コード実装
+- **task-planner**: 実装計画の作成
+- **code-implementer**: コード実装
 - **app-verifier**: テスト実行、検証
 
 ## Error Handling

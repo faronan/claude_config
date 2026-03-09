@@ -34,7 +34,7 @@ allowed-tools:
 │  1. Investigation (error-investigator agent)            │
 │     └→ エラーを解析、根本原因を特定                     │
 ├─────────────────────────────────────────────────────────┤
-│  2. Fix Implementation (implementer agent)              │
+│  2. Fix Implementation (code-implementer agent)              │
 │     └→ 原因に基づいて修正を実装                         │
 ├─────────────────────────────────────────────────────────┤
 │  3. Regression Test (/test-generation)                  │
@@ -54,17 +54,20 @@ allowed-tools:
 ### 1. Investigation Phase
 
 error-investigator agent を使用:
+
 - エラーメッセージの解析
 - 関連ログの収集と分析
 - 仮説の立案と検証
 - 根本原因の特定
 
 **AskUserQuestion で調査結果を報告し、修正への承認を取得:**
+
 - 選択肢: 「修正へ進む」「追加調査」「キャンセル」
 
 ### 2. Fix Implementation Phase
 
-implementer agent を使用:
+code-implementer agent を使用:
+
 - 特定された原因に基づいて修正
 - 最小限の変更で修正（副作用を避ける）
 - 関連箇所への影響を考慮
@@ -72,6 +75,7 @@ implementer agent を使用:
 ### 3. Regression Test Phase
 
 `/test-generation` スキルを呼び出してテストを作成:
+
 - バグを再現するテストケースを追加
 - 修正後にテストがパスすることを確認
 - 関連するエッジケースもカバー
@@ -79,6 +83,7 @@ implementer agent を使用:
 ### 4. Verification Phase
 
 app-verifier agent を使用:
+
 - 新規テストの実行
 - 既存テストの回帰確認
 - 結果サマリーを報告
@@ -120,6 +125,7 @@ app-verifier agent を使用:
 ## Completion Criteria
 
 以下をすべて満たした時点で完了:
+
 - [ ] 根本原因が特定されている
 - [ ] 修正が実装されている
 - [ ] 回帰テストが追加されている
@@ -128,7 +134,7 @@ app-verifier agent を使用:
 ## Agent References
 
 - **error-investigator**: エラー解析、根本原因特定
-- **implementer**: 修正実装
+- **code-implementer**: 修正実装
 - **app-verifier**: テスト実行、検証
 
 ## Error Handling

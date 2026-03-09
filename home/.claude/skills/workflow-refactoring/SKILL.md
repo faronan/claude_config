@@ -54,16 +54,19 @@ allowed-tools:
 ### 1. Analysis Phase
 
 `/refactoring` スキルを呼び出して分析:
+
 - Code Smells の特定（Long Method, Duplicate Code 等）
 - リファクタリング計画の作成
 - 影響範囲とリスクの評価
 
 **AskUserQuestion でユーザー承認を取得:**
+
 - 選択肢: 「実行へ進む」「計画を修正」「キャンセル」
 
 ### 2. Execution Phase
 
 `/refactoring` スキルの指示に従って実行:
+
 - 一度に1つのリファクタリングのみ実行
 - 各ステップ後に動作確認
 - 振る舞いを変えない（機能追加しない）
@@ -71,6 +74,7 @@ allowed-tools:
 ### 3. Verification Phase
 
 verify-app agent を使用:
+
 - 全テストスイートを実行
 - 振る舞いが変わっていないことを確認
 - 失敗があれば即座に報告
@@ -78,6 +82,7 @@ verify-app agent を使用:
 ### 4. Review Phase
 
 `/code-review` スキルを呼び出してレビュー:
+
 - リファクタリング結果の品質確認
 - 新たな Code Smells がないか確認
 - 追加改善の提案
@@ -123,6 +128,7 @@ verify-app agent を使用:
 ## Completion Criteria
 
 以下をすべて満たした時点で完了:
+
 - [ ] 計画したリファクタリングが完了
 - [ ] 全テストがパス
 - [ ] Critical/Warning 指摘なし
@@ -130,7 +136,7 @@ verify-app agent を使用:
 
 ## Agent References
 
-- **implementer**: リファクタリング実行
+- **code-implementer**: リファクタリング実行
 - **app-verifier**: テスト実行、検証
 
 ## Error Handling

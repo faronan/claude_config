@@ -1,5 +1,5 @@
 ---
-name: implementer
+name: code-implementer
 description: |
   Implementation specialist for executing planned changes.
   Use after planning phase is complete.

@@ -1,5 +1,5 @@
 ---
-name: architect
+name: system-architect
 description: |
   Architecture design specialist for technical decisions.
   Use for: system design, technology choices, ADR creation.

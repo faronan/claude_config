@@ -1,5 +1,5 @@
 ---
-name: planner
+name: task-planner
 description: |
   Planning specialist for complex feature implementation.
   Use for: breaking down tasks, creating implementation plans, analyzing requirements.

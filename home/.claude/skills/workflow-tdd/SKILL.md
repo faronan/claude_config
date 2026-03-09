@@ -50,16 +50,19 @@ allowed-tools:
 ### 0. Planning Phase
 
 機能を小さなテスト可能な単位に分解:
+
 1. 機能の要件を明確化
 2. テストケースをリストアップ
 3. 実装順序を決定（単純→複雑）
 
 **AskUserQuestion でユーザー承認を取得:**
+
 - 選択肢: 「TDDサイクル開始」「計画を修正」「キャンセル」
 
 ### 1. RED Phase（失敗するテストを書く）
 
 `/test-generation` スキルを呼び出してテストパターンを確認し、テストを作成:
+
 - **1つのテストのみ** を書く
 - 期待する振る舞いを明確に定義
 - テストを実行し、**失敗することを確認**
@@ -70,12 +73,14 @@ pnpm test -- --watch=false --testPathPattern="target-test"
 ```
 
 **確認ポイント:**
+
 - [ ] テストが失敗している（RED状態）
 - [ ] 失敗理由が明確（実装がないから失敗）
 
 ### 2. GREEN Phase（テストを通す最小実装）
 
-Task tool で `implementer` agent を起動して実装:
+Task tool で `code-implementer` agent を起動して実装:
+
 - テストを通す**最小限のコード**を書く
 - 完璧なコードを書こうとしない
 - ハードコード値でも可（後でREFACTOR）
@@ -86,12 +91,14 @@ pnpm test
 ```
 
 **確認ポイント:**
+
 - [ ] テストがパスしている（GREEN状態）
 - [ ] 余計なコードを追加していない
 
 ### 3. REFACTOR Phase（コードを改善）
 
 `/code-review` スキルを呼び出してコード品質を確認し、リファクタリング:
+
 - 重複の除去（DRY）
 - 命名の改善
 - 構造の整理
@@ -103,6 +110,7 @@ pnpm test
 ```
 
 **確認ポイント:**
+
 - [ ] テストがパスしている
 - [ ] コードが読みやすくなった
 - [ ] 重複が除去された
@@ -110,6 +118,7 @@ pnpm test
 ### 4. 次のサイクルへ
 
 計画したテストケースがすべて完了するまでサイクルを繰り返す:
+
 1. → RED（次のテストを書く）
 2. → GREEN（実装）
 3. → REFACTOR（改善）
@@ -129,6 +138,7 @@ pytest --cov=src --cov-report=term-missing
 ## Completion Criteria
 
 以下をすべて満たした時点で完了:
+
 - [ ] 計画した全テストケースが実装済み
 - [ ] 全テストがパス（GREEN）
 - [ ] カバレッジ 80% 以上
@@ -137,12 +147,14 @@ pytest --cov=src --cov-report=term-missing
 ## Best Practices
 
 ### DO
+
 - 1回のサイクルで1つのテストのみ
 - テストファーストを厳守
 - 小さなステップで進む
 - 各サイクル後にコミット検討
 
 ### DON'T
+
 - 複数のテストを一度に書かない
 - テスト前に実装しない
 - GREEN後にREFACTORをスキップしない
@@ -157,7 +169,7 @@ pytest --cov=src --cov-report=term-missing
 
 ## Agent References
 
-- **implementer**: GREEN Phase での最小実装
+- **code-implementer**: GREEN Phase での最小実装
 
 ## Error Handling
 

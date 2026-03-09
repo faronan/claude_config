@@ -1,5 +1,5 @@
 ---
-name: log-analyzer
+name: log-analyst
 description: |
   Log analysis specialist for Docker, application, and build logs.
   Use proactively when analyzing large log outputs to prevent context pollution.
