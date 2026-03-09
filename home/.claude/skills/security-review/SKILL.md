@@ -12,8 +12,6 @@ allowed-tools:
   - Read
   - Glob
   - Grep
-  - Bash(rg:*)
-  - Bash(fd:*)
 ---
 
 # Security Review
