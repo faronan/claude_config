@@ -19,6 +19,7 @@ allowed-tools:
 # Planning Skill
 
 ## When to Plan
+
 - 複数ファイルにまたがる変更
 - 新機能の実装
 - リファクタリング
@@ -27,20 +28,24 @@ allowed-tools:
 ## Plan Structure
 
 ### 1. Goal Definition
+
 - 何を達成するか
 - 成功の基準
 
 ### 2. Current State Analysis
+
 - 関連ファイルの把握
 - 既存の実装パターン
 - 制約・依存関係
 
 ### 3. Approach Options
+
 - Option A: [アプローチ1] - Pros/Cons
 - Option B: [アプローチ2] - Pros/Cons
 - Recommendation: [推奨案と理由]
 
 ### 4. Implementation Steps
+
 ```
 [ ] Step 1: [具体的なタスク]
     - 対象ファイル: xxx
@@ -49,17 +54,21 @@ allowed-tools:
 ```
 
 ### 5. Risks & Mitigations
+
 - リスク1 → 対策
 - リスク2 → 対策
 
 ### 6. Verification
+
 - [ ] テスト項目
 - [ ] 動作確認項目
 
 ## Output Format
+
 Markdown形式で、チェックボックス付きのステップリストを含める。
 
 AskUserQuestion でユーザー承認を取得:
+
 - 選択肢: 「承認して実装へ」「計画を修正」「キャンセル」
 
 ## Error Handling
@@ -67,3 +76,4 @@ AskUserQuestion でユーザー承認を取得:
 - **要件が不明確**: AskUserQuestion で要件を明確化してから計画作成
 - **対象コードが見つからない**: Glob/Grep で関連ファイルを探索
 - **計画が複雑すぎる**: フェーズ分割を提案し、段階的に計画
+- **計画完了後に実装へ進む場合**: `/workflow-implement` の利用を提案

@@ -19,18 +19,21 @@ allowed-tools:
 # Test Generation Skill
 
 ## Workflow
+
 1. 対象コードの分析（関数シグネチャ、依存関係）
 2. テストケースの洗い出し
 3. テストコード生成
 4. 実行して確認
 
 ## Test Case Categories
+
 1. **Happy Path**: 正常系（期待通りの入力）
 2. **Edge Cases**: 境界値、空配列、null/undefined
 3. **Error Cases**: 異常系、例外発生
 4. **Integration**: 依存関係との結合
 
 ## Framework Detection
+
 - `*.test.ts` + `vitest.config` → Vitest
 - `*.test.ts` + `jest.config` → Jest
 - `*.test.tsx` → React Testing Library
@@ -38,10 +41,11 @@ allowed-tools:
 - `test_*.py` → pytest (prefix style)
 
 ## Output Structure
+
 ```typescript
-describe('[対象名]', () => {
-  describe('[メソッド/機能]', () => {
-    it('should [期待動作] when [条件]', () => {
+describe("[対象名]", () => {
+  describe("[メソッド/機能]", () => {
+    it("should [期待動作] when [条件]", () => {
       // Arrange
       // Act
       // Assert
@@ -51,6 +55,7 @@ describe('[対象名]', () => {
 ```
 
 ## Guidelines
+
 - モックは必要最小限に
 - テストデータは意味のある値を使用
 - 各テストは独立して実行可能に
@@ -62,3 +67,4 @@ describe('[対象名]', () => {
 - **対象コードが見つからない**: パスを確認し、正しい対象を特定
 - **既存テストとの競合**: 既存テストファイルを確認し、追加 or 別ファイル作成を判断
 - **テスト実行失敗**: エラーメッセージを分析し、環境設定の問題か実装の問題かを切り分け
+- **テストが実装のバグを検出した場合**: バグ修正が必要であれば `/workflow-fix-bug` の利用を提案
