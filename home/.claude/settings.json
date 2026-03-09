@@ -196,5 +196,6 @@
 		"command": "~/.claude/statusline.js",
 		"padding": 0
 	},
-	"language": "japanese"
+	"language": "japanese",
+	"effortLevel": "high"
 }
