@@ -7,6 +7,12 @@
 set -euo pipefail
 
 input=$(cat)
+
+# Stop フックによる再実行時は即座に終了（無限ループ防止）
+if [[ "$(echo "$input" | jq -r '.stop_hook_active // false')" == "true" ]]; then
+  exit 0
+fi
+
 cwd=$(echo "$input" | jq -r '.cwd // ""')
 
 if [[ -z "$cwd" || ! -d "$cwd" ]]; then
