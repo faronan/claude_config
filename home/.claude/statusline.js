@@ -33,23 +33,33 @@ process.stdin.on("end", () => {
 			(usage.cache_read_input_tokens || 0);
 
 		// コンテキスト使用率（2.1.6+: 新フィールド使用、フォールバック付き）
-		const percentage =
+		const rawPercentage =
 			contextWindow.used_percentage != null
-				? Math.round(contextWindow.used_percentage)
-				: Math.min(
-						100,
-						Math.round((totalTokens / (contextWindowSize * 0.8)) * 100),
-					);
+				? contextWindow.used_percentage
+				: Math.min(100, (totalTokens / (contextWindowSize * 0.8)) * 100);
+
+		// 実効コンテキスト使用率（compaction 閾値を上限として再計算）
+		const compactThreshold = 70; // CLAUDE_AUTOCOMPACT_PCT_OVERRIDE と一致させる
+		const effectivePct = Math.min(
+			100,
+			Math.round((rawPercentage / compactThreshold) * 100),
+		);
 
 		const tokenDisplay = formatTokenCount(totalTokens);
 
-		// コンテキスト使用率の色と警告
-		let ctxColor = "\x1b[32m"; // 緑
-		let ctxWarning = "";
-		if (percentage >= 70) ctxColor = "\x1b[33m"; // 黄
-		if (percentage >= 90) ctxColor = "\x1b[31m"; // 赤
+		// プログレスバー生成
+		const barWidth = 10;
+		const filled = Math.round((effectivePct / 100) * barWidth);
+		const empty = barWidth - filled;
+		const bar = "\u2593".repeat(filled) + "\u2591".repeat(empty);
+
+		// 実効使用率の色分け
+		let ctxColor = "\x1b[32m"; // 緑: <60%
+		if (effectivePct >= 60) ctxColor = "\x1b[33m"; // 黄: コンパクションが近い
+		if (effectivePct >= 85) ctxColor = "\x1b[31m"; // 赤: まもなくコンパクション
 
 		// 200K超過警告（2.0.72+）
+		let ctxWarning = "";
 		if (data.exceeds_200k_tokens) {
 			ctxWarning = " [!200K]";
 		}
@@ -57,13 +67,6 @@ process.stdin.on("end", () => {
 		// コスト情報
 		const cost = data.cost?.total_cost_usd || 0;
 		const costDisplay = cost > 0 ? `$${cost.toFixed(4)}` : null;
-
-		// 残りコンテキスト表示（2.1.6+）
-		const remainingPct =
-			contextWindow.remaining_percentage != null
-				? Math.round(contextWindow.remaining_percentage)
-				: null;
-		const remainingDisplay = remainingPct != null ? `(残${remainingPct}%)` : "";
 
 		// 追加ディレクトリ表示（v2.1.47+: workspace.added_dirs）
 		const addedDirs = data.workspace?.added_dirs || [];
@@ -79,7 +82,7 @@ process.stdin.on("end", () => {
 			addedDirsDisplay,
 			gitInfo,
 			`${tokenDisplay}`,
-			`${ctxColor}${percentage}%${remainingDisplay}${ctxWarning}\x1b[0m`,
+			`${ctxColor}${bar} ${effectivePct}%${ctxWarning}\x1b[0m`,
 			costDisplay,
 		].filter((v) => v != null && v !== "");
 
