@@ -36,7 +36,7 @@ pip / python -m pip の直接使用は禁止（uv pip / uv add を使う）。
 
 ## Model
 
-- Task tool で model パラメータを指定しない（親モデルを継承）
+- Agent tool で model パラメータを指定しない（親モデルを継承）
 - コスト最適化のためのモデルダウングレード禁止
 
 ## Compaction

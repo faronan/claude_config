@@ -45,7 +45,7 @@ allowed-tools:
 
 ## Output Format
 
-security-reviewer エージェントの出力形式に従う。詳細は `agents/security-reviewer.md` の Output Format セクションを参照。
+security-reviewer エージェントの出力形式に従う（`agent: security-reviewer` で委譲）。
 
 ## Error Handling
 
