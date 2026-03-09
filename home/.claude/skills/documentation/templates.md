@@ -10,13 +10,17 @@ Brief description of what this project does.
 ## Quick Start
 
 \`\`\`bash
+
 # Installation
+
 npm install
 
 # Development
+
 npm run dev
 
 # Build
+
 npm run build
 \`\`\`
 
@@ -37,9 +41,9 @@ const result = something();
 
 ## Configuration
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | Server port | `3000` |
+| Variable   | Description | Default       |
+| ---------- | ----------- | ------------- |
+| `PORT`     | Server port | `3000`        |
 | `NODE_ENV` | Environment | `development` |
 
 ## Development
@@ -99,36 +103,36 @@ Retrieve a list of users.
 
 **Query Parameters**
 
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| limit | integer | No | Max results (default: 20) |
-| offset | integer | No | Pagination offset |
+| Name   | Type    | Required | Description               |
+| ------ | ------- | -------- | ------------------------- |
+| limit  | integer | No       | Max results (default: 20) |
+| offset | integer | No       | Pagination offset         |
 
 **Response**
 
 \`\`\`json
 {
-  "data": [
-    {
-      "id": "123",
-      "name": "John Doe",
-      "email": "john@example.com"
-    }
-  ],
-  "meta": {
-    "total": 100,
-    "limit": 20,
-    "offset": 0
-  }
+"data": [
+{
+"id": "123",
+"name": "John Doe",
+"email": "john@example.com"
+}
+],
+"meta": {
+"total": 100,
+"limit": 20,
+"offset": 0
+}
 }
 \`\`\`
 
 **Error Responses**
 
-| Status | Description |
-|--------|-------------|
-| 401 | Unauthorized |
-| 500 | Internal Server Error |
+| Status | Description           |
+| ------ | --------------------- |
+| 401    | Unauthorized          |
+| 500    | Internal Server Error |
 ```
 
 ---
@@ -154,65 +158,4 @@ Retrieve a list of users.
 
 ---
 
-## Mermaid ダイアグラムテンプレート
-
-### フローチャート
-```mermaid
-flowchart TD
-    A[Start] --> B{Decision}
-    B -->|Yes| C[Action 1]
-    B -->|No| D[Action 2]
-    C --> E[End]
-    D --> E
-```
-
-### シーケンス図
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant A as API
-    participant D as Database
-
-    U->>A: Request
-    A->>D: Query
-    D-->>A: Result
-    A-->>U: Response
-```
-
-### クラス図
-```mermaid
-classDiagram
-    class ClassName {
-        +string property
-        +methodName(param) ReturnType
-    }
-    ParentClass <|-- ChildClass : extends
-    ClassA ..|> InterfaceB : implements
-```
-
-### ER図
-```mermaid
-erDiagram
-    USER {
-        int id PK
-        string name
-        string email UK
-    }
-    POST {
-        int id PK
-        string title
-        int user_id FK
-    }
-    USER ||--o{ POST : writes
-```
-
-### 状態遷移図
-```mermaid
-stateDiagram-v2
-    [*] --> Idle
-    Idle --> Active : start
-    Active --> Done : complete
-    Active --> Error : fail
-    Error --> Idle : retry
-    Done --> [*]
-```
+Mermaid 図のテンプレートは `/mermaid-generator` スキルを参照。
