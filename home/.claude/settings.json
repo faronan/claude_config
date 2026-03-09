@@ -3,7 +3,8 @@
 	"respectGitignore": true,
 	"env": {
 		"EDITOR": "code",
-		"CLAUDE_CODE_TMPDIR": "/Users/toshiki.ito/.claude/tmp"
+		"CLAUDE_CODE_TMPDIR": "/Users/toshiki.ito/.claude/tmp",
+		"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70"
 	},
 	"permissions": {
 		"allow": [
@@ -110,6 +111,10 @@
 			"Bash(gh issue create *)"
 		]
 	},
+	"attribution": {
+		"commit": "Co-Authored-By: Claude <noreply@anthropic.com>",
+		"pr": "Generated with [Claude Code](https://claude.com/claude-code)"
+	},
 	"hooks": {
 		"SessionStart": [
 			{
@@ -186,6 +191,17 @@
 						"command": "~/.claude/hooks/post-edit-lint.sh",
 						"timeout": 30,
 						"async": true
+					}
+				]
+			}
+		],
+		"PreCompact": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "~/.claude/hooks/pre-compact.sh",
+						"timeout": 10
 					}
 				]
 			}
