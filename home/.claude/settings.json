@@ -13,7 +13,7 @@
 			"Grep",
 			"Edit",
 			"Write",
-			"Bash(git status)",
+			"Bash(git status *)",
 			"Bash(git diff *)",
 			"Bash(git log *)",
 			"Bash(git add *)",
@@ -196,6 +196,7 @@
 		"command": "~/.claude/statusline.js",
 		"padding": 0
 	},
+	"includeGitInstructions": false,
 	"language": "japanese",
 	"effortLevel": "high"
 }
