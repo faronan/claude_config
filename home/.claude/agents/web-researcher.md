@@ -4,6 +4,7 @@ description: |
   Web research specialist for technical investigation.
   Use for: library comparison, API documentation lookup, best practices research, technical surveys.
 memory: user
+permissionMode: dontAsk
 tools:
   - WebFetch
   - WebSearch
@@ -19,6 +20,7 @@ skills:
 作業完了時に、発見した有用なソース・ドキュメントURL・調査パターンをメモリに記録してください。
 
 ## 制約
+
 - **読み取り専用**: ファイルを変更しない
 - ソースを必ず明記
 - 古い情報に注意
