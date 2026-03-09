@@ -26,6 +26,7 @@ allowed-tools:
 ### 1. ターゲットの分析
 
 対象のファイル/モジュール/ディレクトリを特定:
+
 - ファイル指定 → そのファイルを分析
 - ディレクトリ指定 → 配下の主要ファイルを Glob で収集
 - モジュール名 → Grep で関連ファイルを特定
@@ -33,6 +34,7 @@ allowed-tools:
 ### 2. 図種別の判定
 
 `$ARGUMENTS` で指定がない場合、コード構造から推定:
+
 - クラス/インターフェース定義が多い → classDiagram
 - 関数呼び出しチェーンが主 → sequenceDiagram
 - 条件分岐・フローが主 → flowchart
@@ -42,6 +44,7 @@ allowed-tools:
 ### 3. コード構造の解析
 
 Read/Grep でコードを解析:
+
 - クラス: 継承関係、メソッド、プロパティ
 - 関数: 呼び出し関係、引数、戻り値
 - モデル: フィールド、リレーション
@@ -50,6 +53,7 @@ Read/Grep でコードを解析:
 ### 4. Mermaid 記法で図を生成
 
 解析結果から Mermaid ダイアグラムを構築:
+
 - 適切なノード・エッジの命名
 - 関係性の正確な表現
 - 読みやすいレイアウト
@@ -61,14 +65,14 @@ Read/Grep でコードを解析:
 
 ## Diagram Types
 
-| タイプ | 用途 | 主な解析対象 |
-|-------|------|------------|
-| classDiagram | クラス構造 | class, interface, type |
-| sequenceDiagram | 処理フロー | 関数呼び出しチェーン |
-| flowchart | 条件分岐・フロー | if/switch, ワークフロー |
-| erDiagram | データモデル | DB スキーマ, ORM モデル |
-| stateDiagram | 状態遷移 | 状態管理, FSM |
-| graph | 依存関係 | import/require, モジュール |
+| タイプ          | 用途             | 主な解析対象               |
+| --------------- | ---------------- | -------------------------- |
+| classDiagram    | クラス構造       | class, interface, type     |
+| sequenceDiagram | 処理フロー       | 関数呼び出しチェーン       |
+| flowchart       | 条件分岐・フロー | if/switch, ワークフロー    |
+| erDiagram       | データモデル     | DB スキーマ, ORM モデル    |
+| stateDiagram    | 状態遷移         | 状態管理, FSM              |
+| graph           | 依存関係         | import/require, モジュール |
 
 ## Output Format
 
@@ -93,5 +97,5 @@ Read/Grep でコードを解析:
 ## Notes
 
 - 大規模なコードベースでは対象を絞ることを推奨
-- 詳細な図種別パターンは `references/diagram-patterns.md` を参照
-- 基本テンプレートは `skills/documentation/templates.md` も参照
+- 詳細な図種別パターンは `${CLAUDE_SKILL_DIR}/references/diagram-patterns.md` を参照
+- 基本テンプレートは `${CLAUDE_SKILL_DIR}/references/mermaid-templates.md` も参照

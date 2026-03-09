@@ -70,7 +70,7 @@ git diffの変更を論理的なグループに分割し、適切な粒度で複
 - **body**: 「なぜ」を説明、72文字折り返し
 - **type/scope**: 英語
 
-詳細は `skills/commit-message/type-reference.md` を参照
+詳細は `${CLAUDE_SKILL_DIR}/type-reference.md` を参照
 
 ## User Confirmation
 

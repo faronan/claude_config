@@ -27,12 +27,14 @@ allowed-tools:
 ### 1. Template Generation
 
 `$ARGUMENTS` からスキルの雛形を生成:
+
 - 標準テンプレート（frontmatter + セクション構成）に準拠
 - セクション順序: Purpose → Arguments → Context → Workflow → Output Format → Guidelines → Error Handling → Notes
 
 ### 2. Best Practices Check
 
 生成したスキルを検証:
+
 - **frontmatter バリデーション**: YAML 構文、必須フィールドの存在
 - **allowed-tools/Workflow 整合性**: Workflow で言及したツールが allowed-tools に含まれるか
 - **Progressive Disclosure**: 500行以下であること（`wc -l` で確認）
@@ -42,6 +44,7 @@ allowed-tools:
 ### 3. User Review
 
 AskUserQuestion で確認:
+
 - 選択肢: 「このまま作成」「修正してから作成」「キャンセル」
 
 ### 4. Output
@@ -80,5 +83,5 @@ SKILL.md を指定パスに生成/修正
 
 ## Notes
 
-- 詳細なベストプラクティスは `references/best-practices.md` を参照
-- frontmatter の仕様は `references/frontmatter-spec.md` を参照
+- 詳細なベストプラクティスは `${CLAUDE_SKILL_DIR}/references/best-practices.md` を参照
+- frontmatter の仕様は `${CLAUDE_SKILL_DIR}/references/frontmatter-spec.md` を参照

@@ -75,7 +75,7 @@ Context の結果を確認し、NGなら理由を伝えて **中断** する。
 2. `.github/pull_request_template.md`
 3. `docs/pull_request_template.md`
 
-テンプレートが見つからない場合は `template.md` を参照する。
+テンプレートが見つからない場合は `${CLAUDE_SKILL_DIR}/template.md` を参照する。
 
 #### 変更種別の自動判定
 
@@ -139,7 +139,7 @@ Context の結果を確認し、NGなら理由を伝えて **中断** する。
 
 - タイトル: 50文字以内、変更内容を端的に
 - 本文: **なぜ**この変更が必要かを重視
-- テンプレート集: `template.md` 参照（リポジトリにテンプレートがない場合のフォールバック）
+- テンプレート集: `${CLAUDE_SKILL_DIR}/template.md` 参照（リポジトリにテンプレートがない場合のフォールバック）
 
 ## Notes
 

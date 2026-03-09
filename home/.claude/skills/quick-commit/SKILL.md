@@ -17,6 +17,7 @@ allowed-tools:
 小さな変更（typo修正、フォーマット等）用。
 
 ## Current Changes
+
 - Staged files: !`git diff --staged --name-only`
 - Staged diff: !`git diff --staged --stat`
 
@@ -36,7 +37,7 @@ allowed-tools:
 - **subject**: 50文字以内、日本語、現在形
 - **type/scope**: 英語
 
-詳細は `skills/commit-message/type-reference.md` を参照
+詳細は `${CLAUDE_SKILL_DIR}/type-reference.md` を参照
 
 ## Error Handling
 
