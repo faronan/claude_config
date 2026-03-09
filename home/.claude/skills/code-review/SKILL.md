@@ -5,6 +5,7 @@ context: fork
 description: |
   Review code for bugs, security vulnerabilities, performance issues, and maintainability.
   Use when the user asks to review code, check changes, inspect code quality, or before merging.
+  For PR reviews with inline comments, use gh-pr-review instead.
   Trigger words: "レビュー", "review", "見て", "チェック", "確認して", "check this code",
   "問題ない?", "バグある?", "おかしいところ", "コード確認", "品質チェック", "look at my changes".
 allowed-tools:
@@ -18,34 +19,40 @@ allowed-tools:
 ## Review Checklist (Priority Order)
 
 ### 1. Correctness (最優先)
+
 - [ ] ロジックエラー、バグ
 - [ ] エッジケースの処理
 - [ ] 例外・エラーハンドリング
 - [ ] 型の整合性
 
 ### 2. Security
+
 - [ ] インジェクション脆弱性
 - [ ] 認証・認可の適切性
 - [ ] 機密情報の取り扱い
 - [ ] 入力バリデーション
 
 ### 3. Performance
+
 - [ ] N+1クエリ
 - [ ] 不要なループ・再計算
 - [ ] メモリリーク
 - [ ] 非同期処理の適切性
 
 ### 4. Maintainability
+
 - [ ] 命名の明確さ
 - [ ] 単一責任原則
 - [ ] 重複コード
 - [ ] テストの有無・品質
 
 ### 5. Style (最低優先)
+
 - [ ] フォーマット規約
 - [ ] コメントの適切性
 
 ## Output Format
+
 ```
 ## Summary
 全体評価: ✅ LGTM / ⚠️ 要修正 / ❌ 要再設計
@@ -65,6 +72,7 @@ allowed-tools:
 ```
 
 ## Constraints
+
 - **コードを変更しない**（読み取り専用）
 - 軽微なスタイル指摘は最小限に
 - 良い点も積極的にコメント
@@ -74,3 +82,4 @@ allowed-tools:
 - **対象ファイルが見つからない**: パスの存在を確認し、ユーザーに正しいパスを確認
 - **バイナリファイル**: テキストファイルのみレビュー可能である旨を通知
 - **ファイルが大きすぎる**: 重要な部分に焦点を絞ってレビュー
+- **Critical が複数見つかった場合**: 修正が必要であれば `/refactoring` や `/workflow-fix-bug` の利用を提案
