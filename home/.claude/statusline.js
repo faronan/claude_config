@@ -132,22 +132,17 @@ process.stdin.on("end", () => {
 });
 
 /**
- * コンテキスト使用率の3段階フォールバック
+ * コンテキスト使用率の2段階フォールバック
  * 1. used_percentage（v2.1.6+、最も信頼性が高い）
- * 2. total_input_tokens からの計算（current_usage が壊れている場合のワークアラウンド）
- * 3. current_usage からの計算（最終手段）
+ *    - null でなければ 0 でもそのまま信頼する（/clear 直後は 0 が正しい）
+ * 2. current_usage からの計算（最終手段）
+ *
+ * NOTE: total_input_tokens はセッション累計値のため、現在のコンテキスト使用率の
+ * 代替としては使えない（/clear 後に 100% になるバグの原因だった）
  */
 function getRawPercentage(contextWindow, currentTokens, contextWindowSize) {
-	if (
-		contextWindow.used_percentage != null &&
-		contextWindow.used_percentage > 0
-	) {
+	if (contextWindow.used_percentage != null) {
 		return contextWindow.used_percentage;
-	}
-
-	const totalInputTokens = contextWindow.total_input_tokens || 0;
-	if (totalInputTokens > 0) {
-		return Math.min(100, (totalInputTokens / contextWindowSize) * 100);
 	}
 
 	if (currentTokens > 0) {
