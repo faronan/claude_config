@@ -2,6 +2,15 @@
 
 const { execSync } = require("child_process");
 const path = require("path");
+const fs = require("fs");
+const os = require("os");
+
+// Git キャッシュ設定（5秒 TTL でパフォーマンス改善）
+const GIT_CACHE_TTL_MS = 5000;
+const GIT_CACHE_FILE = path.join(
+	os.tmpdir(),
+	"claude-statusline-git-cache.json",
+);
 
 let input = "";
 process.stdin.on("data", (chunk) => (input += chunk));
@@ -16,10 +25,14 @@ process.stdin.on("end", () => {
 		// Worktree 情報（v2.1.69+: --worktree 使用時に提供される）
 		const worktree = data.worktree || null;
 
-		// Git ブランチ情報（worktree 時はそちらを優先）
+		// Git ブランチ情報（worktree 時はそちらを優先、キャッシュ付き）
 		const gitInfo = worktree
 			? getWorktreeInfo(worktree)
-			: getGitInfo(currentDir);
+			: getCachedGitInfo(currentDir);
+
+		// Agent 名表示（--agent フラグ使用時）
+		const agentName = data.agent?.name || null;
+		const agentDisplay = agentName ? `\x1b[35m@${agentName}\x1b[0m` : null;
 
 		// context_window の中にあるトークン情報
 		const contextWindow = data.context_window || {};
@@ -27,25 +40,27 @@ process.stdin.on("end", () => {
 		const usage = contextWindow.current_usage || {};
 
 		// トークン計算（output_tokensは含まない - コンテキストはinputのみ）
-		const totalTokens =
+		const currentTokens =
 			(usage.input_tokens || 0) +
 			(usage.cache_creation_input_tokens || 0) +
 			(usage.cache_read_input_tokens || 0);
 
-		// コンテキスト使用率（2.1.6+: 新フィールド使用、フォールバック付き）
-		const rawPercentage =
-			contextWindow.used_percentage != null
-				? contextWindow.used_percentage
-				: Math.min(100, (totalTokens / (contextWindowSize * 0.8)) * 100);
+		// コンテキスト使用率（3段階フォールバック: used_percentage → total_input_tokens → current_usage）
+		const rawPercentage = getRawPercentage(
+			contextWindow,
+			currentTokens,
+			contextWindowSize,
+		);
 
 		// 実効コンテキスト使用率（compaction 閾値を上限として再計算）
-		const compactThreshold = 70; // CLAUDE_AUTOCOMPACT_PCT_OVERRIDE と一致させる
+		const compactThreshold =
+			parseInt(process.env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE, 10) || 70;
 		const effectivePct = Math.min(
 			100,
 			Math.round((rawPercentage / compactThreshold) * 100),
 		);
 
-		const tokenDisplay = formatTokenCount(totalTokens);
+		const tokenDisplay = formatTokenCount(currentTokens);
 
 		// プログレスバー生成
 		const barWidth = 10;
@@ -68,6 +83,19 @@ process.stdin.on("end", () => {
 		const cost = data.cost?.total_cost_usd || 0;
 		const costDisplay = cost > 0 ? `$${cost.toFixed(4)}` : null;
 
+		// セッション経過時間（Starship: cmd_duration=bold yellow）
+		const durationMs = data.cost?.total_duration_ms || 0;
+		const durationDisplay =
+			durationMs > 0 ? `\x1b[1;33m${formatDuration(durationMs)}\x1b[0m` : null;
+
+		// 行数変更（+/-）
+		const linesAdded = data.cost?.total_lines_added || 0;
+		const linesRemoved = data.cost?.total_lines_removed || 0;
+		const linesDisplay =
+			linesAdded > 0 || linesRemoved > 0
+				? `\x1b[32m+${linesAdded}\x1b[0m/\x1b[31m-${linesRemoved}\x1b[0m`
+				: null;
+
 		// 追加ディレクトリ表示（v2.1.47+: workspace.added_dirs）
 		const addedDirs = data.workspace?.added_dirs || [];
 		const addedDirsDisplay =
@@ -75,16 +103,27 @@ process.stdin.on("end", () => {
 				? `+${addedDirs.map((d) => path.basename(d)).join(",")}`
 				: null;
 
-		// 出力を組み立て
-		const parts = [
-			`\x1b[36m[${model}]\x1b[0m`,
-			dirName,
-			addedDirsDisplay,
-			gitInfo,
-			`${tokenDisplay}`,
-			`${ctxColor}${bar} ${effectivePct}%${ctxWarning}\x1b[0m`,
-			costDisplay,
-		].filter((v) => v != null && v !== "");
+		// グループ別に組み立て
+		// Identity: Model + Agent
+		const identity = [`\x1b[36m[${model}]\x1b[0m`, agentDisplay]
+			.filter(Boolean)
+			.join(" ");
+
+		// Where: Dir + AddedDirs + Git（Starship: directory=bold cyan）
+		const dirDisplay = `\x1b[1;36m${dirName}\x1b[0m`;
+		const where = [dirDisplay, addedDirsDisplay, gitInfo]
+			.filter(Boolean)
+			.join(" ");
+
+		// Context Resources: Tokens + Bar
+		const context = `${tokenDisplay} ${ctxColor}${bar} ${effectivePct}%${ctxWarning}\x1b[0m`;
+
+		// Session Metrics: Lines + Cost + Duration
+		const metrics = [linesDisplay, costDisplay, durationDisplay]
+			.filter(Boolean)
+			.join(" ");
+
+		const parts = [identity, where, context, metrics].filter((v) => v !== "");
 
 		console.log(parts.join(" | "));
 	} catch (e) {
@@ -92,11 +131,78 @@ process.stdin.on("end", () => {
 	}
 });
 
+/**
+ * コンテキスト使用率の3段階フォールバック
+ * 1. used_percentage（v2.1.6+、最も信頼性が高い）
+ * 2. total_input_tokens からの計算（current_usage が壊れている場合のワークアラウンド）
+ * 3. current_usage からの計算（最終手段）
+ */
+function getRawPercentage(contextWindow, currentTokens, contextWindowSize) {
+	if (
+		contextWindow.used_percentage != null &&
+		contextWindow.used_percentage > 0
+	) {
+		return contextWindow.used_percentage;
+	}
+
+	const totalInputTokens = contextWindow.total_input_tokens || 0;
+	if (totalInputTokens > 0) {
+		return Math.min(100, (totalInputTokens / contextWindowSize) * 100);
+	}
+
+	if (currentTokens > 0) {
+		return Math.min(100, (currentTokens / (contextWindowSize * 0.8)) * 100);
+	}
+
+	return 0;
+}
+
 function getWorktreeInfo(worktree) {
 	const name = worktree.name || "";
 	const branch = worktree.branch || name;
 	if (!branch) return null;
-	return `\x1b[35m${branch}[wt]\x1b[0m`; // マゼンタで worktree を区別
+	// Starship git_branch 準拠: bold purple +  アイコン、worktree は [wt] で区別
+	return `\x1b[1;35m\ue0a0 ${branch}\x1b[0m\x1b[1;35m[wt]\x1b[0m`;
+}
+
+/**
+ * Git 情報をキャッシュ付きで取得（5秒 TTL）
+ */
+function getCachedGitInfo(dir) {
+	try {
+		const cache = readGitCache(dir);
+		if (cache) return cache.value;
+
+		const result = getGitInfo(dir);
+		writeGitCache(dir, result);
+		return result;
+	} catch {
+		return getGitInfo(dir);
+	}
+}
+
+function readGitCache(dir) {
+	try {
+		const raw = fs.readFileSync(GIT_CACHE_FILE, "utf-8");
+		const cache = JSON.parse(raw);
+		if (cache.dir === dir && Date.now() - cache.timestamp < GIT_CACHE_TTL_MS) {
+			return cache;
+		}
+	} catch {
+		// cache miss
+	}
+	return null;
+}
+
+function writeGitCache(dir, value) {
+	try {
+		fs.writeFileSync(
+			GIT_CACHE_FILE,
+			JSON.stringify({ dir, value, timestamp: Date.now() }),
+		);
+	} catch {
+		// ignore write errors
+	}
 }
 
 function getGitInfo(dir) {
@@ -116,25 +222,66 @@ function getGitInfo(dir) {
 
 		if (!branch) return null;
 
-		// 変更があるかチェック
+		// 変更があるかチェック（Starship git_status 準拠: bold red [status]）
 		const status = execSync("git --no-optional-locks status --porcelain", {
 			cwd: dir,
 			encoding: "utf-8",
 			stdio: "pipe",
 		}).trim();
 
-		const hasChanges = status.length > 0;
-		const branchDisplay = hasChanges ? `${branch}*` : branch;
-		const branchColor = hasChanges ? "\x1b[33m" : "\x1b[32m"; // 黄 or 緑
+		// Starship git_branch 準拠:  アイコン + bold purple
+		let result = `\x1b[1;35m\ue0a0 ${branch}\x1b[0m`;
 
-		return `${branchColor}${branchDisplay}\x1b[0m`;
+		// Starship git_status 準拠: bold red [markers]
+		if (status.length > 0) {
+			const markers = parseGitStatus(status);
+			result += ` \x1b[1;31m[${markers}]\x1b[0m`;
+		}
+
+		return result;
 	} catch {
 		return null;
 	}
+}
+
+function parseGitStatus(status) {
+	const lines = status.split("\n");
+	let modified = 0;
+	let added = 0;
+	let deleted = 0;
+	let untracked = 0;
+
+	for (const line of lines) {
+		const x = line[0];
+		const y = line[1];
+		if (x === "?" || y === "?") untracked++;
+		else if (x === "A" || y === "A") added++;
+		else if (x === "D" || y === "D") deleted++;
+		else if (x === "M" || y === "M" || x === "R" || y === "R") modified++;
+	}
+
+	const parts = [];
+	if (modified > 0) parts.push(`!${modified}`);
+	if (added > 0) parts.push(`+${added}`);
+	if (deleted > 0) parts.push(`-${deleted}`);
+	if (untracked > 0) parts.push(`?${untracked}`);
+
+	return parts.join("");
 }
 
 function formatTokenCount(tokens) {
 	if (tokens >= 1000000) return `${(tokens / 1000000).toFixed(1)}M`;
 	if (tokens >= 1000) return `${(tokens / 1000).toFixed(1)}K`;
 	return tokens.toString();
+}
+
+function formatDuration(ms) {
+	const totalSec = Math.floor(ms / 1000);
+	const hours = Math.floor(totalSec / 3600);
+	const minutes = Math.floor((totalSec % 3600) / 60);
+	const seconds = totalSec % 60;
+
+	if (hours > 0) return `${hours}h${minutes}m`;
+	if (minutes > 0) return `${minutes}m${seconds}s`;
+	return `${seconds}s`;
 }
