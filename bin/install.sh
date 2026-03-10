@@ -181,6 +181,12 @@ main() {
     fi
   done
 
+  # Biome グローバル設定（プロジェクトに biome.json がない場合のフォールバック）
+  if [ -f "${SOURCE_ROOT}/biome/biome.json" ]; then
+    local biome_config_dir="${HOME_ROOT}/Library/Application Support/biome"
+    backup_and_link "${SOURCE_ROOT}/biome/biome.json" "${biome_config_dir}/biome.json"
+  fi
+
   echo
   if $DRY_RUN; then
     log "[DRY-RUN] Symlinks installation preview complete!"
