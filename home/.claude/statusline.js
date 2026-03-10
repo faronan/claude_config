@@ -119,9 +119,11 @@ process.stdin.on("end", () => {
 		const context = `${tokenDisplay} ${ctxColor}${bar} ${effectivePct}%${ctxWarning}\x1b[0m`;
 
 		// Session Metrics: Lines + Cost + Duration
-		const metrics = [linesDisplay, costDisplay, durationDisplay]
-			.filter(Boolean)
-			.join(" ");
+		// コンテキスト 0% 時（/clear 直後）は累計値を非表示にする
+		const hasContext = effectivePct > 0;
+		const metrics = hasContext
+			? [linesDisplay, costDisplay, durationDisplay].filter(Boolean).join(" ")
+			: "";
 
 		const parts = [identity, where, context, metrics].filter((v) => v !== "");
 
