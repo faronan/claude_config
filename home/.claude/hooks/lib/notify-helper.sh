@@ -1,22 +1,37 @@
 #!/usr/bin/env bash
 # 通知フック共通ヘルパー関数
 
-# AppleScript文字列のサニタイズ（" と \ をエスケープ）
+# OSC エスケープシーケンス用サニタイズ（制御文字を除去）
 sanitize() {
   local s="$1"
-  s="${s//\\/\\\\}"
-  s="${s//\"/\\\"}"
+  # BEL(\a), ESC(\e), ST(\e\\) を除去（シーケンスの誤終端を防止）
+  s=$(printf '%s' "$s" | tr -d '\a\e')
+  # 改行をスペースに変換
+  s="${s//$'\n'/ }"
   printf '%s' "$s"
 }
 
-# macOS通知を送信
+# Ghostty OSC 777 で通知を送信（クリックでウィンドウフォーカス）
 send_notification() {
   local title="$1"
   local subtitle="$2"
   local message="$3"
 
-  if [[ "$(uname)" == "Darwin" ]]; then
-    osascript -e "display notification \"$(sanitize "$message")\" with title \"$(sanitize "$title")\" subtitle \"$(sanitize "$subtitle")\"" 2>/dev/null || true
+  # subtitle と message を結合して body を構成
+  local body=""
+  if [[ -n "$subtitle" && -n "$message" ]]; then
+    body="${subtitle} | ${message}"
+  else
+    body="${subtitle}${message}"
+  fi
+
+  local safe_title safe_body
+  safe_title=$(sanitize "$title")
+  safe_body=$(sanitize "$body")
+
+  # /dev/tty 経由でターミナルに OSC 777 を送信
+  if [[ -w /dev/tty ]]; then
+    printf '\e]777;notify;%s;%s\a' "$safe_title" "$safe_body" > /dev/tty 2>/dev/null || true
   fi
 }
 
