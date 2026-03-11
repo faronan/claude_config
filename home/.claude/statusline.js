@@ -103,7 +103,7 @@ process.stdin.on("end", () => {
 				? `+${addedDirs.map((d) => path.basename(d)).join(",")}`
 				: null;
 
-		// グループ別に組み立て
+		// === Line 1: Identity + Location ===
 		// Identity: Model + Agent
 		const identity = [`\x1b[36m[${model}]\x1b[0m`, agentDisplay]
 			.filter(Boolean)
@@ -115,6 +115,9 @@ process.stdin.on("end", () => {
 			.filter(Boolean)
 			.join(" ");
 
+		const line1 = [identity, where].filter(Boolean).join(" | ");
+
+		// === Line 2: Context + Metrics ===
 		// Context Resources: Tokens + Bar
 		const context = `${tokenDisplay} ${ctxColor}${bar} ${effectivePct}%${ctxWarning}\x1b[0m`;
 
@@ -125,9 +128,10 @@ process.stdin.on("end", () => {
 				? [linesDisplay, costDisplay, durationDisplay].filter(Boolean).join(" ")
 				: "";
 
-		const parts = [identity, where, context, metrics].filter((v) => v !== "");
+		const line2 = [context, metrics].filter((v) => v !== "").join(" | ");
 
-		console.log(parts.join(" | "));
+		console.log(line1);
+		console.log(line2);
 	} catch (e) {
 		console.log(`[Error] ${e.message}`);
 	}
