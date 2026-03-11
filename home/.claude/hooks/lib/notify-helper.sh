@@ -1,13 +1,26 @@
 #!/usr/bin/env bash
 # 通知フック共通ヘルパー関数
 
+# システム注入タグ (<system-reminder> 等) を内容ごと除去
+# 切り詰め前に呼び出すこと（切り詰め後は閉じタグが欠損しマッチしない）
+strip_system_tags() {
+  local s="$1"
+  s="${s//$'\n'/ }"
+  # <tag>content</tag> ペアを内容ごと除去
+  s=$(printf '%s' "$s" | sed -E 's/<[a-z][a-z0-9_-]*>[^<]*<\/[a-z][a-z0-9_-]*>//g')
+  # 残った孤立タグを除去
+  s=$(printf '%s' "$s" | sed 's/<[^>]*>//g')
+  # 連続スペースを圧縮し先頭末尾の空白を除去
+  s=$(printf '%s' "$s" | tr -s ' ' | sed 's/^ //;s/ $//')
+  printf '%s' "$s"
+}
+
 # OSC エスケープシーケンス用サニタイズ（制御文字を除去）
 sanitize() {
   local s="$1"
-  # BEL(\a), ESC(\e), ST(\e\\) を除去（シーケンスの誤終端を防止）
-  s=$(printf '%s' "$s" | tr -d '\a\e')
-  # 改行をスペースに変換
-  s="${s//$'\n'/ }"
+  # BEL(0x07), ESC(0x1B) を除去（シーケンスの誤終端を防止）
+  # NOTE: BSD tr (macOS) は \e を文字 'e' と解釈するため、8進表記を使用
+  s=$(printf '%s' "$s" | tr -d '\007\033')
   printf '%s' "$s"
 }
 
@@ -53,6 +66,7 @@ get_user_request() {
     request=$(grep -m1 '"type":"user"' "$transcript_path" 2>/dev/null | \
       jq -r '.message.content // "" | if type == "array" then .[0].text // "" else . end' 2>/dev/null | \
       tr '\n' ' ') || true
+    request=$(strip_system_tags "$request")
     printf '%s' "${request:0:$max_len}"
   fi
 }
