@@ -3,6 +3,7 @@
 		"CLAUDE_CODE_TASK_LIST_ID": "PROJECT_NAME"
 	},
 	"plansDirectory": ".claude/plans",
+	"autoMemoryDirectory": ".claude/memory",
 	"disabledMcpjsonServers": [],
 	"sandbox": {
 		"enabled": false,

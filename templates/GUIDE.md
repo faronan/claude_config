@@ -22,48 +22,55 @@
 
 ### 基本原則
 
-| 原則 | 内容 |
-|------|------|
+| 原則       | 内容                                                                        |
+| ---------- | --------------------------------------------------------------------------- |
 | **簡潔さ** | 60行以下（理想は30-40行）。全セッションで読み込まれるためトークン効率が重要 |
-| **WHAT** | 技術スタック、構造（例: React + TypeScript、モノレポ構成） |
-| **WHY** | プロジェクトの目的（例: ECサイトのバックエンド） |
-| **HOW** | 開発・検証方法（例: `pnpm test`、`docker compose up`） |
+| **WHAT**   | 技術スタック、構造（例: React + TypeScript、モノレポ構成）                  |
+| **WHY**    | プロジェクトの目的（例: ECサイトのバックエンド）                            |
+| **HOW**    | 開発・検証方法（例: `pnpm test`、`docker compose up`）                      |
 
 ### 含めるべき内容
 
 **✅ 必須:**
+
 ```markdown
 ## Project Overview
+
 [1-2文でプロジェクトの目的を説明]
 
 ## Commands
+
 - `pnpm dev` - 開発サーバー
 - `pnpm test` - テスト実行
 - `pnpm build` - ビルド
 
 ## Architecture
+
 - `src/` - メインコード
 - `tests/` - テスト
 ```
 
 **✅ 推奨（必要に応じて）:**
+
 ```markdown
 ## Key Files
+
 - `src/config.ts` - 設定管理
 
 ## Conventions
+
 - コンポーネントは PascalCase
 ```
 
 ### 含めるべきでない内容
 
-| 内容 | 理由 | 代替手段 |
-|------|------|----------|
-| コードフォーマット規則 | リンターに任せる | Biome/ESLint 設定 |
-| 詳細な型定義ルール | TSConfig で強制 | `tsconfig.json` |
-| 全コマンドの網羅 | 情報過多 | 頻用コマンドのみ |
-| タスク固有の指示 | 普遍的でない | 会話で指示 |
-| 機密情報 | セキュリティリスク | `.env`、Secrets Manager |
+| 内容                   | 理由               | 代替手段                |
+| ---------------------- | ------------------ | ----------------------- |
+| コードフォーマット規則 | リンターに任せる   | Biome/ESLint 設定       |
+| 詳細な型定義ルール     | TSConfig で強制    | `tsconfig.json`         |
+| 全コマンドの網羅       | 情報過多           | 頻用コマンドのみ        |
+| タスク固有の指示       | 普遍的でない       | 会話で指示              |
+| 機密情報               | セキュリティリスク | `.env`、Secrets Manager |
 
 ### 強調キーワード
 
@@ -71,9 +78,11 @@
 
 ```markdown
 ## IMPORTANT
+
 - [強調したい事項]
 
 ## NEVER
+
 - [絶対にやってはいけないこと]
 ```
 
@@ -108,6 +117,7 @@
     "CLAUDE_CODE_TASK_LIST_ID": "my-project"
   },
   "plansDirectory": ".claude/plans",
+  "autoMemoryDirectory": ".claude/memory",
   "disabledMcpjsonServers": ["playwright"],
   "permissions": {
     "allow": ["Read", "Write", "Bash(pnpm:*)"],
@@ -116,37 +126,42 @@
 }
 ```
 
-| 設定 | 説明 |
-|------|------|
-| `CLAUDE_CODE_TASK_LIST_ID` | タスクリストの識別子。セッション間で共有される |
-| `plansDirectory` | プランファイルの保存場所（コミット可能） |
-| `disabledMcpjsonServers` | 無効化するMCPサーバー |
-| `permissions` | ツールの許可/拒否ルール |
+| 設定                       | 説明                                                     |
+| -------------------------- | -------------------------------------------------------- |
+| `CLAUDE_CODE_TASK_LIST_ID` | タスクリストの識別子。セッション間で共有される           |
+| `plansDirectory`           | プランファイルの保存場所（コミット可能）                 |
+| `autoMemoryDirectory`      | 自動メモリの保存先。リポジトリ内に置くとチームで共有可能 |
+| `disabledMcpjsonServers`   | 無効化するMCPサーバー                                    |
+| `permissions`              | ツールの許可/拒否ルール                                  |
 
 ### 個人用オーバーライド
 
 チーム共有設定を個人的にカスタマイズする場合:
 
-| 共有ファイル | 個人用ファイル |
-|-------------|---------------|
-| `CLAUDE.md` | `CLAUDE.local.md` |
+| 共有ファイル            | 個人用ファイル                |
+| ----------------------- | ----------------------------- |
+| `CLAUDE.md`             | `CLAUDE.local.md`             |
 | `.claude/settings.json` | `.claude/settings.local.json` |
 
 **両方のファイルが存在する場合、マージされます。**
 
 **CLAUDE.local.md の例:**
+
 ```markdown
 # Personal Settings
 
 ## 作業スタイル
+
 - コード変更前に計画を見せてほしい
 - 説明は日本語で詳しく
 
 ## 現在のフォーカス
+
 - [ ] 認証機能のリファクタリング
 ```
 
 **settings.local.json の例:**
+
 ```json
 {
   "permissions": {
@@ -170,12 +185,12 @@
 }
 ```
 
-| 項目 | 内容 |
-|------|------|
-| ステータス | Research Preview（実験的） |
-| トークン消費 | 単一セッションより大幅に増加 |
-| 推奨ユースケース | 並列コードレビュー、複数仮説の同時検証、大規模調査 |
-| 設定場所 | プロジェクトの `settings.local.json`（必要なプロジェクトのみ） |
+| 項目             | 内容                                                           |
+| ---------------- | -------------------------------------------------------------- |
+| ステータス       | Research Preview（実験的）                                     |
+| トークン消費     | 単一セッションより大幅に増加                                   |
+| 推奨ユースケース | 並列コードレビュー、複数仮説の同時検証、大規模調査             |
+| 設定場所         | プロジェクトの `settings.local.json`（必要なプロジェクトのみ） |
 
 ---
 
@@ -183,19 +198,20 @@
 
 ### 推奨ガイドライン
 
-| 項目 | 推奨値 | 理由 |
-|------|--------|------|
-| 有効MCP数 | **10個以下** | ツール選択の混乱を防ぐ |
+| 項目       | 推奨値       | 理由                     |
+| ---------- | ------------ | ------------------------ |
+| 有効MCP数  | **10個以下** | ツール選択の混乱を防ぐ   |
 | 総ツール数 | **80個以下** | プロンプトサイズの最適化 |
 
 ### 設定方法
 
-| 目的 | ファイル | 設定 |
-|------|---------|------|
-| MCP追加 | `.mcp.json` | `mcpServers` に定義 |
+| 目的      | ファイル        | 設定                     |
+| --------- | --------------- | ------------------------ |
+| MCP追加   | `.mcp.json`     | `mcpServers` に定義      |
 | MCP無効化 | `settings.json` | `disabledMcpjsonServers` |
 
 **プロジェクトにMCPを追加（.mcp.json）:**
+
 ```json
 {
   "mcpServers": {
@@ -209,11 +225,11 @@
 
 **ユースケース別の推奨MCP:**
 
-| プロジェクトタイプ | 有効にするMCP |
-|------------------|--------------|
-| Web開発 | context7, playwright |
-| API開発 | context7, github |
-| データ分析 | context7, sequential-thinking |
+| プロジェクトタイプ | 有効にするMCP                 |
+| ------------------ | ----------------------------- |
+| Web開発            | context7, playwright          |
+| API開発            | context7, github              |
+| データ分析         | context7, sequential-thinking |
 
 ---
 
@@ -225,12 +241,15 @@
 
 ```markdown
 ## Documentation
+
 詳細は以下を参照:
+
 - `docs/architecture.md` - システム設計
 - `docs/api.md` - API仕様
 ```
 
 **ディレクトリ別 CLAUDE.md:**
+
 ```
 project/
 ├── CLAUDE.md           # プロジェクト全体
@@ -246,14 +265,15 @@ project/
 
 ```markdown
 ## References
+
 - @README.md
 - @docs/api.md
 ```
 
-| 記法 | 用途 |
-|------|------|
-| `@file.md` | 常に読み込む重要ファイル |
-| `詳細は dir/ を参照` | 必要に応じて探索 |
+| 記法                 | 用途                     |
+| -------------------- | ------------------------ |
+| `@file.md`           | 常に読み込む重要ファイル |
+| `詳細は dir/ を参照` | 必要に応じて探索         |
 
 **注意**: @ インポートはトークンを消費するため、本当に必要なファイルのみ指定。
 
@@ -261,11 +281,11 @@ project/
 
 ## 5. テンプレート選択
 
-| プロジェクトタイプ | テンプレート | 特徴 |
-|------------------|-------------|------|
-| 最小構成 | `minimal/` | 10行程度、汎用 |
-| TypeScript Web | `typescript-web/` | React/Next.js、Playwright MCP |
-| Python データ分析 | `python-data/` | Jupyter、pandas/numpy |
+| プロジェクトタイプ | テンプレート      | 特徴                          |
+| ------------------ | ----------------- | ----------------------------- |
+| 最小構成           | `minimal/`        | 10行程度、汎用                |
+| TypeScript Web     | `typescript-web/` | React/Next.js、Playwright MCP |
+| Python データ分析  | `python-data/`    | Jupyter、pandas/numpy         |
 
 ---
 
