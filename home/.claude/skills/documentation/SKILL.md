@@ -1,5 +1,6 @@
 ---
 name: documentation
+effort: medium
 argument-hint: "[target file or topic]"
 description: |
   Generate README, API docs, JSDoc comments, and architecture documentation.

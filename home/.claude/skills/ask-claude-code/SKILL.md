@@ -1,5 +1,6 @@
 ---
 name: ask-claude-code
+effort: medium
 argument-hint: "question about Claude Code/API/SDK"
 context: fork
 agent: claude-code-guide

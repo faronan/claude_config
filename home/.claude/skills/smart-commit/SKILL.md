@@ -1,5 +1,6 @@
 ---
 name: smart-commit
+effort: medium
 description: |
   Split changes into logical commits with Conventional Commits format.
   Trigger words: "分割コミット", "スマートコミット", "コミット分けて", "smart commit", "論理コミット".

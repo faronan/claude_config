@@ -1,5 +1,6 @@
 ---
 name: test-generation
+effort: medium
 argument-hint: "[target file or function]"
 description: |
   Generate unit tests, integration tests, and test cases covering edge cases and error handling.

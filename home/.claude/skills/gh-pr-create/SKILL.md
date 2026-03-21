@@ -1,5 +1,6 @@
 ---
 name: gh-pr-create
+effort: medium
 argument-hint: "[options: --base, --draft]"
 description: |
   Push済みの変更からPRを作成する。
