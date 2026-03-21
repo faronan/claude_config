@@ -68,10 +68,8 @@ process.stdin.on("end", () => {
 		const empty = barWidth - filled;
 		const bar = "\u2593".repeat(filled) + "\u2591".repeat(empty);
 
-		// 実効使用率の色分け
-		let ctxColor = "\x1b[32m"; // 緑: <60%
-		if (effectivePct >= 60) ctxColor = "\x1b[33m"; // 黄: コンパクションが近い
-		if (effectivePct >= 85) ctxColor = "\x1b[31m"; // 赤: まもなくコンパクション
+		// 実効使用率の TrueColor グラデーション
+		const ctxColor = trueColorGradient(effectivePct);
 
 		// 200K超過警告（2.0.72+）
 		let ctxWarning = "";
@@ -131,7 +129,7 @@ process.stdin.on("end", () => {
 				? [linesDisplay, costDisplay, durationDisplay].filter(Boolean).join(" ")
 				: "";
 
-		const line2 = [context, metrics, rateLimitDisplay]
+		const line2 = [context, rateLimitDisplay, metrics]
 			.filter((v) => v !== "" && v != null)
 			.join(" | ");
 
@@ -294,32 +292,51 @@ function getRateLimitDisplay(rateLimits) {
 	const fiveHour = rateLimits.five_hour;
 	if (fiveHour?.used_percentage != null) {
 		const pct = Math.round(fiveHour.used_percentage);
-		const color = getRateLimitColor(pct);
+		const color = trueColorGradient(pct);
+		const icon = ringMeter(pct);
 		const reset = pct >= 80 ? formatResetTime(fiveHour.resets_at) : "";
-		parts.push(`${color}5h:${pct}%${reset}\x1b[0m`);
+		parts.push(`${color}${icon} 5h:${pct}%${reset}\x1b[0m`);
 	}
 
 	const sevenDay = rateLimits.seven_day;
 	if (sevenDay?.used_percentage != null) {
 		const pct = Math.round(sevenDay.used_percentage);
-		const color = getRateLimitColor(pct);
+		const color = trueColorGradient(pct);
+		const icon = ringMeter(pct);
 		const reset = pct >= 80 ? formatResetTime(sevenDay.resets_at) : "";
-		parts.push(`${color}7d:${pct}%${reset}\x1b[0m`);
+		parts.push(`${color}${icon} 7d:${pct}%${reset}\x1b[0m`);
 	}
 
 	return parts.length > 0 ? parts.join(" ") : null;
 }
 
-function getRateLimitColor(pct) {
-	if (pct >= 80) return "\x1b[31m"; // 赤: 残り少ない
-	if (pct >= 50) return "\x1b[33m"; // 黄: 注意
-	return "\x1b[32m"; // 緑: 余裕あり
+/**
+ * TrueColor gradient (0%=green → 50%=yellow → 100%=red)
+ * Uses 24-bit ANSI escape for smooth color transition
+ */
+function trueColorGradient(pct) {
+	pct = Math.min(Math.max(pct, 0), 100);
+	if (pct < 50) {
+		const r = Math.round(pct * 5.1);
+		return `\x1b[38;2;${r};200;80m`;
+	}
+	const g = Math.max(0, Math.round(200 - (pct - 50) * 4));
+	return `\x1b[38;2;255;${g};60m`;
+}
+
+/**
+ * Ring Meter indicator (○◔◑◕● in 5 levels)
+ */
+function ringMeter(pct) {
+	const rings = ["○", "◔", "◑", "◕", "●"];
+	const idx = Math.min(Math.floor(pct / 25), 4);
+	return rings[idx];
 }
 
 function formatResetTime(resetsAt) {
 	if (!resetsAt) return "";
 	try {
-		const reset = new Date(resetsAt);
+		const reset = new Date(resetsAt * 1000);
 		const now = new Date();
 		const diffMs = reset - now;
 		if (diffMs <= 0) return "";
