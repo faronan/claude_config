@@ -1,5 +1,6 @@
 ---
 name: mcp-guidance
+effort: low
 user-invocable: false
 description: |
   Guide selection and usage of MCP servers (Context7, Sequential Thinking, GitHub).
@@ -14,10 +15,10 @@ allowed-tools:
 
 ## MCP vs Skills の役割分担
 
-| 役割 | MCP | Skills |
-|------|-----|--------|
+| 役割         | MCP                      | Skills                 |
+| ------------ | ------------------------ | ---------------------- |
 | 提供するもの | 接続性（データアクセス） | 専門知識（手順・判断） |
-| 例え | 店へのアクセス | 何を買うかの知識 |
+| 例え         | 店へのアクセス           | 何を買うかの知識       |
 
 **原則**: MCP は「どうやって接続するか」、Skills は「どう使うか・何を判断するか」
 
@@ -26,15 +27,18 @@ allowed-tools:
 ## Context7 MCP
 
 ### いつ使うか
+
 - ライブラリの**公式ドキュメント**が必要な時
 - フレームワークの**ベストプラクティス**を確認したい時
 - **バージョン固有**の API を調べる時
 
 ### いつ使わないか
+
 - 一般的なプログラミング知識で十分な時
 - ドキュメントより実際のコードを読むべき時
 
 ### 使用例
+
 ```
 ✅ "React useEffect の公式パターンを確認"
 ✅ "Next.js 14 の App Router 設定方法"
@@ -43,6 +47,7 @@ allowed-tools:
 ```
 
 ### Workflow
+
 1. `resolve-library-id` でライブラリ ID を取得
 2. `get-library-docs` で該当トピックを取得
 3. 取得した情報を実装に適用
@@ -52,15 +57,18 @@ allowed-tools:
 ## Sequential Thinking MCP
 
 ### いつ使うか
+
 - **複雑な推論**が必要な時（多段階の分析、トレードオフ評価）
 - **仮説検証**を繰り返す時
 - 思考プロセスを**明示的に構造化**したい時
 
 ### いつ使わないか
+
 - 単純な実装タスク
 - 答えが明確な質問
 
 ### 使用例
+
 ```
 ✅ "このアーキテクチャの長所短所を分析"
 ✅ "バグの根本原因を特定"
@@ -69,6 +77,7 @@ allowed-tools:
 ```
 
 ### Workflow
+
 1. 問題を定義
 2. `sequentialthinking` で段階的に分析
 3. 各ステップで仮説を立て検証
@@ -79,15 +88,18 @@ allowed-tools:
 ## GitHub MCP
 
 ### いつ使うか
+
 - **PR/Issue の操作**（作成、更新、コメント）
 - **リポジトリ情報**の取得
 - **GitHub Actions** の確認
 
 ### いつ使わないか
+
 - ローカル git 操作（`git` コマンドを使用）
 - 単純なファイル読み書き
 
 ### 使用例
+
 ```
 ✅ "Issue #123 の詳細を確認"
 ✅ "PR を作成してレビュー依頼"
@@ -113,11 +125,11 @@ allowed-tools:
 
 ## 組み合わせパターン
 
-| シナリオ | 組み合わせ |
-|---------|-----------|
-| 新ライブラリ導入判断 | Context7（調査）→ Sequential（比較分析） |
-| バグ修正 PR 作成 | Sequential（原因分析）→ GitHub（PR作成） |
-| フレームワーク移行 | Context7（新旧ドキュメント）→ Sequential（計画策定） |
+| シナリオ             | 組み合わせ                                           |
+| -------------------- | ---------------------------------------------------- |
+| 新ライブラリ導入判断 | Context7（調査）→ Sequential（比較分析）             |
+| バグ修正 PR 作成     | Sequential（原因分析）→ GitHub（PR作成）             |
+| フレームワーク移行   | Context7（新旧ドキュメント）→ Sequential（計画策定） |
 
 ## Error Handling
 

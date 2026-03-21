@@ -1,5 +1,6 @@
 ---
 name: handoff
+effort: low
 description: Summarize session progress for handoff to next session
 disable-model-invocation: true
 allowed-tools:
@@ -14,6 +15,7 @@ allowed-tools:
 現在のセッションの進捗をまとめ、次のセッションへの引継ぎ情報を生成する。
 
 ## Session Context
+
 - Current branch: !`git branch --show-current`
 - Recent commits: !`git log --oneline -5`
 - Uncommitted changes: !`git status --short`
@@ -31,23 +33,28 @@ allowed-tools:
 # Session Handoff
 
 ## Completed
+
 - [完了タスク1]
 - [完了タスク2]
 
 ## Current State
+
 - 変更ファイル: [リスト]
 - テスト状態: [PASS/FAIL]
 - ビルド状態: [OK/NG]
 
 ## Next Steps
+
 1. [ ] [次のタスク1]
 2. [ ] [次のタスク2]
 
 ## Notes
+
 - [注意点や未解決の問題]
 
 ---
-*Generated at: [timestamp]*
+
+_Generated at: [timestamp]_
 ```
 
 ## Error Handling

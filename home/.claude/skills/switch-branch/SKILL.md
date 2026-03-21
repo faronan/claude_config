@@ -1,5 +1,6 @@
 ---
 name: switch-branch
+effort: low
 description: |
   Create branch with Conventional Branch naming from current changes.
   Trigger words: "ブランチ作成", "ブランチ切り替え", "switch branch", "新しいブランチ".
@@ -16,6 +17,7 @@ allowed-tools:
 現在のgit差分を分析し、Conventional Branch形式でブランチ名を生成・作成する。
 
 ## Current State
+
 - Current branch: !`git branch --show-current`
 - Status: !`git status --porcelain`
 - Diff summary: !`git diff --stat`
@@ -35,16 +37,16 @@ allowed-tools:
 
 ### Type
 
-| Type | 用途 |
-|------|------|
-| feat | 新機能 |
-| fix | バグ修正 |
-| refactor | リファクタリング |
-| docs | ドキュメント |
-| chore | 雑務・設定 |
-| test | テスト追加 |
-| perf | パフォーマンス改善 |
-| ci | CI設定 |
+| Type     | 用途               |
+| -------- | ------------------ |
+| feat     | 新機能             |
+| fix      | バグ修正           |
+| refactor | リファクタリング   |
+| docs     | ドキュメント       |
+| chore    | 雑務・設定         |
+| test     | テスト追加         |
+| perf     | パフォーマンス改善 |
+| ci       | CI設定             |
 
 ### Description Rules
 

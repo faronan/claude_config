@@ -1,5 +1,6 @@
 ---
 name: api-test
+effort: low
 argument-hint: "[METHOD URL JSON_BODY]"
 context: fork
 description: |
@@ -15,6 +16,7 @@ allowed-tools:
 # API Test Skill
 
 ## Purpose
+
 - APIエンドポイントの動作確認
 - JSONペイロードを含むHTTPリクエストの送信
 - シェルエスケープ問題を回避した安全なcurl実行

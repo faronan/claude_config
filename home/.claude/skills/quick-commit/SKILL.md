@@ -1,5 +1,6 @@
 ---
 name: quick-commit
+effort: low
 description: |
   Quick commit without confirmation (for small changes).
   Trigger words: "即コミット", "すぐコミット", "quick commit", "サクッとコミット".

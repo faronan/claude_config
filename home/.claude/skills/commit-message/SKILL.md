@@ -1,5 +1,6 @@
 ---
 name: commit-message
+effort: low
 argument-hint: "[files to commit]"
 user-invocable: false
 description: |
