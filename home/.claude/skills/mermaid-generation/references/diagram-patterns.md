@@ -5,6 +5,7 @@
 ## classDiagram
 
 ### テンプレート
+
 ```mermaid
 classDiagram
     class ClassName {
@@ -19,6 +20,7 @@ classDiagram
 ```
 
 ### TypeScript からの変換
+
 ```typescript
 // Source
 interface Animal {
@@ -29,13 +31,19 @@ interface Animal {
 class Dog implements Animal {
   name: string;
   breed: string;
-  speak(): void { /* ... */ }
-  private bark(): void { /* ... */ }
+  speak(): void {
+    /* ... */
+  }
+  private bark(): void {
+    /* ... */
+  }
 }
 
 class Cat implements Animal {
   name: string;
-  speak(): void { /* ... */ }
+  speak(): void {
+    /* ... */
+  }
 }
 ```
 
@@ -61,6 +69,7 @@ classDiagram
 ```
 
 ### Python からの変換
+
 ```python
 # Source
 class Base(ABC):
@@ -89,6 +98,7 @@ classDiagram
 ## sequenceDiagram
 
 ### テンプレート
+
 ```mermaid
 sequenceDiagram
     participant U as User
@@ -105,6 +115,7 @@ sequenceDiagram
 ```
 
 ### 変換のポイント
+
 - `await` / `async` 呼び出し → 非同期メッセージ (`->>`)
 - コールバック/戻り値 → 応答メッセージ (`-->>`)
 - try/catch → alt/else ブロック
@@ -113,6 +124,7 @@ sequenceDiagram
 ## flowchart
 
 ### テンプレート
+
 ```mermaid
 flowchart TD
     A[Start] --> B{Condition}
@@ -127,6 +139,7 @@ flowchart TD
 ```
 
 ### 変換のポイント
+
 - `if/else` → 菱形ノード `{}`
 - `switch/case` → 複数分岐
 - `try/catch` → エラーハンドリングパス
@@ -135,6 +148,7 @@ flowchart TD
 ## erDiagram
 
 ### テンプレート
+
 ```mermaid
 erDiagram
     USER {
@@ -161,6 +175,7 @@ erDiagram
 ```
 
 ### 変換のポイント
+
 - Prisma schema / TypeORM Entity → テーブル定義
 - `@relation` / `ForeignKey` → リレーション
 - カーディナリティ: `||--o{` (1対多), `||--||` (1対1), `}o--o{` (多対多)
@@ -168,6 +183,7 @@ erDiagram
 ## stateDiagram
 
 ### テンプレート
+
 ```mermaid
 stateDiagram-v2
     [*] --> Idle
@@ -180,6 +196,7 @@ stateDiagram-v2
 ```
 
 ### 変換のポイント
+
 - enum/union type の状態 → ステート
 - 状態変更関数 → トランジション
 - Redux reducer / XState config → 直接マッピング
@@ -187,6 +204,7 @@ stateDiagram-v2
 ## graph（依存関係）
 
 ### テンプレート
+
 ```mermaid
 graph TD
     subgraph Core
@@ -203,6 +221,7 @@ graph TD
 ```
 
 ### 変換のポイント
+
 - `import` / `require` → 依存エッジ
 - ディレクトリ構造 → サブグラフ
 - 循環依存 → 双方向矢印で警告表示

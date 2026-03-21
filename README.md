@@ -159,19 +159,19 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 
 #### 自動発動（Claude が判断）
 
-| スキル              | 発動トリガー例                          |
-| ------------------- | --------------------------------------- |
-| `code-review`       | 「レビュー」「コードチェック」          |
-| `refactoring`       | 「リファクタ」「整理」                  |
-| `test-generation`   | 「テスト書いて」「テスト追加」          |
-| `planning`          | 「計画」「設計」                        |
-| `documentation`     | 「ドキュメント」「README」              |
-| `web-research`      | 「調べて」「research」「比較」          |
-| `gh-pr-review`      | 「PRレビュー」「PR見て」                |
-| `ask-claude-code`   | 「Claude Code の使い方」「API の仕様」  |
-| `api-test`          | 「API」「curl」「エンドポイント」       |
-| `mermaid-generator` | 「Mermaid」「ダイアグラム」「クラス図」 |
-| `skill-creator`     | 「スキル作成」「create skill」          |
+| スキル               | 発動トリガー例                          |
+| -------------------- | --------------------------------------- |
+| `code-review`        | 「レビュー」「コードチェック」          |
+| `refactoring`        | 「リファクタ」「整理」                  |
+| `test-generation`    | 「テスト書いて」「テスト追加」          |
+| `planning`           | 「計画」「設計」                        |
+| `documentation`      | 「ドキュメント」「README」              |
+| `web-research`       | 「調べて」「research」「比較」          |
+| `gh-pr-review`       | 「PRレビュー」「PR見て」                |
+| `ask-claude-code`    | 「Claude Code の使い方」「API の仕様」  |
+| `api-test`           | 「API」「curl」「エンドポイント」       |
+| `mermaid-generation` | 「Mermaid」「ダイアグラム」「クラス図」 |
+| `skill-creation`     | 「スキル作成」「create skill」          |
 
 #### 内部スキル（他スキルから呼び出し）
 

@@ -1,5 +1,5 @@
 ---
-name: skill-creator
+name: skill-creation
 argument-hint: "[skill name or description]"
 description: |
   Build, validate, and package Claude Code skills with best practices.

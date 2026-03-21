@@ -158,4 +158,4 @@ Retrieve a list of users.
 
 ---
 
-Mermaid 図のテンプレートは `/mermaid-generator` スキルを参照。
+Mermaid 図のテンプレートは `/mermaid-generation` スキルを参照。

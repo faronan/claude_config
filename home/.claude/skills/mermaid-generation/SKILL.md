@@ -1,5 +1,5 @@
 ---
-name: mermaid-generator
+name: mermaid-generation
 argument-hint: "[diagram type] [target file or module]"
 description: |
   Generate Mermaid diagrams from codebase analysis.
