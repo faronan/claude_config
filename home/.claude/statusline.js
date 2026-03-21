@@ -96,6 +96,9 @@ process.stdin.on("end", () => {
 				? `\x1b[32m+${linesAdded}\x1b[0m/\x1b[31m-${linesRemoved}\x1b[0m`
 				: null;
 
+		// レート制限表示（v2.1.80+: rate_limits）
+		const rateLimitDisplay = getRateLimitDisplay(data.rate_limits);
+
 		// 追加ディレクトリ表示（v2.1.47+: workspace.added_dirs）
 		const addedDirs = data.workspace?.added_dirs || [];
 		const addedDirsDisplay =
@@ -128,7 +131,9 @@ process.stdin.on("end", () => {
 				? [linesDisplay, costDisplay, durationDisplay].filter(Boolean).join(" ")
 				: "";
 
-		const line2 = [context, metrics].filter((v) => v !== "").join(" | ");
+		const line2 = [context, metrics, rateLimitDisplay]
+			.filter((v) => v !== "" && v != null)
+			.join(" | ");
 
 		console.log(line1);
 		console.log(line2);
@@ -274,6 +279,58 @@ function formatTokenCount(tokens) {
 	if (tokens >= 1000000) return `${(tokens / 1000000).toFixed(1)}M`;
 	if (tokens >= 1000) return `${(tokens / 1000).toFixed(1)}K`;
 	return tokens.toString();
+}
+
+/**
+ * レート制限表示（v2.1.80+）
+ * 5時間・7日間ウィンドウの使用率を色分けして表示
+ * データがない場合（API キーユーザー等）は null を返す
+ */
+function getRateLimitDisplay(rateLimits) {
+	if (!rateLimits) return null;
+
+	const parts = [];
+
+	const fiveHour = rateLimits.five_hour;
+	if (fiveHour?.used_percentage != null) {
+		const pct = Math.round(fiveHour.used_percentage);
+		const color = getRateLimitColor(pct);
+		const reset = pct >= 80 ? formatResetTime(fiveHour.resets_at) : "";
+		parts.push(`${color}5h:${pct}%${reset}\x1b[0m`);
+	}
+
+	const sevenDay = rateLimits.seven_day;
+	if (sevenDay?.used_percentage != null) {
+		const pct = Math.round(sevenDay.used_percentage);
+		const color = getRateLimitColor(pct);
+		const reset = pct >= 80 ? formatResetTime(sevenDay.resets_at) : "";
+		parts.push(`${color}7d:${pct}%${reset}\x1b[0m`);
+	}
+
+	return parts.length > 0 ? parts.join(" ") : null;
+}
+
+function getRateLimitColor(pct) {
+	if (pct >= 80) return "\x1b[31m"; // 赤: 残り少ない
+	if (pct >= 50) return "\x1b[33m"; // 黄: 注意
+	return "\x1b[32m"; // 緑: 余裕あり
+}
+
+function formatResetTime(resetsAt) {
+	if (!resetsAt) return "";
+	try {
+		const reset = new Date(resetsAt);
+		const now = new Date();
+		const diffMs = reset - now;
+		if (diffMs <= 0) return "";
+		const diffMin = Math.floor(diffMs / 60000);
+		if (diffMin < 60) return `(${diffMin}m)`;
+		const diffHr = Math.floor(diffMin / 60);
+		if (diffHr < 24) return `(${diffHr}h)`;
+		return `(${Math.floor(diffHr / 24)}d)`;
+	} catch {
+		return "";
+	}
 }
 
 function formatDuration(ms) {
