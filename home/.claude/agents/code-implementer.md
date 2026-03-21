@@ -15,8 +15,11 @@ tools:
   - Edit
   - Bash(npm run:*)
   - Bash(pnpm:*)
+disallowedTools:
+  - Bash(git add:*)
+  - Bash(git commit:*)
+  - Bash(git push:*)
 skills:
-  - commit-message
   - test-generation
 ---
 
