@@ -40,7 +40,10 @@ if [[ -z "$changed_files" ]]; then
 fi
 
 # Python: ruff check --fix + format
-if command -v ruff &>/dev/null; then
+# CLAUDE_SKIP_RUFF=1 でスキップ可能
+if [[ "${CLAUDE_SKIP_RUFF:-}" == "1" ]]; then
+  : # skip
+elif command -v ruff &>/dev/null; then
   py_files=$(echo "$changed_files" | grep '\.py$' || true)
   if [[ -n "$py_files" ]]; then
     while IFS= read -r f; do

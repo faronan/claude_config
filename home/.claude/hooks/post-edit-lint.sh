@@ -46,7 +46,10 @@ case "$extension" in
 
   py)
     # Ruff format のみ（lint auto-fix は Stop hook で実行）
-    if command -v ruff &> /dev/null; then
+    # CLAUDE_SKIP_RUFF=1 でスキップ可能
+    if [[ "${CLAUDE_SKIP_RUFF:-}" == "1" ]]; then
+      : # skip
+    elif command -v ruff &> /dev/null; then
       format_result=$(ruff format "$file_path" 2>&1) || {
         echo "[Format] Ruff auto-formatted $file_path:" >&2
         echo "$format_result" >&2
