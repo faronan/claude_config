@@ -159,16 +159,6 @@
 						"timeout": 5
 					}
 				]
-			},
-			{
-				"matcher": "Bash|Read",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "~/.claude/hooks/guard-task-output.sh",
-						"timeout": 5
-					}
-				]
 			}
 		],
 		"Stop": [
@@ -222,6 +212,17 @@
 					{
 						"type": "command",
 						"command": "~/.claude/hooks/pre-compact.sh",
+						"timeout": 10
+					}
+				]
+			}
+		],
+		"CwdChanged": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "~/.claude/hooks/cwd-changed.sh",
 						"timeout": 10
 					}
 				]
