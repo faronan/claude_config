@@ -4,13 +4,11 @@
 # 中間編集での未使用 import 誤削除を防止する
 # Exit codes: 0=成功（警告のみ）
 
-set -euo pipefail
-
 # Claude CodeからのJSON入力を読み取り
-input=$(cat)
+input=$(cat) || exit 0
 
 # tool_inputからファイルパスを取得（Edit/Write共通）
-file_path=$(echo "$input" | jq -r '.tool_input.file_path // empty')
+file_path=$(echo "$input" | jq -r '.tool_input.file_path // empty' 2>/dev/null) || exit 0
 
 if [[ -z "$file_path" ]]; then
   exit 0
