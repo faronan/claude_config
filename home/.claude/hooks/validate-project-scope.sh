@@ -1,16 +1,14 @@
 #!/bin/bash
 # プロジェクト外ディレクトリへの書き込みを検出・ブロックするフック
-# Exit codes: 0=許可, 2=ブロック
-#
-# NOTE: Claude Code の既知バグ (#17088, #34713) により、exit 0 でも
-# "PreToolUse:Bash hook error" が UI に表示されることがある。
-# フック自体は正常に動作しており、表示上の問題のため無視して良い。
 
-input=$(cat) || exit 0
-command=$(printf '%s' "$input" | jq -r '.tool_input.command // empty' 2>/dev/null) || exit 0
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/lib/hook-helper.sh"
+
+input=$(cat) || pretooluse_allow
+command=$(printf '%s' "$input" | jq -r '.tool_input.command // empty' 2>/dev/null) || pretooluse_allow
 
 if [[ -z "$command" ]]; then
-  exit 0
+  pretooluse_allow
 fi
 
 # チェック対象のコマンドから安全なリダイレクト（>/dev/null, 2>&1 等）を除去して判定
@@ -33,12 +31,7 @@ WRITE_PATTERNS=(
 
 for pattern in "${WRITE_PATTERNS[@]}"; do
   if printf '%s' "$sanitized" | grep -qE "$pattern" 2>/dev/null; then
-    cat <<EOF >&2
-[Security] プロジェクト外のディレクトリへの書き込みは許可されていません。
-コマンド: $command
-プロジェクト内のディレクトリを使用してください。
-EOF
-    exit 2
+    pretooluse_deny "[Security] プロジェクト外のディレクトリへの書き込みは許可されていません。コマンド: $command"
   fi
 done
 
@@ -55,13 +48,8 @@ HOME_WRITE_PATTERNS=(
 
 for pattern in "${HOME_WRITE_PATTERNS[@]}"; do
   if printf '%s' "$sanitized" | grep -qE "$pattern" 2>/dev/null; then
-    cat <<EOF >&2
-[Security] ホームディレクトリへの直接書き込みは許可されていません。
-コマンド: $command
-プロジェクト内のディレクトリを使用してください。
-EOF
-    exit 2
+    pretooluse_deny "[Security] ホームディレクトリへの直接書き込みは許可されていません。コマンド: $command"
   fi
 done
 
-exit 0
+pretooluse_allow

@@ -1,28 +1,28 @@
 #!/usr/bin/env bash
 # PreToolUse フック: 不要ファイルの読み込みをブロック
-# Exit codes: 0=許可, 2=ブロック
 
-set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/lib/hook-helper.sh"
 
-input=$(cat)
+input=$(cat) || pretooluse_allow
 
-tool_name=$(echo "$input" | jq -r '.tool_name // empty')
+tool_name=$(echo "$input" | jq -r '.tool_name // empty' 2>/dev/null) || pretooluse_allow
 
 # 対象パスを取得（Read: file_path, Glob: pattern）
 case "$tool_name" in
   Read)
-    target=$(echo "$input" | jq -r '.tool_input.file_path // empty')
+    target=$(echo "$input" | jq -r '.tool_input.file_path // empty' 2>/dev/null) || pretooluse_allow
     ;;
   Glob)
-    target=$(echo "$input" | jq -r '.tool_input.pattern // empty')
+    target=$(echo "$input" | jq -r '.tool_input.pattern // empty' 2>/dev/null) || pretooluse_allow
     ;;
   *)
-    exit 0
+    pretooluse_allow
     ;;
 esac
 
 if [[ -z "$target" ]]; then
-  exit 0
+  pretooluse_allow
 fi
 
 # ブロック対象ディレクトリ
@@ -37,8 +37,7 @@ blocked_dirs=(
 
 for dir in "${blocked_dirs[@]}"; do
   if [[ "$target" == *"$dir"* ]]; then
-    echo "[Guard] Blocked: $target ($dir is not allowed)" >&2
-    exit 2
+    pretooluse_deny "[Guard] Blocked: $target ($dir is not allowed)"
   fi
 done
 
@@ -47,8 +46,8 @@ if [[ "$tool_name" == "Read" && -f "$target" ]]; then
   file_size=$(stat -f%z "$target" 2>/dev/null || echo 0)
   if [[ "$file_size" -gt 512000 ]]; then
     size_kb=$((file_size / 1024))
-    echo "[Guard] Warning: $target is ${size_kb}KB (>500KB)" >&2
+    pretooluse_allow "[Guard] Warning: $target is ${size_kb}KB (>500KB). Consider using offset/limit parameters."
   fi
 fi
 
-exit 0
+pretooluse_allow
