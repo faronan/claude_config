@@ -34,10 +34,12 @@ case "$extension" in
       }
     fi
 
-    # console.log 警告（JS/TSのみ）
+    # console.log 警告（JS/TSのみ、新規追加行のみ）
     if [[ "$extension" =~ ^(ts|tsx|js|jsx)$ ]]; then
-      if grep -n "console\.log" "$file_path" 2>/dev/null; then
-        echo "[Warning] console.log found in $file_path - consider removing before commit" >&2
+      added_console=$(git diff --no-color -U0 -- "$file_path" 2>/dev/null | grep -E '^\+.*console\.log' | grep -v '^\+\+\+' || true)
+      if [[ -n "$added_console" ]]; then
+        echo "[Warning] New console.log added in $file_path - consider removing before commit" >&2
+        echo "$added_console" >&2
       fi
     fi
     ;;
@@ -54,14 +56,19 @@ case "$extension" in
       }
     fi
 
-    # print() 警告
-    if grep -n "^[^#]*print(" "$file_path" 2>/dev/null | grep -v "# noqa"; then
-      echo "[Warning] print() found in $file_path - consider removing before commit" >&2
+    # print() 警告（新規追加行のみ）
+    added_print=$(git diff --no-color -U0 -- "$file_path" 2>/dev/null | grep -E '^\+[^+].*print\(' | grep -v '# noqa' || true)
+    if [[ -n "$added_print" ]]; then
+      echo "[Warning] New print() added in $file_path - consider removing before commit" >&2
+      echo "$added_print" >&2
     fi
     ;;
 
   md|yaml|yml|scss|css)
-    if command -v prettier &> /dev/null; then
+    # CLAUDE_SKIP_PRETTIER=1 でスキップ可能
+    if [[ "${CLAUDE_SKIP_PRETTIER:-}" == "1" ]]; then
+      : # skip
+    elif command -v prettier &> /dev/null; then
       result=$(prettier --write "$file_path" 2>&1) || {
         echo "[Format] Prettier auto-formatted $file_path:" >&2
         echo "$result" >&2

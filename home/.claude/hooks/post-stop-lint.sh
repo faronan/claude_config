@@ -69,7 +69,10 @@ elif command -v biome &>/dev/null; then
 fi
 
 # Markdown/YAML/SCSS/CSS: prettier --write
-if command -v prettier &>/dev/null; then
+# CLAUDE_SKIP_PRETTIER=1 でスキップ可能
+if [[ "${CLAUDE_SKIP_PRETTIER:-}" == "1" ]]; then
+  : # skip
+elif command -v prettier &>/dev/null; then
   style_files=$(echo "$changed_files" | grep -E '\.(md|yaml|yml|scss|css)$' || true)
   if [[ -n "$style_files" ]]; then
     while IFS= read -r f; do
