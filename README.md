@@ -2,7 +2,7 @@
 
 Claude Code のグローバル設定ディレクトリ `~/.claude` を Git 管理するためのリポジトリ。
 
-**25 スキル・10 エージェント・6 フック・6 ルール** を統合し、3 つの設計原則で全体を設計しています。
+**25 スキル・10 エージェント・9 フック・6 ルール** を統合し、3 つの設計原則で全体を設計しています。
 
 - **Progressive Disclosure** — 必要な情報を必要な時に（CLAUDE.md は 27 行）
 - **最小権限と関心の分離** — 10 エージェント中 8 エージェントが指示レベルで読み取り専用
@@ -114,14 +114,17 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 
 セキュリティ検証・自動化用のフックスクリプト。
 
-| フック                      | トリガー                  | 用途                                 | async |
-| --------------------------- | ------------------------- | ------------------------------------ | ----- |
-| `session-start.sh`          | SessionStart              | ツール確認、Git/ランタイム情報表示   | -     |
-| `validate-project-scope.sh` | PreToolUse (Bash)         | プロジェクト外への書き込みをブロック | -     |
-| `context-guard.sh`          | PreToolUse (Read\|Glob)   | node_modules 等の読み込みをブロック  | -     |
-| `post-edit-lint.sh`         | PostToolUse (Edit\|Write) | 編集後の自動 lint/format             | Yes   |
-| `notify-completion.sh`      | Stop                      | セッション完了通知                   | Yes   |
-| `notify-input-required.sh`  | Notification              | 入力必要時通知                       | Yes   |
+| フック                      | トリガー                  | 用途                                         | async |
+| --------------------------- | ------------------------- | -------------------------------------------- | ----- |
+| `session-start.sh`          | SessionStart              | ツール確認、Git/ランタイム情報表示           | -     |
+| `validate-project-scope.sh` | PreToolUse (Bash)         | プロジェクト外への書き込みをブロック         | -     |
+| `context-guard.sh`          | PreToolUse (Read\|Glob)   | node_modules 等の読み込みをブロック          | -     |
+| `post-edit-lint.sh`         | PostToolUse (Edit\|Write) | 編集後の自動フォーマット（format のみ）      | -     |
+| `post-stop-lint.sh`         | Stop                      | タスク完了後の lint auto-fix                 | -     |
+| `pre-compact.sh`            | PreCompact                | コンパクション前に作業状態をコンテキスト保存 | -     |
+| `cwd-changed.sh`            | CwdChanged                | ディレクトリ変更時に mise 環境を自動リロード | -     |
+| `notify-completion.sh`      | Stop                      | セッション完了通知                           | Yes   |
+| `notify-input-required.sh`  | Notification              | 入力必要時通知                               | Yes   |
 
 ### ルール（rules/）
 
