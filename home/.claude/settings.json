@@ -1,240 +1,240 @@
 {
-	"$schema": "https://json.schemastore.org/claude-code-settings.json",
-	"respectGitignore": true,
-	"env": {
-		"EDITOR": "code",
-		"CLAUDE_CODE_TMPDIR": "/Users/toshiki.ito/.claude/tmp",
-		"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70"
-	},
-	"permissions": {
-		"allow": [
-			"Skill",
-			"Read",
-			"Glob",
-			"Grep",
-			"Edit",
-			"Write",
-			"Bash(git status *)",
-			"Bash(git diff *)",
-			"Bash(git log *)",
-			"Bash(git add *)",
-			"Bash(git branch *)",
-			"Bash(git checkout *)",
-			"Bash(git switch *)",
-			"Bash(npm *)",
-			"Bash(pnpm *)",
-			"Bash(yarn *)",
-			"Bash(npx *)",
-			"Bash(node *)",
-			"Bash(tsc *)",
-			"Bash(python *)",
-			"Bash(pytest *)",
-			"Bash(uv *)",
-			"Bash(ruff *)",
-			"Bash(biome *)",
-			"Bash(mise *)",
-			"Bash(ls *)",
-			"Bash(tree *)",
-			"Bash(eza *)",
-			"Bash(bat *)",
-			"Bash(cat *)",
-			"Bash(head *)",
-			"Bash(tail *)",
-			"Bash(wc *)",
-			"Bash(yq *)",
-			"Bash(fzf *)",
-			"Bash(rg *)",
-			"Bash(fd *)",
-			"Bash(grep *)",
-			"Bash(find *)",
-			"Bash(jq *)",
-			"Bash(gh pr view *)",
-			"Bash(gh pr list *)",
-			"Bash(gh pr diff *)",
-			"Bash(gh pr checks *)",
-			"Bash(gh issue view *)",
-			"Bash(gh issue list *)",
-			"Bash(gh repo view *)",
-			"Bash(gh api *)",
-			"Bash(docker logs *)",
-			"Bash(docker ps *)",
-			"Bash(docker inspect *)",
-			"Bash(docker compose logs *)",
-			"mcp__context7__*",
-			"mcp__sequential-thinking__*",
-			"mcp__github__*",
-			"mcp__playwright__*"
-		],
-		"deny": [
-			"Bash(*| bash)",
-			"Bash(*| sh)",
-			"Bash(rm -rf /*)",
-			"Bash(rm -rf ~/*)",
-			"Bash(rm -rf $HOME/*)",
-			"Bash(sudo *)",
-			"Bash(su *)",
-			"Bash(chmod 777 *)",
-			"Bash(git push --force *)",
-			"Bash(git push -f *)",
-			"Bash(git reset --hard *)",
-			"Bash(git clean -fd *)",
-			"Read(.env)",
-			"Read(.env.*)",
-			"Read(**/.env)",
-			"Read(**/.env.*)",
-			"Read(**/secrets/**)",
-			"Read(**/credentials.json)",
-			"Read(~/.ssh/**)",
-			"Read(~/.aws/**)",
-			"Read(~/.kube/**)",
-			"Read(**/*.pem)",
-			"Read(**/*.key)"
-		],
-		"ask": [
-			"Bash(mkdir *)",
-			"Bash(rm *)",
-			"Bash(mv *)",
-			"Bash(git commit *)",
-			"Bash(git stash *)",
-			"Bash(git rebase *)",
-			"Bash(git push *)",
-			"Bash(git merge *)",
-			"Bash(git tag *)",
-			"Bash(git branch -D *)",
-			"Bash(docker run *)",
-			"Bash(docker exec *)",
-			"Bash(docker build *)",
-			"Bash(docker stop *)",
-			"Bash(docker kill *)",
-			"Bash(docker rm *)",
-			"Bash(docker rmi *)",
-			"Bash(docker push *)",
-			"Bash(docker pull *)",
-			"Bash(docker compose up *)",
-			"Bash(docker compose down *)",
-			"Bash(docker compose exec *)",
-			"Bash(docker system *)",
-			"Bash(kubectl *)",
-			"Bash(npm install *)",
-			"Bash(pnpm add *)",
-			"Bash(brew install *)",
-			"Bash(gh pr create *)",
-			"Bash(gh pr merge *)",
-			"Bash(gh issue create *)"
-		]
-	},
-	"attribution": {
-		"commit": "Co-Authored-By: Claude <noreply@anthropic.com>",
-		"pr": "Generated with [Claude Code](https://claude.com/claude-code)"
-	},
-	"hooks": {
-		"SessionStart": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "~/.claude/hooks/session-start.sh",
-						"timeout": 10
-					}
-				]
-			}
-		],
-		"PreToolUse": [
-			{
-				"matcher": "Bash",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "~/.claude/hooks/validate-project-scope.sh",
-						"timeout": 15
-					}
-				]
-			},
-			{
-				"matcher": "Read|Glob",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "~/.claude/hooks/context-guard.sh",
-						"timeout": 5
-					}
-				]
-			}
-		],
-		"Stop": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "~/.claude/hooks/post-stop-lint.sh",
-						"timeout": 30
-					}
-				]
-			},
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "~/.claude/hooks/notify-completion.sh",
-						"timeout": 10,
-						"async": true
-					}
-				]
-			}
-		],
-		"Notification": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "~/.claude/hooks/notify-input-required.sh",
-						"timeout": 10,
-						"async": true
-					}
-				]
-			}
-		],
-		"PostToolUse": [
-			{
-				"matcher": "Edit|Write",
-				"hooks": [
-					{
-						"type": "command",
-						"command": "~/.claude/hooks/post-edit-lint.sh",
-						"timeout": 30
-					}
-				]
-			}
-		],
-		"PreCompact": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "~/.claude/hooks/pre-compact.sh",
-						"timeout": 10
-					}
-				]
-			}
-		],
-		"CwdChanged": [
-			{
-				"hooks": [
-					{
-						"type": "command",
-						"command": "~/.claude/hooks/cwd-changed.sh",
-						"timeout": 10
-					}
-				]
-			}
-		]
-	},
-	"statusLine": {
-		"type": "command",
-		"command": "~/.claude/statusline.js",
-		"padding": 0
-	},
-	"includeGitInstructions": false,
-	"language": "japanese",
-	"effortLevel": "high"
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "respectGitignore": true,
+  "env": {
+    "EDITOR": "code",
+    "CLAUDE_CODE_TMPDIR": "/Users/toshiki.ito/.claude/tmp",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70"
+  },
+  "attribution": {
+    "commit": "Co-Authored-By: Claude <noreply@anthropic.com>",
+    "pr": "Generated with [Claude Code](https://claude.com/claude-code)"
+  },
+  "includeGitInstructions": false,
+  "permissions": {
+    "allow": [
+      "Skill",
+      "Read",
+      "Glob",
+      "Grep",
+      "Edit",
+      "Write",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git branch *)",
+      "Bash(git checkout *)",
+      "Bash(git switch *)",
+      "Bash(npm *)",
+      "Bash(pnpm *)",
+      "Bash(yarn *)",
+      "Bash(npx *)",
+      "Bash(node *)",
+      "Bash(tsc *)",
+      "Bash(python *)",
+      "Bash(pytest *)",
+      "Bash(uv *)",
+      "Bash(ruff *)",
+      "Bash(biome *)",
+      "Bash(mise *)",
+      "Bash(ls *)",
+      "Bash(tree *)",
+      "Bash(eza *)",
+      "Bash(bat *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(yq *)",
+      "Bash(fzf *)",
+      "Bash(rg *)",
+      "Bash(fd *)",
+      "Bash(grep *)",
+      "Bash(find *)",
+      "Bash(jq *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr list *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh pr checks *)",
+      "Bash(gh issue view *)",
+      "Bash(gh issue list *)",
+      "Bash(gh repo view *)",
+      "Bash(gh api *)",
+      "Bash(docker logs *)",
+      "Bash(docker ps *)",
+      "Bash(docker inspect *)",
+      "Bash(docker compose logs *)",
+      "mcp__context7__*",
+      "mcp__sequential-thinking__*",
+      "mcp__github__*",
+      "mcp__playwright__*"
+    ],
+    "deny": [
+      "Bash(*| bash)",
+      "Bash(*| sh)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~/*)",
+      "Bash(rm -rf $HOME/*)",
+      "Bash(sudo *)",
+      "Bash(su *)",
+      "Bash(chmod 777 *)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean -fd *)",
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/secrets/**)",
+      "Read(**/credentials.json)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.kube/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)"
+    ],
+    "ask": [
+      "Bash(mkdir *)",
+      "Bash(rm *)",
+      "Bash(mv *)",
+      "Bash(git commit *)",
+      "Bash(git stash *)",
+      "Bash(git rebase *)",
+      "Bash(git push *)",
+      "Bash(git merge *)",
+      "Bash(git tag *)",
+      "Bash(git branch -D *)",
+      "Bash(docker run *)",
+      "Bash(docker exec *)",
+      "Bash(docker build *)",
+      "Bash(docker stop *)",
+      "Bash(docker kill *)",
+      "Bash(docker rm *)",
+      "Bash(docker rmi *)",
+      "Bash(docker push *)",
+      "Bash(docker pull *)",
+      "Bash(docker compose up *)",
+      "Bash(docker compose down *)",
+      "Bash(docker compose exec *)",
+      "Bash(docker system *)",
+      "Bash(kubectl *)",
+      "Bash(npm install *)",
+      "Bash(pnpm add *)",
+      "Bash(brew install *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr merge *)",
+      "Bash(gh issue create *)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/session-start.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/validate-project-scope.sh",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/context-guard.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/post-stop-lint.sh",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notify-completion.sh",
+            "timeout": 10,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notify-input-required.sh",
+            "timeout": 10,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/post-edit-lint.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/pre-compact.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "CwdChanged": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/cwd-changed.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.js",
+    "padding": 0
+  },
+  "language": "japanese",
+  "effortLevel": "high"
 }
