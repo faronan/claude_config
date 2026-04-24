@@ -5,8 +5,7 @@
 		"EDITOR": "code",
 		"CLAUDE_CODE_TMPDIR": "/Users/toshiki.ito/.claude/tmp",
 		"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
-		"CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
-		"showThinkingSummaries": "true"
+		"CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1"
 	},
 	"attribution": {
 		"commit": "Co-Authored-By: Claude <noreply@anthropic.com>",
@@ -260,6 +259,7 @@
 	},
 	"language": "japanese",
 	"effortLevel": "high",
+	"showThinkingSummaries": true,
 	"theme": "light",
 	"preferredNotifChannel": "ghostty"
 }
