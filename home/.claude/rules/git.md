@@ -16,7 +16,6 @@ Skills（commit-message, gh-pr-create）が操作を支援する。
 ## コミット
 
 - 1コミット = 1論理変更（atomic commits）
-- Breaking Change: Type に `!` 付与 + Footer に `BREAKING CHANGE: 説明`
 
 ## マージ戦略
 
