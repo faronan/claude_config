@@ -2,18 +2,17 @@
 
 ## Critical Rules
 
-1. 不明点は実装前に質問（推測で進めない）
+1. 不明点は実装前に質問（推測で進めず明確にする）
 2. 破壊的操作は実行前に確認を求める
 3. TDD で進める（探索 → Red → Green → Refactoring）。コード変更後はテスト・型チェック・lint で検証する
-4. パッケージマネージャは lockfile に従う（Toolchain 参照）
-5. pip を直接使わない（uv pip / uv add を使う）
-6. docker-compose.yml があるプロジェクトではコンテナ内でコマンド実行する
+4. docker-compose.yml があるプロジェクトではコンテナ内でコマンド実行する
 
 ## Code Design
 
 - 関心の分離を保ち、状態とロジックを分ける
 - コントラクト層（API/型）を厳密定義し、実装層は再生成可能に保つ
 - 静的検査可能なルールはプロンプトではなく linter / ast-grep で記述する
+- KPI やカバレッジ目標が与えられたら、達成するまで試行する
 
 ## Language
 
@@ -55,7 +54,8 @@ pip / python -m pip の直接使用は禁止（uv pip / uv add を使う）。
 - 未解決の問題や次のステップ
 - ユーザーからの重要な指示や制約
 
-## Notes
+## Skill Management
 
-- rules/ に言語・ドメイン別ルールあり（paths 指定で自動適用）
-- プロジェクト固有の CLAUDE.md で `@import` によりルールを選択参照可能
+- **project固有** (`<repo>/.claude/skills/`): ドメイン知識・規約・ファイルレイアウト依存、他 repo で再利用しない
+- **グローバル** (`~/.claude/skills/`): 言語・ツール横断、複数 repo で再利用可能
+- グローバルに作成する場合はユーザーに確認してから作成（projectのリポジトリ管理外のため）
