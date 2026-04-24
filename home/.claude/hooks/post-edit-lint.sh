@@ -9,6 +9,7 @@ input=$(cat) || exit 0
 
 # tool_inputからファイルパスを取得（Edit/Write共通）
 file_path=$(echo "$input" | jq -r '.tool_input.file_path // empty' 2>/dev/null) || exit 0
+duration_ms=$(echo "$input" | jq -r '.duration_ms // 0' 2>/dev/null) || duration_ms=0
 
 if [[ -z "$file_path" ]]; then
   exit 0
@@ -17,6 +18,11 @@ fi
 # ファイルが存在しない場合はスキップ
 if [[ ! -f "$file_path" ]]; then
   exit 0
+fi
+
+# 30秒超の書き込みは異常（大容量ファイルの可能性）
+if (( duration_ms > 30000 )); then
+  echo "[Warning] Slow write detected: ${duration_ms}ms for $file_path (file may be too large)" >&2
 fi
 
 extension="${file_path##*.}"

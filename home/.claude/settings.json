@@ -4,7 +4,9 @@
 	"env": {
 		"EDITOR": "code",
 		"CLAUDE_CODE_TMPDIR": "/Users/toshiki.ito/.claude/tmp",
-		"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70"
+		"CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
+		"CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
+		"showThinkingSummaries": "true"
 	},
 	"attribution": {
 		"commit": "Co-Authored-By: Claude <noreply@anthropic.com>",
@@ -50,7 +52,6 @@
 			"Bash(gh issue view *)",
 			"Bash(gh issue list *)",
 			"Bash(gh repo view *)",
-			"Bash(gh api *)",
 			"Bash(docker logs *)",
 			"Bash(docker ps *)",
 			"Bash(docker inspect *)",
@@ -73,6 +74,24 @@
 			"Bash(git push -f *)",
 			"Bash(git reset --hard *)",
 			"Bash(git clean -fd *)",
+			"Bash(npm install*)",
+			"Bash(npm ci*)",
+			"Bash(pnpm install*)",
+			"Bash(yarn install*)",
+			"Bash(yarn add*)",
+			"Bash(pnpm add*)",
+			"Bash(gh repo delete *)",
+			"Bash(gh repo archive *)",
+			"Bash(gh secret *)",
+			"Bash(gh variable set *)",
+			"Bash(gh variable delete *)",
+			"Bash(gh ssh-key add *)",
+			"Bash(gh ssh-key delete *)",
+			"Bash(gh gpg-key add *)",
+			"Bash(gh gpg-key delete *)",
+			"Bash(gh auth login *)",
+			"Bash(gh auth logout *)",
+			"Bash(gh pr merge *)",
 			"Bash(cat .env)",
 			"Bash(cat .env.*)",
 			"Bash(cat *.env)",
@@ -125,15 +144,13 @@
 			"Bash(docker compose exec *)",
 			"Bash(docker system *)",
 			"Bash(kubectl *)",
-			"Bash(npm install *)",
-			"Bash(pnpm add *)",
 			"Bash(brew install *)",
 			"Bash(gh pr create *)",
-			"Bash(gh pr merge *)",
-			"Bash(gh issue create *)"
-		]
+			"Bash(gh issue create *)",
+			"Bash(gh api *)"
+		],
+		"defaultMode": "default"
 	},
-	"model": "opus",
 	"hooks": {
 		"SessionStart": [
 			{
@@ -242,5 +259,7 @@
 		"padding": 0
 	},
 	"language": "japanese",
-	"effortLevel": "high"
+	"effortLevel": "high",
+	"theme": "light",
+	"preferredNotifChannel": "ghostty"
 }

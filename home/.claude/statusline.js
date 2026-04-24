@@ -34,6 +34,15 @@ process.stdin.on("end", () => {
 		const agentName = data.agent?.name || null;
 		const agentDisplay = agentName ? `\x1b[35m@${agentName}\x1b[0m` : null;
 
+		// Effort level と Thinking 表示（v2.1.119+）
+		const effortLevel = data.effort?.level || null;
+		const thinkingEnabled = data.thinking?.enabled || false;
+		const effortIcons = { high: "●", normal: "◕", low: "○" };
+		const effortDisplay = effortLevel
+			? `\x1b[33m${effortIcons[effortLevel] || "?"}${effortLevel}\x1b[0m`
+			: null;
+		const thinkingDisplay = thinkingEnabled ? `\x1b[36m[T]\x1b[0m` : null;
+
 		// context_window の中にあるトークン情報
 		const contextWindow = data.context_window || {};
 		const contextWindowSize = contextWindow.context_window_size || 200000;
@@ -106,7 +115,12 @@ process.stdin.on("end", () => {
 
 		// === Line 1: Identity + Location ===
 		// Identity: Model + Agent
-		const identity = [`\x1b[36m[${model}]\x1b[0m`, agentDisplay]
+		const identity = [
+			`\x1b[36m[${model}]\x1b[0m`,
+			effortDisplay,
+			thinkingDisplay,
+			agentDisplay,
+		]
 			.filter(Boolean)
 			.join(" ");
 
