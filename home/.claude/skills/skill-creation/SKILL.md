@@ -85,3 +85,4 @@ SKILL.md を指定パスに生成/修正
 
 - 詳細なベストプラクティスは `${CLAUDE_SKILL_DIR}/references/best-practices.md` を参照
 - frontmatter の仕様は `${CLAUDE_SKILL_DIR}/references/frontmatter-spec.md` を参照
+- 新規作成・大幅改訂後の品質検証は `empirical-prompt-tuning` skill を参照

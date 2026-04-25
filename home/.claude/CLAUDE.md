@@ -59,3 +59,4 @@ pip / python -m pip の直接使用は禁止（uv pip / uv add を使う）。
 - **project固有** (`<repo>/.claude/skills/`): ドメイン知識・規約・ファイルレイアウト依存、他 repo で再利用しない
 - **グローバル** (`~/.claude/skills/`): 言語・ツール横断、複数 repo で再利用可能
 - グローバルに作成する場合はユーザーに確認してから作成（projectのリポジトリ管理外のため）
+- 重要度の高い skill / プロンプトは新規作成・大幅改訂後に `empirical-prompt-tuning` で反復改善する（収束基準: 連続 2 イテレーションで新規不明瞭点ゼロ）
