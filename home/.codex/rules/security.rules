@@ -1,0 +1,23 @@
+prefix_rule(
+    pattern=["sudo"],
+    decision="forbidden",
+    justification="sudo は使用禁止",
+)
+
+prefix_rule(
+    pattern=["bash", "-c"],
+    decision="prompt",
+    justification="インライン bash 実行はユーザー確認を要する",
+)
+
+prefix_rule(
+    pattern=["sh", "-c"],
+    decision="prompt",
+    justification="インライン sh 実行はユーザー確認を要する",
+)
+
+prefix_rule(
+    pattern=["curl", "-o"],
+    decision="prompt",
+    justification="外部スクリプトのダウンロードはユーザー確認を要する",
+)
