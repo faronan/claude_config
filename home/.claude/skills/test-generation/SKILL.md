@@ -5,6 +5,7 @@ argument-hint: "[target file or function]"
 description: |
   Generate unit tests, integration tests, and test cases covering edge cases and error handling.
   Use when the user asks to write tests, add test coverage, or create test cases.
+  Note: Playwright (E2E) のテストは playwright-test skill を優先。
   Trigger words: "テスト", "test", "テストを書いて", "テストケース", "カバレッジ",
   "単体テスト", "ユニットテスト", "spec", "検証", "テスト追加", "write tests".
 allowed-tools:
