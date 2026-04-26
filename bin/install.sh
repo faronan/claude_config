@@ -170,6 +170,19 @@ setup_codex() {
   log "Codex setup complete!"
 }
 
+setup_agents() {
+  echo
+  log "=== Agents Setup ==="
+
+  if [ ! -d "${SOURCE_ROOT}/.agents" ]; then
+    log "Agents directory not found. Skipping Agents setup."
+    return
+  fi
+
+  backup_and_link "${SOURCE_ROOT}/.agents" "${HOME_ROOT}/.agents"
+  log "Agents setup complete!"
+}
+
 #=== メイン処理 ========================
 main() {
   if $DRY_RUN; then
@@ -203,11 +216,11 @@ main() {
     done
   fi
 
-  # home 直下のドットファイル（.claude 以外）
+  # home 直下のドットファイル（.claude / .agents 以外）
   for src in "${SOURCE_ROOT}"/.*; do
     basename="$(basename "$src")"
     case "$basename" in
-      .|..|.claude) continue ;;
+      .|..|.claude|.agents) continue ;;
     esac
     if [ -f "$src" ]; then
       dest="${HOME_ROOT}/${basename}"
@@ -236,6 +249,9 @@ main() {
 
   # Codex のセットアップ
   setup_codex
+
+  # Codex/Agents 共通スキルのセットアップ
+  setup_agents
 
   echo
   if $DRY_RUN; then
