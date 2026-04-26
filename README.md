@@ -2,7 +2,7 @@
 
 Claude Code のグローバル設定ディレクトリ `~/.claude` を Git 管理するためのリポジトリ。
 
-**27 スキル・10 エージェント・9 フック・6 ルール** を統合し、3 つの設計原則で全体を設計しています。
+**28 スキル・10 エージェント・9 フック・6 ルール** を統合し、3 つの設計原則で全体を設計しています。
 
 - **Progressive Disclosure** — 必要な情報を必要な時に（CLAUDE.md は 27 行）
 - **最小権限と関心の分離** — 10 エージェント中 8 エージェントが指示レベルで読み取り専用
@@ -162,21 +162,22 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 
 #### 自動発動（Claude が判断）
 
-| スキル                    | 発動トリガー例                               |
-| ------------------------- | -------------------------------------------- |
-| `code-review`             | 「レビュー」「コードチェック」               |
-| `refactoring`             | 「リファクタ」「整理」                       |
-| `test-generation`         | 「テスト書いて」「テスト追加」               |
-| `playwright-test`         | 「Playwright」「E2E」「playwright.config」   |
-| `planning`                | 「計画」「設計」                             |
-| `documentation`           | 「ドキュメント」「README」                   |
-| `web-research`            | 「調べて」「research」「比較」               |
-| `gh-pr-review`            | 「PRレビュー」「PR見て」                     |
-| `ask-claude-code`         | 「Claude Code の使い方」「API の仕様」       |
-| `api-test`                | 「API」「curl」「エンドポイント」            |
-| `mermaid-generation`      | 「Mermaid」「ダイアグラム」「クラス図」      |
-| `skill-creation`          | 「スキル作成」「create skill」               |
-| `empirical-prompt-tuning` | 「プロンプト改善」「スキル評価」「反復改善」 |
+| スキル                    | 発動トリガー例                                                                         |
+| ------------------------- | -------------------------------------------------------------------------------------- |
+| `code-review`             | 「レビュー」「コードチェック」                                                         |
+| `refactoring`             | 「リファクタ」「整理」                                                                 |
+| `test-generation`         | 「テスト書いて」「テスト追加」                                                         |
+| `playwright-test`         | 「Playwright」「E2E」「playwright.config」                                             |
+| `planning`                | 「計画」「設計」                                                                       |
+| `documentation`           | 「ドキュメント」「README」                                                             |
+| `web-research`            | 「調べて」「research」「比較」                                                         |
+| `gh-pr-review`            | 「PRレビュー」「PR見て」                                                               |
+| `ask-claude-code`         | 「Claude Code の使い方」「API の仕様」                                                 |
+| `api-test`                | 「API」「curl」「エンドポイント」                                                      |
+| `mermaid-generation`      | 「Mermaid」「ダイアグラム」「クラス図」                                                |
+| `skill-creation`          | 「スキル作成」「create skill」                                                         |
+| `empirical-prompt-tuning` | 「プロンプト改善」「スキル評価」「反復改善」                                           |
+| `codex-delegate`          | 「Codex に聞いて」「セカンドオピニオン」「別視点でレビュー」「Codex で調査」「rescue」 |
 
 #### 内部スキル（他スキルから呼び出し）
 
