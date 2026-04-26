@@ -1,0 +1,35 @@
+prefix_rule(
+    pattern=["rm", "-rf", "/"],
+    decision="forbidden",
+    justification="ルートディレクトリの削除は禁止",
+)
+
+prefix_rule(
+    pattern=["rm", "-rf", "~"],
+    decision="forbidden",
+    justification="ホームディレクトリの削除は禁止",
+)
+
+prefix_rule(
+    pattern=["rm", "-rf"],
+    decision="prompt",
+    justification="再帰的削除はユーザー確認を要する",
+)
+
+prefix_rule(
+    pattern=["rm", "-r"],
+    decision="prompt",
+    justification="再帰的削除はユーザー確認を要する",
+)
+
+prefix_rule(
+    pattern=["mv"],
+    decision="prompt",
+    justification="ファイル移動はユーザー確認を要する",
+)
+
+prefix_rule(
+    pattern=["mkdir"],
+    decision="prompt",
+    justification="ディレクトリ作成はユーザー確認を要する",
+)

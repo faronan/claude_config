@@ -16,6 +16,12 @@ home/.claude/.credentials.json
 .claude/plans
 .claude/tmp
 
+# Codex 状態ファイル
+home/.codex/history.jsonl
+home/.codex/*.log
+home/.codex/logs/
+home/.codex/tmp/
+
 # OS 固有
 .DS_Store
 Thumbs.db

@@ -1,0 +1,42 @@
+model                   = "gpt-5.5"
+model_reasoning_effort  = "high"
+model_reasoning_summary = "auto"
+approval_policy         = "on-request"
+sandbox_mode            = "workspace-write"
+personality             = "pragmatic"
+
+# プロジェクトの CLAUDE.md を AGENTS.md の fallback として読む
+project_doc_fallback_filenames = ["CLAUDE.md"]
+
+# macOS 通知（セッション完了時）
+notify = ["bash", "-lc", "osascript -e 'display notification \"Codex タスク完了\" with title \"Codex\"' 2>/dev/null || true"]
+
+[sandbox_workspace_write]
+writable_roots  = []
+network_access  = false
+
+[agents]
+max_threads             = 6
+max_depth               = 1
+job_max_runtime_seconds = 3600
+
+[features]
+shell_tool  = true
+multi_agent = true
+memories    = true
+
+[tui]
+notifications = false
+animations    = true
+theme         = "catppuccin-mocha"
+
+[mcp_servers.context7]
+command             = "npx"
+args                = ["-y", "@upstash/context7-mcp@latest"]
+enabled             = true
+startup_timeout_sec = 10.0
+
+[mcp_servers.sequential-thinking]
+command = "npx"
+args    = ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+enabled = true

@@ -136,6 +136,40 @@ setup_mcp_servers() {
   log "MCP servers configured! Verify with: claude mcp list"
 }
 
+setup_codex() {
+  echo
+  log "=== Codex Setup ==="
+
+  if $DRY_RUN; then
+    log "[DRY-RUN] Would create: ${HOME_ROOT}/.codex"
+    log "[DRY-RUN] Would link: ~/.codex/* -> ${SOURCE_ROOT}/.codex/*"
+    return
+  fi
+
+  if ! command -v codex &> /dev/null; then
+    log "Codex not found. Skipping Codex setup."
+    log "Install Codex first: npm install -g @openai/codex"
+    return
+  fi
+
+  mkdir -p "${HOME_ROOT}/.codex"
+
+  if [ -d "${SOURCE_ROOT}/.codex" ]; then
+    for src in "${SOURCE_ROOT}/.codex"/* "${SOURCE_ROOT}/.codex"/.*; do
+      basename="$(basename "$src")"
+      case "$basename" in
+        .|..) continue ;;
+      esac
+      if [ -e "$src" ]; then
+        dest="${HOME_ROOT}/.codex/${basename}"
+        backup_and_link "$src" "$dest"
+      fi
+    done
+  fi
+
+  log "Codex setup complete!"
+}
+
 #=== メイン処理 ========================
 main() {
   if $DRY_RUN; then
@@ -199,6 +233,9 @@ main() {
 
   # MCP サーバーのセットアップ
   setup_mcp_servers
+
+  # Codex のセットアップ
+  setup_codex
 
   echo
   if $DRY_RUN; then
