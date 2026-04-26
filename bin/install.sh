@@ -174,12 +174,18 @@ setup_agents() {
   echo
   log "=== Agents Setup ==="
 
-  if [ ! -d "${SOURCE_ROOT}/.agents" ]; then
-    log "Agents directory not found. Skipping Agents setup."
+  if [ ! -d "${SOURCE_ROOT}/.claude/skills" ]; then
+    log "Claude skills directory not found. Skipping Agents setup."
     return
   fi
 
-  backup_and_link "${SOURCE_ROOT}/.agents" "${HOME_ROOT}/.agents"
+  if $DRY_RUN; then
+    log "[DRY-RUN] Would create: ${HOME_ROOT}/.agents"
+  else
+    mkdir -p "${HOME_ROOT}/.agents"
+  fi
+
+  backup_and_link "${SOURCE_ROOT}/.claude/skills" "${HOME_ROOT}/.agents/skills"
   log "Agents setup complete!"
 }
 
@@ -216,11 +222,11 @@ main() {
     done
   fi
 
-  # home 直下のドットファイル（.claude / .agents 以外）
+  # home 直下のドットファイル（.claude 以外）
   for src in "${SOURCE_ROOT}"/.*; do
     basename="$(basename "$src")"
     case "$basename" in
-      .|..|.claude|.agents) continue ;;
+      .|..|.claude) continue ;;
     esac
     if [ -f "$src" ]; then
       dest="${HOME_ROOT}/${basename}"
