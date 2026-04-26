@@ -37,8 +37,6 @@ lockfile で判定し、対応するツールを使う:
 - `uv.lock` → uv
 - lockfile がない場合 → pnpm / uv をデフォルトとする
 
-pip / python -m pip の直接使用は禁止（uv pip / uv add を使う）。
-
 ## Model
 
 - Agent tool で model パラメータを指定しない（親モデルを継承）
