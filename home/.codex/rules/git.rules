@@ -5,6 +5,12 @@ prefix_rule(
 )
 
 prefix_rule(
+    pattern=["git", "push", "-f"],
+    decision="forbidden",
+    justification="Force push はリモート履歴を破壊する",
+)
+
+prefix_rule(
     pattern=["git", "push", "--force-with-lease"],
     decision="forbidden",
     justification="Force push はリモート履歴を破壊する",
@@ -14,6 +20,18 @@ prefix_rule(
     pattern=["git", "reset", "--hard"],
     decision="forbidden",
     justification="未保存の変更を破壊する可能性がある",
+)
+
+prefix_rule(
+    pattern=["git", "clean", "-fd"],
+    decision="prompt",
+    justification="未追跡ファイルの削除はユーザー確認を要する",
+)
+
+prefix_rule(
+    pattern=["git", "clean", "-fdx"],
+    decision="prompt",
+    justification="未追跡ファイルと ignored ファイルの削除はユーザー確認を要する",
 )
 
 prefix_rule(
@@ -38,4 +56,16 @@ prefix_rule(
     pattern=["git", "rebase"],
     decision="prompt",
     justification="リベースはユーザー確認を要する",
+)
+
+prefix_rule(
+    pattern=["git", "stash"],
+    decision="prompt",
+    justification="stash は作業状態を変えるためユーザー確認を要する",
+)
+
+prefix_rule(
+    pattern=["git", "tag"],
+    decision="prompt",
+    justification="タグ作成・変更はユーザー確認を要する",
 )

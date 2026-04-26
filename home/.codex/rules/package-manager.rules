@@ -1,0 +1,53 @@
+prefix_rule(
+    pattern=["npm", "install"],
+    decision="forbidden",
+    justification="npm install は lockfile 方針に反する可能性があるため禁止。必要なら pnpm/uv 方針を確認する",
+)
+
+prefix_rule(
+    pattern=["npm", "ci"],
+    decision="forbidden",
+    justification="npm ci はユーザー確認なしに依存関係を展開するため禁止",
+)
+
+prefix_rule(
+    pattern=["pnpm", "install"],
+    decision="forbidden",
+    justification="pnpm install は依存関係を変更・展開するためユーザー確認なしでは禁止",
+)
+
+prefix_rule(
+    pattern=["pnpm", "add"],
+    decision="forbidden",
+    justification="pnpm add は依存関係を変更するため禁止。必要な場合は事前に確認する",
+)
+
+prefix_rule(
+    pattern=["yarn", "install"],
+    decision="forbidden",
+    justification="yarn install は lockfile 方針に反する可能性があるため禁止",
+)
+
+prefix_rule(
+    pattern=["yarn", "add"],
+    decision="forbidden",
+    justification="yarn add は依存関係を変更するため禁止。必要な場合は事前に確認する",
+)
+
+prefix_rule(
+    pattern=["pip"],
+    decision="forbidden",
+    justification="pip の直接使用は禁止。Python 依存関係は uv を使う",
+)
+
+prefix_rule(
+    pattern=["python", "-m", "pip"],
+    decision="forbidden",
+    justification="python -m pip の直接使用は禁止。Python 依存関係は uv を使う",
+)
+
+prefix_rule(
+    pattern=["python3", "-m", "pip"],
+    decision="forbidden",
+    justification="python3 -m pip の直接使用は禁止。Python 依存関係は uv を使う",
+)

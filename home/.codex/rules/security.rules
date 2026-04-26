@@ -5,6 +5,18 @@ prefix_rule(
 )
 
 prefix_rule(
+    pattern=["su"],
+    decision="forbidden",
+    justification="su は使用禁止",
+)
+
+prefix_rule(
+    pattern=["chmod", "777"],
+    decision="forbidden",
+    justification="chmod 777 は過剰な権限付与のため禁止",
+)
+
+prefix_rule(
     pattern=["bash", "-c"],
     decision="prompt",
     justification="インライン bash 実行はユーザー確認を要する",
@@ -20,4 +32,94 @@ prefix_rule(
     pattern=["curl", "-o"],
     decision="prompt",
     justification="外部スクリプトのダウンロードはユーザー確認を要する",
+)
+
+prefix_rule(
+    pattern=["gh", "repo", "delete"],
+    decision="forbidden",
+    justification="GitHub リポジトリ削除は禁止",
+)
+
+prefix_rule(
+    pattern=["gh", "repo", "archive"],
+    decision="forbidden",
+    justification="GitHub リポジトリアーカイブは禁止",
+)
+
+prefix_rule(
+    pattern=["gh", "secret"],
+    decision="forbidden",
+    justification="GitHub Secrets の操作は禁止",
+)
+
+prefix_rule(
+    pattern=["gh", "variable", "set"],
+    decision="forbidden",
+    justification="GitHub Actions variables の変更は禁止",
+)
+
+prefix_rule(
+    pattern=["gh", "variable", "delete"],
+    decision="forbidden",
+    justification="GitHub Actions variables の削除は禁止",
+)
+
+prefix_rule(
+    pattern=["gh", "ssh-key", "add"],
+    decision="forbidden",
+    justification="GitHub SSH key の追加は禁止",
+)
+
+prefix_rule(
+    pattern=["gh", "ssh-key", "delete"],
+    decision="forbidden",
+    justification="GitHub SSH key の削除は禁止",
+)
+
+prefix_rule(
+    pattern=["gh", "gpg-key", "add"],
+    decision="forbidden",
+    justification="GitHub GPG key の追加は禁止",
+)
+
+prefix_rule(
+    pattern=["gh", "gpg-key", "delete"],
+    decision="forbidden",
+    justification="GitHub GPG key の削除は禁止",
+)
+
+prefix_rule(
+    pattern=["gh", "auth", "login"],
+    decision="forbidden",
+    justification="GitHub 認証状態の変更は禁止",
+)
+
+prefix_rule(
+    pattern=["gh", "auth", "logout"],
+    decision="forbidden",
+    justification="GitHub 認証状態の変更は禁止",
+)
+
+prefix_rule(
+    pattern=["gh", "pr", "merge"],
+    decision="prompt",
+    justification="PR merge はユーザー確認を要する",
+)
+
+prefix_rule(
+    pattern=["gh", "pr", "create"],
+    decision="prompt",
+    justification="PR 作成はユーザー確認を要する",
+)
+
+prefix_rule(
+    pattern=["gh", "issue", "create"],
+    decision="prompt",
+    justification="Issue 作成はユーザー確認を要する",
+)
+
+prefix_rule(
+    pattern=["gh", "api"],
+    decision="prompt",
+    justification="GitHub API 呼び出しは副作用の可能性があるためユーザー確認を要する",
 )

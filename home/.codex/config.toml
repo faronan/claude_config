@@ -3,6 +3,7 @@ model_reasoning_effort  = "high"
 model_reasoning_summary = "auto"
 approval_policy         = "on-request"
 sandbox_mode            = "workspace-write"
+default_permissions     = "workspace"
 personality             = "pragmatic"
 
 # プロジェクトの CLAUDE.md を AGENTS.md の fallback として読む
@@ -10,6 +11,22 @@ project_doc_fallback_filenames = ["CLAUDE.md"]
 
 # macOS 通知（セッション完了時）
 notify = ["bash", "-lc", "osascript -e 'display notification \"Codex タスク完了\" with title \"Codex\"' 2>/dev/null || true"]
+
+[shell_environment_policy]
+inherit = "core"
+exclude = [
+  "(?i).*api[_-]?key.*",
+  "(?i).*access[_-]?key.*",
+  "(?i).*secret.*",
+  "(?i).*token.*",
+  "(?i).*password.*",
+  "(?i).*credential.*",
+  "^AWS_.*",
+  "^GITHUB_TOKEN$",
+  "^GH_TOKEN$",
+  "^OPENAI_API_KEY$",
+  "^ANTHROPIC_API_KEY$",
+]
 
 [sandbox_workspace_write]
 writable_roots  = []
@@ -21,9 +38,43 @@ max_depth               = 1
 job_max_runtime_seconds = 3600
 
 [features]
-shell_tool  = true
-multi_agent = true
-memories    = true
+shell_tool    = true
+multi_agent   = true
+memories      = true
+codex_hooks   = true
+
+[permissions.workspace.filesystem]
+glob_scan_max_depth = 8
+"/tmp" = "write"
+
+[permissions.workspace.filesystem.":project_roots"]
+"."                   = "write"
+".env"                = "none"
+".env.*"              = "none"
+"**/.env"             = "none"
+"**/.env.*"           = "none"
+"*.env"               = "none"
+"**/*.env"            = "none"
+"*.pem"               = "none"
+"**/*.pem"            = "none"
+"*.key"               = "none"
+"**/*.key"            = "none"
+"**/.aws/**"          = "none"
+"**/.kube/**"         = "none"
+"**/.netrc"           = "none"
+"**/.npmrc"           = "none"
+"**/.pypirc"          = "none"
+"**/.ssh/**"          = "none"
+"**/*service-account*.json" = "none"
+"**/*service_account*.json" = "none"
+"**/*.kubeconfig"     = "none"
+"**/id_dsa"           = "none"
+"**/id_ecdsa"         = "none"
+"**/id_ed25519"       = "none"
+"**/id_rsa"           = "none"
+"**/kubeconfig"       = "none"
+"**/secrets/**"       = "none"
+"**/credentials.json" = "none"
 
 [tui]
 notifications = false
@@ -40,3 +91,48 @@ startup_timeout_sec = 10.0
 command = "npx"
 args    = ["-y", "@modelcontextprotocol/server-sequential-thinking"]
 enabled = true
+
+[[hooks.SessionStart]]
+matcher = "startup|resume"
+
+[[hooks.SessionStart.hooks]]
+type          = "command"
+command       = "~/.codex/hooks/session-start.sh"
+timeout       = 10
+statusMessage = "Checking workspace toolchain"
+
+[[hooks.PreToolUse]]
+matcher = "Bash"
+
+[[hooks.PreToolUse.hooks]]
+type          = "command"
+command       = "~/.codex/hooks/validate-project-scope.sh"
+timeout       = 15
+statusMessage = "Checking command scope"
+
+[[hooks.PreToolUse]]
+matcher = "Read|Glob|mcp__.*"
+
+[[hooks.PreToolUse.hooks]]
+type          = "command"
+command       = "~/.codex/hooks/context-guard.sh"
+timeout       = 5
+statusMessage = "Checking read target"
+
+[[hooks.PostToolUse]]
+matcher = "apply_patch|Edit|Write"
+
+[[hooks.PostToolUse.hooks]]
+type          = "command"
+command       = "~/.codex/hooks/post-edit-lint.sh"
+timeout       = 30
+statusMessage = "Formatting edited files"
+
+[[hooks.Stop]]
+matcher = "*"
+
+[[hooks.Stop.hooks]]
+type          = "command"
+command       = "~/.codex/hooks/post-stop-lint.sh"
+timeout       = 30
+statusMessage = "Running final formatting pass"
