@@ -18,6 +18,7 @@ home/.claude/.credentials.json
 
 # Codex 状態ファイル
 home/.codex/history.jsonl
+home/.codex/rules/default.rules
 home/.codex/*.log
 home/.codex/logs/
 home/.codex/tmp/

@@ -1,0 +1,253 @@
+# Curated allow rules for low-risk inspection and validation commands.
+# Keep Codex-managed interactive approvals in default.rules; this file is reviewed and git-managed.
+
+prefix_rule(
+    pattern=["git", "status"],
+    decision="allow",
+    justification="Git 作業ツリー状態の確認は読み取り専用",
+    match=["git status", "git status --short"],
+    not_match=["git stash", "git commit"],
+)
+
+prefix_rule(
+    pattern=["git", "diff"],
+    decision="allow",
+    justification="Git 差分確認は読み取り専用",
+    match=["git diff", "git diff --stat", "git diff --check"],
+    not_match=["git apply patch.diff"],
+)
+
+prefix_rule(
+    pattern=["git", "show"],
+    decision="allow",
+    justification="Git オブジェクト表示は読み取り専用",
+    match=["git show HEAD", "git show --stat HEAD"],
+    not_match=["git checkout HEAD -- file"],
+)
+
+prefix_rule(
+    pattern=["git", "log"],
+    decision="allow",
+    justification="Git 履歴確認は読み取り専用",
+    match=["git log --oneline", "git log -1 --stat"],
+    not_match=["git rebase main"],
+)
+
+prefix_rule(
+    pattern=["git", "rev-parse"],
+    decision="allow",
+    justification="Git metadata の確認は読み取り専用",
+    match=["git rev-parse --show-toplevel", "git rev-parse --is-inside-work-tree"],
+    not_match=["git reset --hard"],
+)
+
+prefix_rule(
+    pattern=["git", "branch", "--show-current"],
+    decision="allow",
+    justification="現在ブランチ名の確認は読み取り専用",
+    match=["git branch --show-current"],
+    not_match=["git branch -D old-branch"],
+)
+
+prefix_rule(
+    pattern=["git", "ls-files"],
+    decision="allow",
+    justification="Git 管理ファイル一覧の確認は読み取り専用",
+    match=["git ls-files", "git ls-files --others --exclude-standard"],
+    not_match=["git clean -fd"],
+)
+
+prefix_rule(
+    pattern=["bash", "-n"],
+    decision="allow",
+    justification="Bash 構文チェックはスクリプトを実行しない",
+    match=["bash -n bin/install.sh", "bash -n home/.codex/hooks/notify-completion.sh"],
+    not_match=["bash -c 'echo unsafe'"],
+)
+
+prefix_rule(
+    pattern=["sh", "-n"],
+    decision="allow",
+    justification="POSIX shell 構文チェックはスクリプトを実行しない",
+    match=["sh -n script.sh"],
+    not_match=["sh -c 'echo unsafe'"],
+)
+
+prefix_rule(
+    pattern=["zsh", "-n"],
+    decision="allow",
+    justification="Zsh 構文チェックはスクリプトを実行しない",
+    match=["zsh -n script.zsh"],
+    not_match=["zsh -c 'echo unsafe'"],
+)
+
+prefix_rule(
+    pattern=["codex", "--version"],
+    decision="allow",
+    justification="Codex CLI バージョン確認は読み取り専用",
+    match=["codex --version"],
+    not_match=["codex logout"],
+)
+
+prefix_rule(
+    pattern=["codex", "features", "list"],
+    decision="allow",
+    justification="Codex feature 状態確認は読み取り専用",
+    match=["codex features list"],
+    not_match=["codex logout"],
+)
+
+prefix_rule(
+    pattern=["codex", "execpolicy", "check"],
+    decision="allow",
+    justification="Codex rules の評価確認は読み取り専用",
+    match=[
+        "codex execpolicy check --pretty --rules home/.codex/rules/auto-edit.rules -- git status",
+        "codex execpolicy check --rules home/.codex/rules/auto-edit.rules -- bash -n bin/install.sh",
+    ],
+    not_match=["codex exec --full-auto dangerous task"],
+)
+
+prefix_rule(
+    pattern=["pnpm", "--version"],
+    decision="allow",
+    justification="pnpm バージョン確認は読み取り専用",
+    match=["pnpm --version"],
+    not_match=["pnpm install"],
+)
+
+prefix_rule(
+    pattern=["node", "--version"],
+    decision="allow",
+    justification="Node.js バージョン確認は読み取り専用",
+    match=["node --version"],
+    not_match=["node script.js"],
+)
+
+prefix_rule(
+    pattern=["python3", "--version"],
+    decision="allow",
+    justification="Python バージョン確認は読み取り専用",
+    match=["python3 --version"],
+    not_match=["python3 script.py"],
+)
+
+prefix_rule(
+    pattern=["uv", "--version"],
+    decision="allow",
+    justification="uv バージョン確認は読み取り専用",
+    match=["uv --version"],
+    not_match=["uv run pytest"],
+)
+
+prefix_rule(
+    pattern=["ruff", "--version"],
+    decision="allow",
+    justification="ruff バージョン確認は読み取り専用",
+    match=["ruff --version"],
+    not_match=["ruff check --fix ."],
+)
+
+prefix_rule(
+    pattern=["biome", "--version"],
+    decision="allow",
+    justification="Biome バージョン確認は読み取り専用",
+    match=["biome --version"],
+    not_match=["biome check --write ."],
+)
+
+prefix_rule(
+    pattern=["mise", "current"],
+    decision="allow",
+    justification="mise の現在 toolchain 確認は読み取り専用",
+    match=["mise current", "mise current node"],
+    not_match=["mise install"],
+)
+
+prefix_rule(
+    pattern=["gh", "pr", "view"],
+    decision="allow",
+    justification="GitHub PR 閲覧は読み取り専用",
+    match=["gh pr view 123", "gh pr view --json title,body"],
+    not_match=["gh pr merge 123"],
+)
+
+prefix_rule(
+    pattern=["gh", "pr", "list"],
+    decision="allow",
+    justification="GitHub PR 一覧取得は読み取り専用",
+    match=["gh pr list", "gh pr list --state open"],
+    not_match=["gh pr create"],
+)
+
+prefix_rule(
+    pattern=["gh", "pr", "diff"],
+    decision="allow",
+    justification="GitHub PR 差分取得は読み取り専用",
+    match=["gh pr diff 123", "gh pr diff --name-only"],
+    not_match=["gh pr merge 123"],
+)
+
+prefix_rule(
+    pattern=["gh", "pr", "checks"],
+    decision="allow",
+    justification="GitHub PR check 状態確認は読み取り専用",
+    match=["gh pr checks 123", "gh pr checks --watch=false"],
+    not_match=["gh pr merge 123"],
+)
+
+prefix_rule(
+    pattern=["gh", "issue", "view"],
+    decision="allow",
+    justification="GitHub Issue 閲覧は読み取り専用",
+    match=["gh issue view 123", "gh issue view 123 --json title,body"],
+    not_match=["gh issue create"],
+)
+
+prefix_rule(
+    pattern=["gh", "issue", "list"],
+    decision="allow",
+    justification="GitHub Issue 一覧取得は読み取り専用",
+    match=["gh issue list", "gh issue list --state open"],
+    not_match=["gh issue create"],
+)
+
+prefix_rule(
+    pattern=["gh", "repo", "view"],
+    decision="allow",
+    justification="GitHub repo 情報閲覧は読み取り専用",
+    match=["gh repo view", "gh repo view openai/codex"],
+    not_match=["gh repo delete owner/repo"],
+)
+
+prefix_rule(
+    pattern=["docker", "ps"],
+    decision="allow",
+    justification="Docker container 一覧確認は読み取り専用",
+    match=["docker ps", "docker ps -a"],
+    not_match=["docker stop container"],
+)
+
+prefix_rule(
+    pattern=["docker", "logs"],
+    decision="allow",
+    justification="Docker logs 確認は読み取り専用",
+    match=["docker logs app", "docker logs --tail 100 app"],
+    not_match=["docker rm app"],
+)
+
+prefix_rule(
+    pattern=["docker", "inspect"],
+    decision="allow",
+    justification="Docker metadata 確認は読み取り専用",
+    match=["docker inspect app"],
+    not_match=["docker rm app"],
+)
+
+prefix_rule(
+    pattern=["docker", "compose", "logs"],
+    decision="allow",
+    justification="Docker Compose logs 確認は読み取り専用",
+    match=["docker compose logs", "docker compose logs app"],
+    not_match=["docker compose down"],
+)
