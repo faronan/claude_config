@@ -21,7 +21,7 @@ project_name=$(get_project_name "$cwd")
 # 通知内容を初期化
 title="${project_name:-Claude Code}"
 subtitle="入力待ち"
-message="${notification_message:0:100}"
+message=$(printf '%s' "$notification_message" | truncate_chars 100)
 
 # transcript_pathからユーザー依頼を取得
 user_request=$(get_user_request "$transcript_path" 50)

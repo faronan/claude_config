@@ -1,16 +1,14 @@
-model                   = "gpt-5.5"
 model_reasoning_effort  = "high"
 model_reasoning_summary = "auto"
+web_search              = "cached"
 approval_policy         = "on-request"
 sandbox_mode            = "workspace-write"
 default_permissions     = "workspace"
 personality             = "pragmatic"
-
-# プロジェクトの CLAUDE.md を AGENTS.md の fallback として読む
-project_doc_fallback_filenames = ["CLAUDE.md"]
+cli_auth_credentials_store = "auto"
 
 # macOS 通知（セッション完了時）
-notify = ["bash", "-lc", "osascript -e 'display notification \"Codex タスク完了\" with title \"Codex\"' 2>/dev/null || true"]
+notify = ["bash", "~/.codex/hooks/notify-completion.sh"]
 
 [shell_environment_policy]
 inherit = "core"
@@ -46,6 +44,15 @@ codex_hooks   = true
 [permissions.workspace.filesystem]
 glob_scan_max_depth = 8
 "/tmp" = "write"
+"__HOME__/.aws" = "none"
+"__HOME__/.config/gh/hosts.yml" = "none"
+"__HOME__/.codex/auth.json" = "none"
+"__HOME__/.git-credentials" = "none"
+"__HOME__/.kube" = "none"
+"__HOME__/.netrc" = "none"
+"__HOME__/.npmrc" = "none"
+"__HOME__/.pypirc" = "none"
+"__HOME__/.ssh" = "none"
 
 [permissions.workspace.filesystem.":project_roots"]
 "."                   = "write"
@@ -77,9 +84,12 @@ glob_scan_max_depth = 8
 "**/credentials.json" = "none"
 
 [tui]
-notifications = false
-animations    = true
-theme         = "catppuccin-mocha"
+notifications          = ["agent-turn-complete", "approval-requested"]
+notification_method    = "osc9"
+notification_condition = "always"
+animations             = true
+theme                  = "catppuccin-mocha"
+status_line            = ["model-with-reasoning", "git-branch", "run-state", "context-used", "five-hour-limit"]
 
 [mcp_servers.context7]
 command             = "npx"

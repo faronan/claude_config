@@ -25,7 +25,7 @@ message="完了しました"
 # last_assistant_message フィールドから直接取得（v2.1.47+）
 assistant_output=$(echo "$input" | jq -r '.last_assistant_message // ""' | tr '\n' ' ') || true
 assistant_output=$(strip_system_tags "$assistant_output")
-assistant_output="${assistant_output:0:80}"
+assistant_output=$(printf '%s' "$assistant_output" | truncate_chars 80)
 
 # ユーザー依頼はトランスクリプトから取得（最初の1件のみ）
 user_request=$(get_user_request "$transcript_path" 50)

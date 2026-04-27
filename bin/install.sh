@@ -82,6 +82,103 @@ backup_and_link() {
   log "Link: $dest -> $src"
 }
 
+extract_codex_local_config() {
+  local config="$1"
+
+  if [ ! -f "$config" ]; then
+    return 0
+  fi
+
+  awk '
+    function keep_table(header) {
+      return header ~ /^\[\[?projects\./ ||
+             header ~ /^\[\[?marketplaces\./ ||
+             header ~ /^\[\[?plugins\./ ||
+             header == "[tui.model_availability_nux]" ||
+             header == "[[tui.model_availability_nux]]" ||
+             header ~ /^\[\[?notice(\.|])/
+    }
+
+    /^\[+[^]]+\]+$/ {
+      keep = keep_table($0)
+      if (keep) {
+        if (printed) {
+          print ""
+        }
+        printed = 1
+        print
+      }
+      next
+    }
+
+    keep {
+      print
+    }
+  ' "$config"
+}
+
+render_codex_base_config() {
+  local base_config="$1"
+  awk -v home="$HOME_ROOT" '
+    {
+      while ((idx = index($0, "__HOME__")) > 0) {
+        $0 = substr($0, 1, idx - 1) home substr($0, idx + 8)
+      }
+      print
+    }
+  ' "$base_config"
+}
+
+install_codex_config() {
+  local base_config="${SOURCE_ROOT}/.codex/config.base.toml"
+  local dest="${HOME_ROOT}/.codex/config.toml"
+
+  if [ ! -f "$base_config" ]; then
+    return
+  fi
+
+  if ! command -v codex &> /dev/null; then
+    log "Codex not found. Skipping Codex config setup."
+    return
+  fi
+
+  if $DRY_RUN; then
+    log "[DRY-RUN] Would merge Codex config: $dest from $base_config"
+    log "[DRY-RUN] Would preserve local Codex state tables: projects, marketplaces, plugins, tui.model_availability_nux, notice"
+    return
+  fi
+
+  local local_state
+  local_state="$(extract_codex_local_config "$dest")"
+
+  local tmp_config
+  tmp_config="$(mktemp "${HOME_ROOT}/.codex/config.toml.XXXXXX")"
+  trap 'rm -f "$tmp_config"' RETURN
+  chmod 600 "$tmp_config"
+  render_codex_base_config "$base_config" > "$tmp_config"
+
+  if [ -n "$local_state" ]; then
+    {
+      printf '\n\n'
+      printf '# Local Codex state preserved by bin/install.sh. Do not commit this block.\n'
+      printf '%s\n' "$local_state"
+    } >> "$tmp_config"
+  fi
+
+  if [ -e "$dest" ] || [ -L "$dest" ]; then
+    local rel="${dest#${HOME_ROOT}/}"
+    local backup_path="${BACKUP_ROOT}/${rel}"
+    mkdir -p "$(dirname "$backup_path")"
+    mv "$dest" "$backup_path"
+    log "Backup: $dest -> $backup_path"
+  fi
+
+  mv "$tmp_config" "$dest"
+  tmp_config=""
+  trap - RETURN
+  log "Merge: $dest <- $base_config"
+}
+
 setup_mcp_servers() {
   echo
   log "=== MCP Servers Setup ==="
@@ -140,25 +237,28 @@ setup_codex() {
   echo
   log "=== Codex Setup ==="
 
-  if $DRY_RUN; then
-    log "[DRY-RUN] Would create: ${HOME_ROOT}/.codex"
-    log "[DRY-RUN] Would link: ~/.codex/* -> ${SOURCE_ROOT}/.codex/*"
-    return
-  fi
-
   if ! command -v codex &> /dev/null; then
     log "Codex not found. Skipping Codex setup."
     log "Install Codex first: npm install -g @openai/codex"
     return
   fi
 
+  if $DRY_RUN; then
+    log "[DRY-RUN] Would create: ${HOME_ROOT}/.codex"
+    log "[DRY-RUN] Would link: ~/.codex/* -> ${SOURCE_ROOT}/.codex/* except config.toml/config.base.toml"
+    install_codex_config
+    return
+  fi
+
   mkdir -p "${HOME_ROOT}/.codex"
+
+  install_codex_config
 
   if [ -d "${SOURCE_ROOT}/.codex" ]; then
     for src in "${SOURCE_ROOT}/.codex"/* "${SOURCE_ROOT}/.codex"/.*; do
       basename="$(basename "$src")"
       case "$basename" in
-        .|..) continue ;;
+        .|..|config.toml|config.base.toml) continue ;;
       esac
       if [ -e "$src" ]; then
         dest="${HOME_ROOT}/.codex/${basename}"
