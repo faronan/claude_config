@@ -26,46 +26,13 @@ if [[ -z "$target" ]]; then
   exit 0
 fi
 
-secret_patterns=(
-  "(^|/)\.env(\..*)?$"
-  "(^|/)\.aws(/|$)"
-  "(^|/)\.kube(/|$)"
-  "(^|/)\.netrc$"
-  "(^|/)\.npmrc$"
-  "(^|/)\.pypirc$"
-  "(^|/)\.ssh(/|$)"
-  "(^|/)\.git-credentials$"
-  "(^|/)auth\.json$"
-  "(^|/)credentials\.json$"
-  "(^|/)hosts\.yml$"
-  "(^|/)id_(rsa|dsa|ecdsa|ed25519)$"
-  "(^|/)kubeconfig$"
-  "\.kubeconfig$"
-  "\.pem$"
-  "\.key$"
-  "(^|/)[^/]*(service-account|service_account)[^/]*\.json$"
-  "(^|/)secrets?(/|$)"
-)
+if reason=$(match_secret_pattern "$target"); then
+  pretooluse_deny "$reason"
+fi
 
-for pattern in "${secret_patterns[@]}"; do
-  if printf '%s' "$target" | grep -qE "$pattern" 2>/dev/null; then
-    pretooluse_deny "[Security] Secret-like read target is blocked: $target"
-  fi
-done
-
-blocked_dirs=(
-  "node_modules/"
-  ".git/"
-  "dist/"
-  "build/"
-  ".next/"
-  "__pycache__/"
-)
-
-for dir in "${blocked_dirs[@]}"; do
-  if [[ "$target" == *"$dir"* ]]; then
-    pretooluse_deny "[Guard] Blocked noisy read target: $target ($dir is not allowed)"
-  fi
-done
+if reason=$(match_blocked_dir "$target"); then
+  # メッセージは Codex 既存の表現に合わせる
+  pretooluse_deny "${reason/Blocked:/Blocked noisy read target:}"
+fi
 
 exit 0

@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
-# PreToolUse フック: 不要ファイルの読み込みをブロック
+# PreToolUse フック: 機密パスと不要ファイルの読み込みをブロック
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/lib/hook-helper.sh"
 
 input=$(cat) || pretooluse_allow
 
-tool_name=$(echo "$input" | jq -r '.tool_name // empty' 2>/dev/null) || pretooluse_allow
+tool_name=$(printf '%s' "$input" | json_get '.tool_name') || pretooluse_allow
 
 # 対象パスを取得（Read: file_path, Glob: pattern）
 case "$tool_name" in
   Read)
-    target=$(echo "$input" | jq -r '.tool_input.file_path // empty' 2>/dev/null) || pretooluse_allow
+    target=$(printf '%s' "$input" | json_get '.tool_input.file_path')
     ;;
   Glob)
-    target=$(echo "$input" | jq -r '.tool_input.pattern // empty' 2>/dev/null) || pretooluse_allow
+    target=$(printf '%s' "$input" | json_get '.tool_input.pattern')
     ;;
   *)
     pretooluse_allow
@@ -25,21 +25,15 @@ if [[ -z "$target" ]]; then
   pretooluse_allow
 fi
 
-# ブロック対象ディレクトリ
-blocked_dirs=(
-  "node_modules/"
-  ".git/"
-  "dist/"
-  "build/"
-  ".next/"
-  "__pycache__/"
-)
+# secret check (settings.json deny の Read 制限を補完する深層防御)
+if reason=$(match_secret_pattern "$target"); then
+  pretooluse_deny "$reason"
+fi
 
-for dir in "${blocked_dirs[@]}"; do
-  if [[ "$target" == *"$dir"* ]]; then
-    pretooluse_deny "[Guard] Blocked: $target ($dir is not allowed)"
-  fi
-done
+# noise check (node_modules, .git/, dist/, build/ 等)
+if reason=$(match_blocked_dir "$target"); then
+  pretooluse_deny "$reason"
+fi
 
 # 大容量ファイル警告（Read のみ、500KB超）
 if [[ "$tool_name" == "Read" && -f "$target" ]]; then
