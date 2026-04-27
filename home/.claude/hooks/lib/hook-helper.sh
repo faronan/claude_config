@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
-# PreToolUse フック共通ヘルパー
-# "hook error" 誤表示バグ (#17088, #34713) の回避策として
-# hookSpecificOutput JSON を stdout に出力する
+# Claude Code hooks 用ヘルパー
+# common.sh + Claude 固有の pretooluse_allow (hook error バグ #17088, #34713 の回避策)
 
-# 許可を返して終了（オプションで additionalContext を付与）
+SHARED_LIB="${CLAUDE_SHARED_LIB:-$HOME/.shared/hooks/lib}"
+# shellcheck disable=SC1091
+source "$SHARED_LIB/common.sh"
+
+# Claude 固有: PreToolUse は permissionDecision: "allow" を JSON で返さないと
+# hook error が誤表示される (Claude Code バグ #17088, #34713)
 pretooluse_allow() {
   local context="${1:-}"
   if [[ -n "$context" ]]; then
@@ -27,13 +31,6 @@ pretooluse_allow() {
 
 # 拒否を返して終了
 pretooluse_deny() {
-  local reason="$1"
-  jq -n --arg r "$reason" '{
-    hookSpecificOutput: {
-      hookEventName: "PreToolUse",
-      permissionDecision: "deny",
-      permissionDecisionReason: $r
-    }
-  }'
+  emit_pretooluse_deny "$1"
   exit 0
 }

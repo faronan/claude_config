@@ -1,28 +1,18 @@
 #!/usr/bin/env bash
+# Codex CLI hooks 用ヘルパー
+# common.sh + Codex 固有 (hook_context, stop_continue)
 
-activate_mise() {
-  if command -v mise >/dev/null 2>&1; then
-    eval "$(mise activate bash)" >/dev/null 2>&1 || true
-  fi
-}
+SHARED_LIB="${CODEX_SHARED_LIB:-$HOME/.shared/hooks/lib}"
+# shellcheck disable=SC1091
+source "$SHARED_LIB/common.sh"
 
-json_get() {
-  local filter="$1"
-  jq -r "$filter // empty" 2>/dev/null
-}
-
+# 拒否を返して終了
 pretooluse_deny() {
-  local reason="$1"
-  jq -n --arg reason "$reason" '{
-    hookSpecificOutput: {
-      hookEventName: "PreToolUse",
-      permissionDecision: "deny",
-      permissionDecisionReason: $reason
-    }
-  }'
+  emit_pretooluse_deny "$1"
   exit 0
 }
 
+# Codex 固有: PostToolUse の context 注入用
 hook_context() {
   local event="$1"
   local context="$2"
@@ -34,6 +24,7 @@ hook_context() {
   }'
 }
 
+# Codex 固有: Stop hook の継続フラグ
 stop_continue() {
   jq -n '{continue: true}'
 }
