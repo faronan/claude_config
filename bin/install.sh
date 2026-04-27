@@ -200,6 +200,12 @@ main() {
   log "Source:     $SOURCE_ROOT"
   echo
 
+  # .shared ディレクトリのリンク（両ハーネスから参照される共通 lib）
+  # .claude / .codex より先に展開して、各 hook-helper.sh が source できる状態にする
+  if [ -d "${SOURCE_ROOT}/.shared" ]; then
+    backup_and_link "${SOURCE_ROOT}/.shared" "${HOME_ROOT}/.shared"
+  fi
+
   # .claude ディレクトリ内のファイル/ディレクトリをリンク
   if [ -d "${SOURCE_ROOT}/.claude" ]; then
     # まず .claude ディレクトリ自体を作成

@@ -17,6 +17,8 @@ Claude Code のグローバル設定ディレクトリ `~/.claude` を Git 管�
 ```
 claude-config/
 ├── home/                    # $HOME をルートとしたミラー
+│   ├── .shared/             # Claude Code / Codex CLI 両方で参照される共通資産
+│   │   └── hooks/lib/       # secret_patterns / blocked_dirs 等の共通 lib
 │   └── .claude/
 │       ├── CLAUDE.md       # グローバルユーザー設定
 │       ├── settings.json   # 権限・フック設定
@@ -24,7 +26,7 @@ claude-config/
 │       ├── rules/          # 条件付きルール（パス指定可能）
 │       ├── skills/         # スキル（/コマンド + 自動発動）
 │       ├── hooks/          # フック（セキュリティ検証等）
-│       │   └── lib/        # フック共通ライブラリ
+│       │   └── lib/        # Claude 固有 lib（共通 lib は ~/.shared/ から source）
 │       └── agents/         # サブエージェント（並列実行用）
 ├── templates/               # プロジェクト用テンプレート
 │   ├── GUIDE.md            # プロジェクト CLAUDE.md 作成ガイド
