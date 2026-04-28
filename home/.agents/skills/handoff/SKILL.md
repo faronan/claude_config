@@ -1,0 +1,63 @@
+---
+name: handoff
+effort: low
+description: Summarize session progress for handoff to next session
+allowed-tools:
+  - Read
+  - Bash(git log:*)
+  - Bash(git status:*)
+  - Bash(git branch:*)
+---
+
+# Session Handoff
+
+現在のセッションの進捗をまとめ、次のセッションへの引継ぎ情報を生成する。
+
+## Session Context
+
+- Current branch: !`git branch --show-current`
+- Recent commits: !`git log --oneline -5`
+- Uncommitted changes: !`git status --short`
+
+## Output Content
+
+1. **完了したこと**: 今セッションで完了したタスク
+2. **現在の状態**: ファイルの変更状況、テスト結果
+3. **次のステップ**: 残りのタスク、推奨アクション
+4. **注意点**: 未解決の問題、ブロッカー
+
+## Output Format
+
+```markdown
+# Session Handoff
+
+## Completed
+
+- [完了タスク1]
+- [完了タスク2]
+
+## Current State
+
+- 変更ファイル: [リスト]
+- テスト状態: [PASS/FAIL]
+- ビルド状態: [OK/NG]
+
+## Next Steps
+
+1. [ ] [次のタスク1]
+2. [ ] [次のタスク2]
+
+## Notes
+
+- [注意点や未解決の問題]
+
+---
+
+_Generated at: [timestamp]_
+```
+
+## Error Handling
+
+- **git リポジトリ外**: git 情報なしでセッション内容のみからハンドオフを生成
+- **コミット履歴がない**: 現在の作業状態とファイル変更のみ報告
+- **変更が大量**: 主要な変更に絞ってサマリーを作成

@@ -18,13 +18,16 @@ Claude Code のグローバル設定ディレクトリ `~/.claude` を Git 管�
 claude-config/
 ├── home/                    # $HOME をルートとしたミラー
 │   ├── .shared/             # Claude Code / Codex CLI 両方で参照される共通資産
-│   │   └── hooks/lib/       # secret_patterns / blocked_dirs 等の共通 lib
+│   │   ├── hooks/lib/       # secret_patterns / blocked_dirs 等の共通 lib
+│   │   └── skills/          # harness 非依存の skill 本体・reference（両側から symlink）
+│   ├── .agents/
+│   │   └── skills/          # Codex / Agents 用スキル（harness 固有部分のみ。共通分は .shared/skills へリンク）
 │   └── .claude/
 │       ├── CLAUDE.md       # グローバルユーザー設定
 │       ├── settings.json   # 権限・フック設定
 │       ├── statusline.js   # ステータスライン表示カスタマイズ
 │       ├── rules/          # 条件付きルール（パス指定可能）
-│       ├── skills/         # スキル（/コマンド + 自動発動）
+│       ├── skills/         # スキル（/コマンド + 自動発動。共通分は .shared/skills へリンク）
 │       ├── hooks/          # フック（セキュリティ検証等）
 │       │   └── lib/        # Claude 固有 lib（共通 lib は ~/.shared/ から source）
 │       └── agents/         # サブエージェント（並列実行用）
@@ -145,41 +148,59 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 
 すべてのスキルは `/skill-name` で手動実行可能。一部は Claude が自動で呼び出す。
 
+Skill の配置は 3 層構成。
+
+- `home/.shared/skills/` — harness 非依存の本体・reference（両側から相対 symlink で共有）
+- `home/.claude/skills/` — Claude Code 固有部分。共通分は `../../.shared/skills/...` へ symlink
+- `home/.agents/skills/` — Codex / Agents 固有部分（`AskUserQuestion` / `Task` / `Agent` を Codex の会話確認・`spawn_agent`・`apply_patch` に読み替え）。共通分は同じく symlink
+
+`codex-delegate` は Claude→Codex 橋渡し skill のため Codex 側には置かない。共通ルールは `home/.agents/skills/CODEX_COMPATIBILITY.md` を参照。
+
+ドリフト確認:
+
+```bash
+bin/check-skill-drift.sh
+```
+
+`.shared/skills/` 配下は `.prettierignore` 対象（フォーマッタが内容を書き換えてドリフトが発生するのを防ぐ）。
+
+以下の表は Claude Code 側の挙動を基準に記載。Codex / Agents 側は `home/.agents/skills/CODEX_COMPATIBILITY.md` のルールに従い、`git commit` / `gh pr create` / `gh pr review` 等の破壊・公開操作はすべて明示的なユーザー確認後に実行する（`/quick-commit` も Codex では確認必須）。
+
 #### 手動実行専用（/コマンド）
 
-| スキル                  | 説明                                             |
-| ----------------------- | ------------------------------------------------ |
-| `/quick-commit`         | 小さな変更を確認なしでコミット                   |
-| `/smart-commit`         | 変更を論理的に分割して複数コミット               |
-| `/switch-branch`        | Conventional Branch形式でブランチ作成            |
-| `/gh-pr-create`         | Push済みの変更からPR作成（会話コンテキスト活用） |
-| `/gh-issue-fix`         | GitHub Issue を分析して修正                      |
-| `/security-review`      | OWASP Top 10 に基づくセキュリティレビュー        |
-| `/workflow-implement`   | 実装ワークフロー（計画→実装→テスト→レビュー）    |
-| `/workflow-fix-bug`     | バグ修正ワークフロー（調査→修正→検証）           |
-| `/workflow-refactoring` | リファクタリングワークフロー                     |
-| `/workflow-research`    | 調査ワークフロー（コードベース+Web）             |
-| `/workflow-tdd`         | TDDワークフロー（RED→GREEN→REFACTOR）            |
-| `/handoff`              | セッション進捗まとめ・引継ぎ                     |
+| スキル                  | 説明                                                       |
+| ----------------------- | ---------------------------------------------------------- |
+| `/quick-commit`         | 小さな変更をコミット（Claude: 確認なし / Codex: 確認必須） |
+| `/smart-commit`         | 変更を論理的に分割して複数コミット                         |
+| `/switch-branch`        | Conventional Branch形式でブランチ作成                      |
+| `/gh-pr-create`         | Push済みの変更からPR作成（会話コンテキスト活用）           |
+| `/gh-issue-fix`         | GitHub Issue を分析して修正                                |
+| `/security-review`      | OWASP Top 10 に基づくセキュリティレビュー                  |
+| `/workflow-implement`   | 実装ワークフロー（計画→実装→テスト→レビュー）              |
+| `/workflow-fix-bug`     | バグ修正ワークフロー（調査→修正→検証）                     |
+| `/workflow-refactoring` | リファクタリングワークフロー                               |
+| `/workflow-research`    | 調査ワークフロー（コードベース+Web）                       |
+| `/workflow-tdd`         | TDDワークフロー（RED→GREEN→REFACTOR）                      |
+| `/handoff`              | セッション進捗まとめ・引継ぎ                               |
 
 #### 自動発動（Claude が判断）
 
-| スキル                    | 発動トリガー例                                                                         |
-| ------------------------- | -------------------------------------------------------------------------------------- |
-| `code-review`             | 「レビュー」「コードチェック」                                                         |
-| `refactoring`             | 「リファクタ」「整理」                                                                 |
-| `test-generation`         | 「テスト書いて」「テスト追加」                                                         |
-| `playwright-test`         | 「Playwright」「E2E」「playwright.config」                                             |
-| `planning`                | 「計画」「設計」                                                                       |
-| `documentation`           | 「ドキュメント」「README」                                                             |
-| `web-research`            | 「調べて」「research」「比較」                                                         |
-| `gh-pr-review`            | 「PRレビュー」「PR見て」                                                               |
-| `ask-claude-code`         | 「Claude Code の使い方」「API の仕様」                                                 |
-| `api-test`                | 「API」「curl」「エンドポイント」                                                      |
-| `mermaid-generation`      | 「Mermaid」「ダイアグラム」「クラス図」                                                |
-| `skill-creation`          | 「スキル作成」「create skill」                                                         |
-| `empirical-prompt-tuning` | 「プロンプト改善」「スキル評価」「反復改善」                                           |
-| `codex-delegate`          | 「Codex に聞いて」「セカンドオピニオン」「別視点でレビュー」「Codex で調査」「rescue」 |
+| スキル                    | 発動トリガー例                                                                                             |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `code-review`             | 「レビュー」「コードチェック」                                                                             |
+| `refactoring`             | 「リファクタ」「整理」                                                                                     |
+| `test-generation`         | 「テスト書いて」「テスト追加」                                                                             |
+| `playwright-test`         | 「Playwright」「E2E」「playwright.config」                                                                 |
+| `planning`                | 「計画」「設計」                                                                                           |
+| `documentation`           | 「ドキュメント」「README」                                                                                 |
+| `web-research`            | 「調べて」「research」「比較」                                                                             |
+| `gh-pr-review`            | 「PRレビュー」「PR見て」                                                                                   |
+| `ask-claude-code`         | 「Claude Code の使い方」「API の仕様」                                                                     |
+| `api-test`                | 「API」「curl」「エンドポイント」                                                                          |
+| `mermaid-generation`      | 「Mermaid」「ダイアグラム」「クラス図」                                                                    |
+| `skill-creation`          | 「スキル作成」「create skill」                                                                             |
+| `empirical-prompt-tuning` | 「プロンプト改善」「スキル評価」「反復改善」                                                               |
+| `codex-delegate`          | 「Codex に聞いて」「セカンドオピニオン」「別視点でレビュー」「Codex で調査」「rescue」（Claude Code のみ） |
 
 #### 内部スキル（他スキルから呼び出し）
 

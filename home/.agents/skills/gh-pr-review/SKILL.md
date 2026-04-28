@@ -1,0 +1,108 @@
+---
+name: gh-pr-review
+argument-hint: "[PR number]"
+context: fork
+description: |
+  Review GitHub pull requests and add inline comments using gh CLI with accurate line numbers.
+  Use when the user asks to review a PR, add comments to a pull request, or check PR changes.
+  Trigger words: "PRレビュー", "PR review", "プルリクレビュー", "PR見て", "PR確認",
+  "プルリク確認", "差分確認", "マージ前確認", "PR #", "pull request review".
+allowed-tools:
+  - Bash(gh:*)
+  - Read
+  - Grep
+---
+
+# GitHub PR Review Skill
+
+## 概要
+
+`gh` CLI を使用して正確な行番号でインラインコメントを付けるためのスキル。
+LLMの推測に頼らず、明示的なコマンドで精度を確保する。
+
+## Codex Runtime
+
+Follow `../CODEX_COMPATIBILITY.md`. In Codex, use `gh` through `shell_command`
+and do not post comments, close, or merge without explicit user confirmation.
+
+<!-- codex-requires-confirmation: gh-pr-action -->
+
+## Workflow
+
+### 1. PR情報の取得
+
+```bash
+# PR の基本情報
+gh pr view <PR番号> --json number,title,body,author,state,baseRefName,headRefName
+
+# PR の差分（行番号付き）
+gh pr diff <PR番号>
+```
+
+### 2. 既存コメントの取得
+
+```bash
+# 一般コメント
+gh pr view <PR番号> --json comments
+
+# レビューコメント（インラインコメント含む）
+gh api repos/{owner}/{repo}/pulls/<PR番号>/comments
+```
+
+### 3. インラインコメントの追加
+
+```bash
+gh api repos/{owner}/{repo}/pulls/<PR番号>/comments \
+  -f body="コメント内容" \
+  -f commit_id="$(gh pr view <PR番号> --json headRefOid -q .headRefOid)" \
+  -f path="ファイルパス" \
+  -f side="RIGHT" \
+  -F line=<行番号>
+```
+
+### 4. コメントへの返信
+
+```bash
+gh api repos/{owner}/{repo}/pulls/<PR番号>/comments \
+  -f body="返信内容" \
+  -F in_reply_to=<元コメントID>
+```
+
+## 行番号の特定方法
+
+`gh pr diff` の出力から行番号を特定する際の注意：
+
+- `+` で始まる行 → 追加された行（HEAD側、`side: RIGHT`）
+- `-` で始まる行 → 削除された行（BASE側、`side: LEFT`）
+- 空白で始まる行 → 変更なし
+
+**重要**: `@@ -開始,行数 +開始,行数 @@` のハンク情報から実際の行番号を計算する。
+
+## Output Format
+
+```
+## PR #<番号>: <タイトル>
+
+### 変更概要
+- <ファイル1>: <変更内容>
+- <ファイル2>: <変更内容>
+
+### レビュー結果
+✅ LGTM / ⚠️ 要修正 / ❌ 要再設計
+
+### コメント
+[ファイル:行番号] 指摘内容
+→ 提案（必要に応じて）
+```
+
+## Constraints
+
+- インラインコメントは**必ず `gh api` コマンドで追加**（推測で行番号を指定しない）
+- コメント追加前に `gh pr diff` で行番号を確認
+- 破壊的な操作（PR close, merge）は実行前にユーザー確認を取得
+
+## Error Handling
+
+- **PR番号が無効**: `gh pr view` のエラーメッセージを表示し、正しい番号を確認
+- **行番号の特定に失敗**: `gh pr diff` を再取得し、ハンク情報から再計算
+- **コメント投稿に失敗**: API エラーメッセージを確認し、権限・パラメータを見直す

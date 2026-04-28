@@ -274,18 +274,22 @@ setup_agents() {
   echo
   log "=== Agents Setup ==="
 
-  if [ ! -d "${SOURCE_ROOT}/.claude/skills" ]; then
-    log "Claude skills directory not found. Skipping Agents setup."
-    return
+  if [ -d "${SOURCE_ROOT}/.agents/skills" ]; then
+    local skills_source="${SOURCE_ROOT}/.agents/skills"
+  else
+    log "ERROR: Codex/Agents skills directory not found: ${SOURCE_ROOT}/.agents/skills"
+    log "Refusing to fall back to Claude skills because that can reintroduce Claude Code-only tool assumptions."
+    return 1
   fi
 
   if $DRY_RUN; then
     log "[DRY-RUN] Would create: ${HOME_ROOT}/.agents"
+    log "[DRY-RUN] Would link skills from: $skills_source"
   else
     mkdir -p "${HOME_ROOT}/.agents"
   fi
 
-  backup_and_link "${SOURCE_ROOT}/.claude/skills" "${HOME_ROOT}/.agents/skills"
+  backup_and_link "$skills_source" "${HOME_ROOT}/.agents/skills"
   log "Agents setup complete!"
 }
 
@@ -362,7 +366,7 @@ main() {
   # Codex のセットアップ
   setup_codex
 
-  # Codex/Agents 共通スキルのセットアップ
+  # Codex/Agents 用スキルのセットアップ（Claude 用から分岐したコピー）
   setup_agents
 
   echo
