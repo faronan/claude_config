@@ -1,11 +1,12 @@
-model_reasoning_effort  = "high"
-model_reasoning_summary = "auto"
-web_search              = "cached"
-approval_policy         = "on-request"
-sandbox_mode            = "workspace-write"
-default_permissions     = "workspace"
-personality             = "pragmatic"
-cli_auth_credentials_store = "auto"
+model_reasoning_effort      = "high"
+plan_mode_reasoning_effort  = "xhigh"
+model_reasoning_summary     = "auto"
+web_search                  = "cached"
+approval_policy             = "on-request"
+sandbox_mode                = "workspace-write"
+default_permissions         = "workspace"
+personality                 = "pragmatic"
+cli_auth_credentials_store  = "auto"
 
 # macOS 通知（セッション完了時）
 notify = ["bash", "~/.codex/hooks/notify-completion.sh"]
