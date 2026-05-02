@@ -2,6 +2,9 @@
 # PostToolUse フック: 編集後の自動フォーマット
 # lint auto-fix は Stop hook (post-stop-lint.sh) で実行し、
 # 中間編集での未使用 import 誤削除を防止する
+#
+# 警告は additionalContext で Claude に返し、次ターンで自発修正を促す。
+# フォーマット結果や I/O ノイズは stderr に出してユーザーにのみ表示する。
 # Exit codes: 0=成功（警告のみ）
 
 # Claude CodeからのJSON入力を読み取り
@@ -20,9 +23,12 @@ if [[ ! -f "$file_path" ]]; then
   exit 0
 fi
 
+# Claude に渡す警告を蓄積する配列
+warnings=()
+
 # 30秒超の書き込みは異常（大容量ファイルの可能性）
 if (( duration_ms > 30000 )); then
-  echo "[Warning] Slow write detected: ${duration_ms}ms for $file_path (file may be too large)" >&2
+  warnings+=("Slow write: ${duration_ms}ms for $file_path (file may be too large to handle in a single edit)")
 fi
 
 extension="${file_path##*.}"
@@ -42,10 +48,9 @@ case "$extension" in
 
     # console.log 警告（JS/TSのみ、新規追加行のみ）
     if [[ "$extension" =~ ^(ts|tsx|js|jsx)$ ]]; then
-      added_console=$(git diff --no-color -U0 -- "$file_path" 2>/dev/null | grep -E '^\+.*console\.log' | grep -v '^\+\+\+' || true)
+      added_console=$(git diff --no-color -U0 -- "$file_path" 2>/dev/null | grep -E '^\+[^+]' | grep -F 'console.log' || true)
       if [[ -n "$added_console" ]]; then
-        echo "[Warning] New console.log added in $file_path - consider removing before commit" >&2
-        echo "$added_console" >&2
+        warnings+=("New console.log added in $file_path. Remove before commit unless intentional:\n$added_console")
       fi
     fi
     ;;
@@ -63,10 +68,9 @@ case "$extension" in
     fi
 
     # print() 警告（新規追加行のみ）
-    added_print=$(git diff --no-color -U0 -- "$file_path" 2>/dev/null | grep -E '^\+[^+].*print\(' | grep -v '# noqa' || true)
+    added_print=$(git diff --no-color -U0 -- "$file_path" 2>/dev/null | grep -E '^\+[^+]' | grep -E 'print\(' | grep -v '# noqa' || true)
     if [[ -n "$added_print" ]]; then
-      echo "[Warning] New print() added in $file_path - consider removing before commit" >&2
-      echo "$added_print" >&2
+      warnings+=("New print() added in $file_path. Remove before commit unless intentional:\n$added_print")
     fi
     ;;
 
@@ -83,5 +87,16 @@ case "$extension" in
     ;;
 esac
 
-# 常に成功（警告表示のみ、ブロックはしない）
+# 警告がある場合は additionalContext として返す
+# Claude が次ターンで自発的に修正できるよう、事実ベースで列挙する
+if (( ${#warnings[@]} > 0 )); then
+  context=$(printf '%s\n\n' "${warnings[@]}")
+  jq -n --arg ctx "$context" '{
+    "hookSpecificOutput": {
+      "hookEventName": "PostToolUse",
+      "additionalContext": $ctx
+    }
+  }'
+fi
+
 exit 0
