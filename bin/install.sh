@@ -8,6 +8,7 @@ SOURCE_ROOT="${REPO_ROOT}/home"
 BACKUP_ROOT="${HOME_ROOT}/.claude-config-backup-$(date +%Y%m%d-%H%M%S)"
 DRY_RUN=false
 SKIP_MCP=false
+CODEX_CONFIG_ONLY=false
 
 #=== ヘルプ ============================
 show_help() {
@@ -19,12 +20,16 @@ Claude Code グローバル設定をインストールします。
 OPTIONS:
   -n, --dry-run    実際には実行せず、何が行われるかを表示
   --no-mcp         MCP サーバーのセットアップをスキップ
+  --codex-config-only
+                   Codex config.toml の生成・merge のみ実行
   -h, --help       このヘルプを表示
 
 EXAMPLES:
   $(basename "$0")              # 通常インストール
   $(basename "$0") --dry-run    # 確認のみ
   $(basename "$0") --no-mcp     # MCP セットアップをスキップ
+  $(basename "$0") --codex-config-only --dry-run
+                                # Codex config 反映の確認のみ
 EOF
 }
 
@@ -37,6 +42,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --no-mcp)
       SKIP_MCP=true
+      shift
+      ;;
+    --codex-config-only)
+      CODEX_CONFIG_ONLY=true
       shift
       ;;
     -h|--help)
@@ -303,6 +312,18 @@ main() {
   log "Home root:  $HOME_ROOT"
   log "Source:     $SOURCE_ROOT"
   echo
+
+  if $CODEX_CONFIG_ONLY; then
+    log "=== Codex Config Only ==="
+    install_codex_config
+    echo
+    if $DRY_RUN; then
+      log "=== DRY-RUN Complete (no changes made) ==="
+    else
+      log "=== Codex Config Done ==="
+    fi
+    return
+  fi
 
   # .shared ディレクトリのリンク（両ハーネスから参照される共通 lib）
   # .claude / .codex より先に展開して、各 hook-helper.sh が source できる状態にする

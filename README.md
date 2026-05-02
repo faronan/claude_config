@@ -65,6 +65,9 @@ chmod +x bin/install.sh
 # MCP セットアップをスキップ
 ./bin/install.sh --no-mcp
 
+# Codex config.toml の生成・merge のみ実行
+./bin/install.sh --codex-config-only
+
 # ヘルプ表示
 ./bin/install.sh --help
 ```
