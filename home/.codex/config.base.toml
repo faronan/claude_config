@@ -45,6 +45,7 @@ glob_scan_max_depth = 8
 "/tmp" = "write"
 "/opt/homebrew" = "read"
 "__HOME__/.agents" = "read"
+"__SOURCE_ROOT__/.agents/skills" = "read"
 "__HOME__/.aws" = "none"
 "__HOME__/.config/gh/hosts.yml" = "none"
 "__HOME__/.codex/auth.json" = "none"

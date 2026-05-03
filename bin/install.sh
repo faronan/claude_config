@@ -128,11 +128,10 @@ extract_codex_local_config() {
 
 render_codex_base_config() {
   local base_config="$1"
-  awk -v home="$HOME_ROOT" '
+  awk -v home="$HOME_ROOT" -v source_root="$SOURCE_ROOT" '
     {
-      while ((idx = index($0, "__HOME__")) > 0) {
-        $0 = substr($0, 1, idx - 1) home substr($0, idx + 8)
-      }
+      gsub(/__HOME__/, home)
+      gsub(/__SOURCE_ROOT__/, source_root)
       print
     }
   ' "$base_config"
