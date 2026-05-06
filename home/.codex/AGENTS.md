@@ -12,6 +12,24 @@ in the target repository's `AGENTS.md`.
 5. docker-compose.yml があるプロジェクトではコンテナ内でコマンド実行する
 6. `git commit` / `git push` は自動実行しない（ユーザー確認を要する）
 
+### Blocked / Unavailable Commands
+
+- 必要な探索・実装・検証コマンドが sandbox、rules/hooks、PATH、
+  未インストール tool、権限、network、session/tooling 不調で実行できない場合は、
+  推測で代替 path や別コマンドを探して進めない。
+- 検証を諦めたり、勝手に scope を下げたり、rules/hooks/sandbox の deny/forbid を
+  sandbox 外実行や等価な代替手段で迂回したりしない。
+- 一度停止し、実行したかった正確なコマンド、`cwd`、失敗理由、
+  必要な判断を短く報告する。
+- ユーザーがローカルで実行できる可能性がある場合は、実行してほしいコマンドを
+  そのまま提示し、結果を待ってから判断に反映する。
+- sandbox 外実行、network、dependency install、Docker 実行が必要な場合は、
+  必要性と対象コマンドを明示して確認を取る。
+- `git commit` は、ユーザーが明示的に依頼し、staged diff を確認した後に限り実行する。
+  workspace-write sandbox では `.git` が read-only 保護されるため、sandbox 内で失敗を試さず、
+  必要な commit コマンドと理由を示して承認付き sandbox 外実行を申請する。
+  この扱いを `git add`、`git push`、`git merge`、`git rebase`、その他の Git 操作へ広げない。
+
 ## Code Design
 
 - 関心の分離を保ち、状態とロジックを分ける
