@@ -37,7 +37,7 @@ job_max_runtime_seconds = 3600
 shell_tool    = true
 multi_agent   = true
 memories      = true
-codex_hooks   = true
+hooks         = true
 
 [permissions.workspace.filesystem]
 glob_scan_max_depth = 8
