@@ -162,6 +162,12 @@
     ],
     "defaultMode": "default"
   },
+  "skillOverrides": {
+    "codex-delegate": "name-only",
+    "empirical-prompt-tuning": "name-only",
+    "playwright-test": "name-only",
+    "mcp-guidance": "name-only"
+  },
   "hooks": {
     "SessionStart": [
       {
