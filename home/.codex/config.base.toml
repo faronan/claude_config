@@ -10,6 +10,8 @@ cli_auth_credentials_store  = "auto"
 
 [shell_environment_policy]
 inherit = "core"
+experimental_use_profile = false
+set = { PATH = "__HOME__/.local/share/mise/shims:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" }
 exclude = [
   "(?i).*api[_-]?key.*",
   "(?i).*access[_-]?key.*",

@@ -5,8 +5,20 @@
 # 各ハーネス側 lib/hook-helper.sh から source される。
 
 activate_mise() {
+  local mise_bin=""
+
   if command -v mise >/dev/null 2>&1; then
-    eval "$(mise activate bash)" >/dev/null 2>&1 || true
+    mise_bin="$(command -v mise)"
+  elif [[ -x /opt/homebrew/bin/mise ]]; then
+    mise_bin="/opt/homebrew/bin/mise"
+  elif [[ -x /usr/local/bin/mise ]]; then
+    mise_bin="/usr/local/bin/mise"
+  elif [[ -x "$HOME/.local/bin/mise" ]]; then
+    mise_bin="$HOME/.local/bin/mise"
+  fi
+
+  if [[ -n "$mise_bin" ]]; then
+    eval "$("$mise_bin" activate bash)" >/dev/null 2>&1 || true
   fi
 }
 
