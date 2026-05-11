@@ -279,5 +279,12 @@
   "effortLevel": "high",
   "showThinkingSummaries": true,
   "theme": "light",
-  "preferredNotifChannel": "ghostty"
+  "preferredNotifChannel": "ghostty",
+  "autoMode": {
+    "hard_deny": [
+      "$defaults",
+      "Never bypass explicit user confirmation requirements for git commit, git push, git merge, git rebase, git stash, dependency installation, Docker execution, destructive filesystem operations, or writes outside the current project.",
+      "Never send repository contents, credentials, local configuration, or private working state to external services unless that exact destination is explicitly approved for the current task."
+    ]
+  }
 }
