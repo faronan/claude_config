@@ -122,17 +122,17 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 
 セキュリティ検証・自動化用のフックスクリプト。
 
-| フック                      | トリガー                  | 用途                                         | async |
-| --------------------------- | ------------------------- | -------------------------------------------- | ----- |
-| `session-start.sh`          | SessionStart              | ツール確認、Git/ランタイム情報表示           | -     |
-| `validate-project-scope.sh` | PreToolUse (Bash)         | プロジェクト外への書き込みをブロック         | -     |
-| `context-guard.sh`          | PreToolUse (Read\|Glob)   | node_modules 等の読み込みをブロック          | -     |
-| `post-edit-lint.sh`         | PostToolUse (Edit\|Write) | 編集後の自動フォーマット（format のみ）      | -     |
-| `post-stop-lint.sh`         | Stop                      | タスク完了後の lint auto-fix                 | -     |
-| `pre-compact.sh`            | PreCompact                | コンパクション前に作業状態をコンテキスト保存 | -     |
-| `cwd-changed.sh`            | CwdChanged                | ディレクトリ変更時に mise 環境を自動リロード | -     |
-| `notify-completion.sh`      | Stop                      | セッション完了通知                           | Yes   |
-| `notify-input-required.sh`  | Notification              | 入力必要時通知                               | Yes   |
+| フック                      | トリガー                  | 用途                                                          | async |
+| --------------------------- | ------------------------- | ------------------------------------------------------------- | ----- |
+| `session-start.sh`          | SessionStart              | `CLAUDE_CODE_TMPDIR` 作成、ツール確認、Git/ランタイム情報表示 | -     |
+| `validate-project-scope.sh` | PreToolUse (Bash)         | プロジェクト外への書き込みをブロック                          | -     |
+| `context-guard.sh`          | PreToolUse (Read\|Glob)   | node_modules 等の読み込みをブロック                           | -     |
+| `post-edit-lint.sh`         | PostToolUse (Edit\|Write) | 編集後の自動フォーマット（format のみ）                       | -     |
+| `post-stop-lint.sh`         | Stop                      | タスク完了後の lint auto-fix                                  | -     |
+| `pre-compact.sh`            | PreCompact                | コンパクション前に作業状態をコンテキスト保存                  | -     |
+| `cwd-changed.sh`            | CwdChanged                | ディレクトリ変更時に mise 環境を自動リロード                  | -     |
+| `notify-completion.sh`      | Stop                      | セッション完了通知                                            | Yes   |
+| `notify-input-required.sh`  | Notification              | 入力必要時通知                                                | Yes   |
 
 ### ルール（rules/）
 
