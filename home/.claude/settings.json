@@ -280,6 +280,9 @@
   "showThinkingSummaries": true,
   "theme": "light",
   "preferredNotifChannel": "ghostty",
+  "worktree": {
+    "baseRef": "head"
+  },
   "autoMode": {
     "hard_deny": [
       "$defaults",
