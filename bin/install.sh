@@ -103,6 +103,9 @@ extract_codex_local_config() {
       return header ~ /^\[\[?projects\./ ||
              header ~ /^\[\[?marketplaces\./ ||
              header ~ /^\[\[?plugins\./ ||
+             header == "[hooks.state]" ||
+             header == "[[hooks.state]]" ||
+             header ~ /^\[\[?hooks\.state\./ ||
              header == "[tui.model_availability_nux]" ||
              header == "[[tui.model_availability_nux]]" ||
              header ~ /^\[\[?notice(\.|])/
@@ -152,7 +155,7 @@ install_codex_config() {
 
   if $DRY_RUN; then
     log "[DRY-RUN] Would merge Codex config: $dest from $base_config"
-    log "[DRY-RUN] Would preserve local Codex state tables: projects, marketplaces, plugins, tui.model_availability_nux, notice"
+    log "[DRY-RUN] Would preserve local Codex state tables: projects, marketplaces, plugins, hooks.state, tui.model_availability_nux, notice"
     return
   fi
 
