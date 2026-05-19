@@ -37,7 +37,14 @@ process.stdin.on("end", () => {
 		// Effort level と Thinking 表示（v2.1.119+）
 		const effortLevel = data.effort?.level || null;
 		const thinkingEnabled = data.thinking?.enabled || false;
-		const effortIcons = { high: "●", normal: "◕", low: "○" };
+		const effortIcons = {
+			low: "○",
+			medium: "◕",
+			normal: "◕",
+			high: "●",
+			xhigh: "◆",
+			max: "◆",
+		};
 		const effortDisplay = effortLevel
 			? `\x1b[33m${effortIcons[effortLevel] || "?"}${effortLevel}\x1b[0m`
 			: null;

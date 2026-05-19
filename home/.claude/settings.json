@@ -58,7 +58,6 @@
       "Bash(docker compose logs *)",
       "mcp__context7__*",
       "mcp__sequential-thinking__*",
-      "mcp__github__*",
       "mcp__playwright__*"
     ],
     "deny": [
@@ -158,7 +157,8 @@
       "Bash(brew install *)",
       "Bash(gh pr create *)",
       "Bash(gh issue create *)",
-      "Bash(gh api *)"
+      "Bash(gh api *)",
+      "mcp__github__*"
     ],
     "defaultMode": "default"
   },

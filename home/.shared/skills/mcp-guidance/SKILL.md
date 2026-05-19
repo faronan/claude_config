@@ -133,6 +133,6 @@ allowed-tools:
 
 ## Error Handling
 
-- **MCP サーバーが未設定**: 設定方法を案内（settings.json の mcpServers セクション）
+- **MCP サーバーが未設定**: 追加は project `.mcp.json` または user/local `~/.claude.json`、有効・無効化は `settings.json` の `enabledMcpjsonServers` / `disabledMcpjsonServers` を案内
 - **接続エラー**: MCP サーバーの起動状態とパスを確認
 - **該当する MCP がない**: Claude Code ネイティブツールでの代替方法を提案
