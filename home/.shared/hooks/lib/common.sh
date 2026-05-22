@@ -83,6 +83,31 @@ match_secret_pattern() {
   return 1
 }
 
+# match_secret_command <command>
+# command 文字列内の secret-like path token を検出したら deny 理由を stdout に出して return 0
+match_secret_command() {
+  local command="$1"
+  local token
+  local unquoted
+
+  while IFS= read -r token; do
+    unquoted="${token#\'}"
+    unquoted="${unquoted%\'}"
+    unquoted="${unquoted#\"}"
+    unquoted="${unquoted%\"}"
+
+    if match_secret_pattern "$unquoted" >/dev/null; then
+      printf '[Security] Secret-like command target is blocked: %s' "$unquoted"
+      return 0
+    fi
+  done < <(
+    printf '%s\n' "$command" |
+      grep -Eo '(["'\'']?)([^[:space:];|&<>()]+/)?(\.env(\.[^[:space:];|&<>()]+)?|\.aws|\.kube|\.netrc|\.npmrc|\.pypirc|\.ssh|\.git-credentials|auth\.json|credentials\.json|hosts\.yml|id_(rsa|dsa|ecdsa|ed25519)|kubeconfig|[^[:space:];|&<>()]*(service-account|service_account)[^[:space:];|&<>()]*\.json|[^[:space:];|&<>()]+\.kubeconfig|[^[:space:];|&<>()]+\.pem|[^[:space:];|&<>()]+\.key|([^[:space:];|&<>()]+/)?secrets?/[^[:space:];|&<>()]+)(/[^[:space:];|&<>()]*)?(["'\'']?)' 2>/dev/null
+  )
+
+  return 1
+}
+
 # match_blocked_dir <target>
 # マッチしたら deny 理由を stdout に出して return 0、なければ return 1
 match_blocked_dir() {

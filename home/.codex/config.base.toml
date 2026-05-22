@@ -3,7 +3,6 @@ plan_mode_reasoning_effort  = "xhigh"
 model_reasoning_summary     = "auto"
 web_search                  = "cached"
 approval_policy             = "on-request"
-sandbox_mode                = "workspace-write"
 default_permissions         = "workspace"
 personality                 = "pragmatic"
 cli_auth_credentials_store  = "auto"
@@ -26,10 +25,6 @@ exclude = [
   "^ANTHROPIC_API_KEY$",
 ]
 
-[sandbox_workspace_write]
-writable_roots  = []
-network_access  = false
-
 [agents]
 max_threads             = 6
 max_depth               = 1
@@ -48,44 +43,47 @@ glob_scan_max_depth = 8
 "/opt/homebrew" = "read"
 "__HOME__/.agents" = "read"
 "__SOURCE_ROOT__/.agents/skills" = "read"
-"__HOME__/.aws/**" = "none"
-"__HOME__/.config/gh/hosts.yml" = "none"
-"__HOME__/.codex/auth.json" = "none"
-"__HOME__/.git-credentials" = "none"
-"__HOME__/.kube/**" = "none"
-"__HOME__/.netrc" = "none"
-"__HOME__/.npmrc" = "none"
-"__HOME__/.pypirc" = "none"
-"__HOME__/.ssh/**" = "none"
+"__HOME__/.aws/**" = "deny"
+"__HOME__/.config/gh/hosts.yml" = "deny"
+"__HOME__/.codex/auth.json" = "deny"
+"__HOME__/.git-credentials" = "deny"
+"__HOME__/.kube/**" = "deny"
+"__HOME__/.netrc" = "deny"
+"__HOME__/.npmrc" = "deny"
+"__HOME__/.pypirc" = "deny"
+"__HOME__/.ssh/**" = "deny"
 
 [permissions.workspace.filesystem.":workspace_roots"]
 "."                   = "write"
-".env"                = "none"
-".env.*"              = "none"
-"**/.env"             = "none"
-"**/.env.*"           = "none"
-"*.env"               = "none"
-"**/*.env"            = "none"
-"*.pem"               = "none"
-"**/*.pem"            = "none"
-"*.key"               = "none"
-"**/*.key"            = "none"
-"**/.aws/**"          = "none"
-"**/.kube/**"         = "none"
-"**/.netrc"           = "none"
-"**/.npmrc"           = "none"
-"**/.pypirc"          = "none"
-"**/.ssh/**"          = "none"
-"**/*service-account*.json" = "none"
-"**/*service_account*.json" = "none"
-"**/*.kubeconfig"     = "none"
-"**/id_dsa"           = "none"
-"**/id_ecdsa"         = "none"
-"**/id_ed25519"       = "none"
-"**/id_rsa"           = "none"
-"**/kubeconfig"       = "none"
-"**/secrets/**"       = "none"
-"**/credentials.json" = "none"
+".env"                = "deny"
+".env.*"              = "deny"
+"**/.env"             = "deny"
+"**/.env.*"           = "deny"
+"*.env"               = "deny"
+"**/*.env"            = "deny"
+"*.pem"               = "deny"
+"**/*.pem"            = "deny"
+"*.key"               = "deny"
+"**/*.key"            = "deny"
+"**/.aws/**"          = "deny"
+"**/.kube/**"         = "deny"
+"**/.netrc"           = "deny"
+"**/.npmrc"           = "deny"
+"**/.pypirc"          = "deny"
+"**/.ssh/**"          = "deny"
+"**/*service-account*.json" = "deny"
+"**/*service_account*.json" = "deny"
+"**/*.kubeconfig"     = "deny"
+"**/id_dsa"           = "deny"
+"**/id_ecdsa"         = "deny"
+"**/id_ed25519"       = "deny"
+"**/id_rsa"           = "deny"
+"**/kubeconfig"       = "deny"
+"**/secrets/**"       = "deny"
+"**/credentials.json" = "deny"
+
+[permissions.workspace.network]
+enabled = false
 
 [tui]
 notifications          = ["agent-turn-complete", "approval-requested"]

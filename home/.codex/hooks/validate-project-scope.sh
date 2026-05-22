@@ -14,6 +14,10 @@ fi
 
 sanitized=$(printf '%s' "$command" | sed -E 's/[0-9]*>\/?dev\/(null|stdout|stderr|fd\/[0-9]+)//g; s/[0-9]*>&[0-9]+//g')
 
+if reason=$(match_secret_command "$sanitized"); then
+  pretooluse_deny "$reason"
+fi
+
 dangerous_patterns=(
   "(^|[;&|[:space:]])git([[:space:]]+-C[[:space:]]+[^;&|[:space:]]+)?[[:space:]]+push([^;&|]*[[:space:]])(-f|--force|--force-with-lease)([[:space:]]|$)"
   "(^|[;&|[:space:]])git([[:space:]]+-C[[:space:]]+[^;&|[:space:]]+)?[[:space:]]+clean([^;&|]*[[:space:]])-[A-Za-z]*f[A-Za-z]*d[A-Za-z]*([[:space:]]|$)"
