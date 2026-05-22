@@ -26,8 +26,10 @@ in the target repository's `AGENTS.md`.
 - sandbox 外実行、network、dependency install、Docker 実行が必要な場合は、
   必要性と対象コマンドを明示して確認を取る。
 - `git commit` は、ユーザーが明示的に依頼し、staged diff を確認した後に限り実行する。
-  workspace-write sandbox では `.git` が read-only 保護されるため、sandbox 内で失敗を試さず、
-  必要な commit コマンドと理由を示して承認付き sandbox 外実行を申請する。
+  Codex の Workspace permission でも `.git` は保護対象になり得るため、sandbox 内で
+  `git commit` を試さない。必要な commit コマンド、`cwd`、理由を示して承認付き
+  sandbox 外実行を申請する。承認付き実行できない場合は、通常 terminal で実行する
+  exact command を提示して結果を待つ。
   この扱いを `git add`、`git push`、`git merge`、`git rebase`、その他の Git 操作へ広げない。
 
 ## Code Design
