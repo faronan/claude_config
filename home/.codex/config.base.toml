@@ -91,7 +91,9 @@ notification_method    = "osc9"
 notification_condition = "always"
 animations             = true
 theme                  = "catppuccin-mocha"
-status_line            = ["model-with-reasoning", "git-branch", "run-state", "context-used", "five-hour-limit"]
+status_line            = ["project-name", "model-with-reasoning", "git-branch", "context-remaining", "five-hour-limit", "weekly-limit"]
+terminal_title         = ["activity", "project", "thread", "git-branch"]
+session_picker_view    = "dense"
 
 [mcp_servers.context7]
 command             = "npx"
