@@ -17,6 +17,12 @@ sanitized=$(printf '%s' "$command" | sed -E 's/[0-9]*>\/?dev\/(null|stdout|stder
 # 禁止システムディレクトリ（/dev, /tmp は除外: /dev/null は正当な使用、/tmp は CLAUDE_CODE_TMPDIR で制御）
 SYSTEM_DIRS="/(etc|var|sys|proc|opt|usr|Library|System)(/|$)"
 HOME_DIRS="(~|\\\$HOME|\\\$\{HOME\})/"
+HOME_DESTRUCTIVE_TARGETS="['\"]?(~|\\\$HOME|\\\$\{HOME\})(/)?(\\*)?['\"]?([[:space:]]|$)"
+RM_RF_FLAGS="-[[:alnum:]-]*([rR][[:alnum:]-]*f|f[[:alnum:]-]*[rR])[[:alnum:]-]*"
+
+if printf '%s' "$sanitized" | grep -qE "rm[[:space:]]+${RM_RF_FLAGS}[[:space:]].*${HOME_DESTRUCTIVE_TARGETS}" 2>/dev/null; then
+  pretooluse_deny "[Security] ホームディレクトリ全体を対象にした破壊的削除は許可されていません。コマンド: $command"
+fi
 
 # システムディレクトリへの書き込みパターン
 WRITE_PATTERNS=(

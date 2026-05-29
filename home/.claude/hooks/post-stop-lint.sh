@@ -13,6 +13,18 @@ if [[ "$(echo "$input" | jq -r '.stop_hook_active // false')" == "true" ]]; then
   exit 0
 fi
 
+active_task_count=$(echo "$input" | jq '
+  ([.background_tasks[]?, .session_crons[]?] |
+    map(select(((.status // "") | ascii_downcase) as $s |
+      ($s != "completed" and $s != "done" and $s != "failed" and
+       $s != "cancelled" and $s != "canceled" and $s != "retired"))) |
+    length)
+' 2>/dev/null || echo 0)
+
+if [[ "$active_task_count" =~ ^[0-9]+$ && "$active_task_count" -gt 0 ]]; then
+  exit 0
+fi
+
 cwd=$(echo "$input" | jq -r '.cwd // ""')
 
 if [[ -z "$cwd" || ! -d "$cwd" ]]; then

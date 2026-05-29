@@ -4,8 +4,7 @@
   "env": {
     "EDITOR": "code",
     "CLAUDE_CODE_TMPDIR": "/Users/toshiki.ito/.claude/tmp",
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
-    "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1"
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70"
   },
   "attribution": {
     "commit": "Co-Authored-By: Claude <noreply@anthropic.com>",
@@ -64,8 +63,15 @@
       "Bash(*| bash)",
       "Bash(*| sh)",
       "Bash(rm -rf /*)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf ~/)",
       "Bash(rm -rf ~/*)",
+      "Bash(rm -rf $HOME)",
+      "Bash(rm -rf $HOME/)",
       "Bash(rm -rf $HOME/*)",
+      "Bash(rm -rf ${HOME})",
+      "Bash(rm -rf ${HOME}/)",
+      "Bash(rm -rf ${HOME}/*)",
       "Bash(sudo *)",
       "Bash(su *)",
       "Bash(chmod 777 *)",

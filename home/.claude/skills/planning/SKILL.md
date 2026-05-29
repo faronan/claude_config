@@ -14,6 +14,12 @@ allowed-tools:
   - Glob
   - Grep
   - mcp__sequential-thinking__*
+disallowed-tools:
+  - Edit
+  - Write
+  - MultiEdit
+  - NotebookEdit
+  - Bash
 ---
 
 # Planning Skill

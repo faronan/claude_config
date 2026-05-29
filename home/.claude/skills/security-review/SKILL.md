@@ -12,6 +12,11 @@ allowed-tools:
   - Read
   - Glob
   - Grep
+disallowed-tools:
+  - Edit
+  - Write
+  - MultiEdit
+  - NotebookEdit
 ---
 
 # Security Review

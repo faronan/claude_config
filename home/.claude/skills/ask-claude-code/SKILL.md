@@ -19,6 +19,11 @@ allowed-tools:
   - Bash(gh pr view:*)
   - Bash(gh issue view:*)
   - mcp__context7__*
+disallowed-tools:
+  - Edit
+  - Write
+  - MultiEdit
+  - NotebookEdit
 ---
 
 # Claude Code ヘルプ

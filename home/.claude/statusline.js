@@ -21,14 +21,16 @@ process.stdin.on("end", () => {
 		const model = data.model?.display_name || "Unknown";
 		const currentDir = data.workspace?.current_dir || data.cwd || ".";
 		const dirName = path.basename(currentDir);
+		const terminalColumns = getTerminalColumns();
+		const terminalLines = getTerminalLines();
 
 		// Worktree 情報（v2.1.69+: --worktree 使用時に提供される）
 		const worktree = data.worktree || null;
 
 		// Git ブランチ情報（worktree 時はそちらを優先、キャッシュ付き）
 		const gitInfo = worktree
-			? getWorktreeInfo(worktree)
-			: getCachedGitInfo(currentDir);
+			? getWorktreeInfo(worktree, terminalColumns)
+			: getCachedGitInfo(currentDir, terminalColumns);
 
 		// Agent 名表示（--agent フラグ使用時）
 		const agentName = data.agent?.name || null;
@@ -116,9 +118,11 @@ process.stdin.on("end", () => {
 		// 追加ディレクトリ表示（v2.1.47+: workspace.added_dirs）
 		const addedDirs = data.workspace?.added_dirs || [];
 		const addedDirsDisplay =
-			addedDirs.length > 0
+			addedDirs.length > 0 && terminalColumns >= 100
 				? `+${addedDirs.map((d) => path.basename(d)).join(",")}`
 				: null;
+		const repoDisplay = formatRepoDisplay(data.workspace?.repo, terminalColumns);
+		const prDisplay = formatPrDisplay(data.pr);
 
 		// === Line 1: Identity + Location ===
 		// Identity: Model + Agent
@@ -133,7 +137,7 @@ process.stdin.on("end", () => {
 
 		// Where: Dir + AddedDirs + Git（Starship: directory=bold cyan）
 		const dirDisplay = `\x1b[1;36m${dirName}\x1b[0m`;
-		const where = [dirDisplay, addedDirsDisplay, gitInfo]
+		const where = [dirDisplay, addedDirsDisplay, gitInfo, prDisplay, repoDisplay]
 			.filter(Boolean)
 			.join(" ");
 
@@ -145,21 +149,41 @@ process.stdin.on("end", () => {
 
 		// Session Metrics: Lines + Cost + Duration
 		// コンテキスト 0% 時（/clear 直後等）はセッション累計値を非表示にする
+		const metricParts =
+			terminalColumns >= 140
+				? [linesDisplay, costDisplay, durationDisplay]
+				: terminalColumns >= 120
+					? [costDisplay, durationDisplay]
+					: [];
 		const metrics =
-			effectivePct > 0
-				? [linesDisplay, costDisplay, durationDisplay].filter(Boolean).join(" ")
-				: "";
+			effectivePct > 0 ? metricParts.filter(Boolean).join(" ") : "";
 
-		const line2 = [context, rateLimitDisplay, metrics]
+		const line2 = [
+			context,
+			terminalColumns >= 100 ? rateLimitDisplay : null,
+			metrics,
+		]
 			.filter((v) => v !== "" && v != null)
 			.join(" | ");
 
 		console.log(line1);
-		console.log(line2);
+		if (terminalLines > 1) {
+			console.log(line2);
+		}
 	} catch (e) {
 		console.log(`[Error] ${e.message}`);
 	}
 });
+
+function getTerminalColumns() {
+	const columns = parseInt(process.env.COLUMNS, 10);
+	return Number.isFinite(columns) && columns > 0 ? columns : 120;
+}
+
+function getTerminalLines() {
+	const lines = parseInt(process.env.LINES, 10);
+	return Number.isFinite(lines) && lines > 0 ? lines : 24;
+}
 
 /**
  * コンテキスト使用率の2段階フォールバック
@@ -182,35 +206,79 @@ function getRawPercentage(contextWindow, currentTokens, contextWindowSize) {
 	return 0;
 }
 
-function getWorktreeInfo(worktree) {
+function getWorktreeInfo(worktree, terminalColumns) {
 	const name = worktree.name || "";
-	const branch = worktree.branch || name;
+	const branch = formatBranchName(worktree.branch || name, terminalColumns);
 	if (!branch) return null;
 	// Starship git_branch 準拠: bold purple +  アイコン、worktree は [wt] で区別
 	return `\x1b[1;35m\ue0a0 ${branch}\x1b[0m\x1b[1;35m[wt]\x1b[0m`;
 }
 
+function formatRepoDisplay(repo, terminalColumns) {
+	if (!repo || terminalColumns < 120) return null;
+	const owner = repo.owner || repo.organization || repo.org;
+	const name = repo.name || repo.repo;
+	const fullName = repo.full_name || repo.fullName;
+	const display = owner && name ? `${owner}/${name}` : fullName;
+	return display ? `\x1b[2;37m${display}\x1b[0m` : null;
+}
+
+function formatPrDisplay(pr) {
+	if (!pr) return null;
+	const number = pr.number || pr.pull_request_number || pr.pullRequestNumber;
+	const label = number ? `PR #${number}` : "PR";
+	const reviewState = normalizeReviewState(
+		pr.review_state || pr.reviewState || pr.review_decision || pr.reviewDecision,
+	);
+	const state = reviewState || normalizePrState(pr.state || pr.status);
+	const text = state ? `${label} ${state}` : label;
+	return `\x1b[34m${text}\x1b[0m`;
+}
+
+function normalizeReviewState(state) {
+	if (!state) return null;
+	const normalized = String(state).toLowerCase();
+	const states = {
+		approved: "approved",
+		changes_requested: "changes",
+		commented: "commented",
+		pending: "pending",
+		review_required: "pending",
+	};
+	return states[normalized] || normalized.replace(/_/g, "-");
+}
+
+function normalizePrState(state) {
+	if (!state) return null;
+	return String(state).toLowerCase().replace(/_/g, "-");
+}
+
 /**
  * Git 情報をキャッシュ付きで取得（5秒 TTL）
  */
-function getCachedGitInfo(dir) {
+function getCachedGitInfo(dir, terminalColumns) {
 	try {
-		const cache = readGitCache(dir);
+		const widthClass = terminalColumns < 100 ? "narrow" : "wide";
+		const cache = readGitCache(dir, widthClass);
 		if (cache) return cache.value;
 
-		const result = getGitInfo(dir);
-		writeGitCache(dir, result);
+		const result = getGitInfo(dir, terminalColumns);
+		writeGitCache(dir, result, widthClass);
 		return result;
 	} catch {
-		return getGitInfo(dir);
+		return getGitInfo(dir, terminalColumns);
 	}
 }
 
-function readGitCache(dir) {
+function readGitCache(dir, widthClass) {
 	try {
 		const raw = fs.readFileSync(GIT_CACHE_FILE, "utf-8");
 		const cache = JSON.parse(raw);
-		if (cache.dir === dir && Date.now() - cache.timestamp < GIT_CACHE_TTL_MS) {
+		if (
+			cache.dir === dir &&
+			cache.widthClass === widthClass &&
+			Date.now() - cache.timestamp < GIT_CACHE_TTL_MS
+		) {
 			return cache;
 		}
 	} catch {
@@ -219,18 +287,18 @@ function readGitCache(dir) {
 	return null;
 }
 
-function writeGitCache(dir, value) {
+function writeGitCache(dir, value, widthClass) {
 	try {
 		fs.writeFileSync(
 			GIT_CACHE_FILE,
-			JSON.stringify({ dir, value, timestamp: Date.now() }),
+			JSON.stringify({ dir, value, widthClass, timestamp: Date.now() }),
 		);
 	} catch {
 		// ignore write errors
 	}
 }
 
-function getGitInfo(dir) {
+function getGitInfo(dir, terminalColumns) {
 	try {
 		// Git リポジトリかどうか確認（--no-optional-locks で FSEvents ループ防止）
 		execSync("git --no-optional-locks rev-parse --git-dir", {
@@ -239,11 +307,12 @@ function getGitInfo(dir) {
 		});
 
 		// ブランチ名取得
-		const branch = execSync("git --no-optional-locks branch --show-current", {
+		const rawBranch = execSync("git --no-optional-locks branch --show-current", {
 			cwd: dir,
 			encoding: "utf-8",
 			stdio: "pipe",
 		}).trim();
+		const branch = formatBranchName(rawBranch, terminalColumns);
 
 		if (!branch) return null;
 
@@ -267,6 +336,19 @@ function getGitInfo(dir) {
 	} catch {
 		return null;
 	}
+}
+
+function formatBranchName(branch, terminalColumns) {
+	if (!branch) return "";
+	if (terminalColumns >= 100) return branch;
+	return truncateMiddle(branch, 28);
+}
+
+function truncateMiddle(value, maxLength) {
+	if (value.length <= maxLength) return value;
+	const prefixLength = Math.max(1, Math.floor((maxLength - 3) / 2));
+	const suffixLength = Math.max(1, maxLength - prefixLength - 3);
+	return `${value.slice(0, prefixLength)}...${value.slice(-suffixLength)}`;
 }
 
 function parseGitStatus(status) {

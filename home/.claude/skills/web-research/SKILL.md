@@ -11,17 +11,25 @@ allowed-tools:
   - WebFetch
   - WebSearch
   - mcp__context7__*
+disallowed-tools:
+  - Edit
+  - Write
+  - MultiEdit
+  - NotebookEdit
+  - Bash
 ---
 
 # Web Research Skill
 
 ## Purpose
+
 - ライブラリ・フレームワークの比較検討
 - 最新のベストプラクティス調査
 - 技術的な問題の解決策検索
 - 公式ドキュメントの参照
 
 ## Workflow
+
 1. 調査目的を明確化
 2. 適切なソースを選択
    - 公式ドキュメント → Context7 MCP
@@ -31,6 +39,7 @@ allowed-tools:
 4. 構造化してレポート
 
 ## Output Format
+
 ```
 ## 調査結果: [トピック]
 
@@ -54,6 +63,7 @@ allowed-tools:
 ```
 
 ## Guidelines
+
 - 情報のソースを必ず明記
 - 最新性に注意（更新日を確認）
 - 複数ソースで裏付け
