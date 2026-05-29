@@ -68,6 +68,8 @@ lockfile で判定し、対応するツールを使う:
 - 対象例: `.env`, `*.pem`, `*.key`, `**/secrets/**`, `**/credentials.json`,
   `**/.ssh/**`, `**/.aws/**`, `**/.kube/**`, `**/.npmrc`, `**/.pypirc`,
   `**/*service-account*.json`, `**/*service_account*.json`, `**/*.kubeconfig`
+- GitHub CLI の認証設定 (`~/.config/gh/hosts.yml`) は `gh` 実行時の内部読み取りだけ許容し、
+  明示的に読み取ったり出力したりしない
 - 禁止: `sudo`, `su`, `git push --force`, `git push -f`, `rm -rf /`, `rm -rf ~`
 - 確認必要: `git commit`, `git push`, `git merge`, `git rebase`, `git stash`,
   `rm -rf`, `mv`, `mkdir`, dependency install, Docker 実行系
