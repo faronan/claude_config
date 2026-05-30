@@ -58,6 +58,14 @@ prefix_rule(
 )
 
 prefix_rule(
+    pattern=["git", "ls-remote", "--heads"],
+    decision="allow",
+    justification="リモートブランチ存在確認は読み取り専用",
+    match=["git ls-remote --heads origin feature/example"],
+    not_match=["git push origin feature/example"],
+)
+
+prefix_rule(
     pattern=["bash", "-n"],
     decision="allow",
     justification="Bash 構文チェックはスクリプトを実行しない",
@@ -218,6 +226,14 @@ prefix_rule(
     justification="GitHub repo 情報閲覧は読み取り専用",
     match=["gh repo view", "gh repo view openai/codex"],
     not_match=["gh repo delete owner/repo"],
+)
+
+# Mutating gh api variants are denied by validate-project-scope.sh.
+prefix_rule(
+    pattern=["gh", "api"],
+    decision="allow",
+    justification="GitHub API の既定 GET 呼び出しは読み取り専用",
+    match=["gh api repos/OWNER/REPO/pulls/123/comments"],
 )
 
 prefix_rule(

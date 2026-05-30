@@ -117,9 +117,3 @@ prefix_rule(
     decision="prompt",
     justification="Issue 作成はユーザー確認を要する",
 )
-
-prefix_rule(
-    pattern=["gh", "api"],
-    decision="prompt",
-    justification="GitHub API 呼び出しは副作用の可能性があるためユーザー確認を要する",
-)

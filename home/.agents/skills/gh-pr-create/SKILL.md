@@ -129,7 +129,20 @@ Context の結果を確認し、NGなら理由を伝えて **中断** する。
 
 ユーザー承認後、`gh pr create` を実行する。
 
-- PR説明文は HEREDOC 形式で渡してフォーマットを維持
+- PR説明文は CLI 上で `printf` から組み立てて `--body` に渡す
+- tmp file、`--body-file -`、HEREDOC、shell redirection、`gh pr edit` fallback は使わない
+- 各本文行は single-quote した `printf '%s\n'` の引数として渡し、本文中の `'` は `'\''` に escape する
+- 安全に single-quote escape できない本文がある場合は停止し、ユーザーに確認する
+- 実行形の例:
+
+```bash
+gh pr create \
+  --base main \
+  --head feature-branch \
+  --title 'PRタイトル' \
+  --body "$(printf '%s\n' '## Summary' '' '- 変更内容')"
+```
+
 - 作成完了後、以下の形式で結果を表示:
 
 ```
