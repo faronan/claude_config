@@ -57,6 +57,8 @@
       "Bash(docker compose logs *)",
       "mcp__context7__*",
       "mcp__sequential-thinking__*",
+      "mcp__tavily-remote-mcp__*",
+      "mcp__tavily__*",
       "mcp__playwright__*"
     ],
     "deny": [

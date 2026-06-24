@@ -206,6 +206,7 @@ setup_mcp_servers() {
     log "After installing Claude Code, run these commands:"
     log "  claude mcp add context7 --scope user -- npx -y @upstash/context7-mcp"
     log "  claude mcp add sequential-thinking --scope user -- npx -y @modelcontextprotocol/server-sequential-thinking"
+    log "  claude mcp add tavily-remote-mcp --transport http https://mcp.tavily.com/mcp/"
     log "  claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='\${GITHUB_TOKEN}' -- npx -y @modelcontextprotocol/server-github"
     return
   fi
@@ -214,6 +215,7 @@ setup_mcp_servers() {
     log "[DRY-RUN] Would configure MCP servers:"
     log "[DRY-RUN]   - context7 (npx -y @upstash/context7-mcp)"
     log "[DRY-RUN]   - sequential-thinking (npx -y @modelcontextprotocol/server-sequential-thinking)"
+    log "[DRY-RUN]   - tavily-remote-mcp (https://mcp.tavily.com/mcp/, requires OAuth authentication)"
     log "[DRY-RUN]   - github (npx -y @modelcontextprotocol/server-github)"
     return
   fi
@@ -230,7 +232,10 @@ setup_mcp_servers() {
   claude mcp add sequential-thinking --scope user -- npx -y @modelcontextprotocol/server-sequential-thinking
   log "  ✓ sequential-thinking added"
 
-  # Note: fetch MCP は不要（Claude Code 組み込みの Fetch/WebFetch で十分）
+  # Tavily（Web 検索・既知 URL 抽出。OAuth は次回 Claude Code セッションまたは /mcp で完了）
+  claude mcp remove tavily-remote-mcp --scope local 2>/dev/null || true
+  claude mcp add tavily-remote-mcp --transport http https://mcp.tavily.com/mcp/
+  log "  ✓ tavily-remote-mcp added (authenticate with /mcp or a new Claude Code session)"
 
   # GitHub（常に追加、実行時に環境変数を評価）
   claude mcp remove github --scope user 2>/dev/null || true

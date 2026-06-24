@@ -11,6 +11,8 @@ tools:
   - WebSearch
   - Read
   - mcp__context7__*
+  - mcp__tavily-remote-mcp__*
+  - mcp__tavily__*
 skills:
   - web-research
 ---
@@ -23,6 +25,9 @@ skills:
 ## 制約
 
 - **読み取り専用**: ファイルを変更しない
+- 最新情報・比較・複数ソース検索は Tavily MCP を標準にする
+- WebSearch / WebFetch は Tavily unavailable、未認証、または API key 未設定時の fallback として扱う。fallback の明示許可がない場合は停止して報告する
+- Tavily の crawl / map / research 系は、網羅調査が明示された場合だけ使う
 - ソースを必ず明記
 - 古い情報に注意
 - 信頼性の高いソースを優先

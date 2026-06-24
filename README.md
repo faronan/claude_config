@@ -108,13 +108,45 @@ claude mcp add context7 --scope user -- npx -y @upstash/context7-mcp
 # Sequential Thinking（複雑な問題の構造化思考）
 claude mcp add sequential-thinking --scope user -- npx -y @modelcontextprotocol/server-sequential-thinking
 
+# Tavily（Web 検索・既知 URL 抽出。OAuth 認証）
+claude mcp add tavily-remote-mcp --transport http https://mcp.tavily.com/mcp/
+
 # GitHub（オプション、GITHUB_TOKEN が必要）
 claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOKEN}' -- npx -y @modelcontextprotocol/server-github
 ```
 
-> **Note**: Web コンテンツ取得には Claude Code 組み込みの Fetch/WebFetch ツールを使用します（MCP 不要）。
+Tavily は remote MCP + OAuth を標準にします。追加後、Claude Code の新規会話または `/mcp` からブラウザ認証を完了してください。
 
-確認: `claude mcp list`
+確認:
+
+```bash
+claude mcp list
+claude mcp get tavily-remote-mcp
+```
+
+Claude Code セッション内では `/mcp` で Tavily の接続状態と tool 数を確認します。疎通確認には `/web-research 最新のTavily MCP設定方法を公式情報で確認して` のような小さな検索を使います。
+
+会社 PC のプロキシや OAuth 認証で remote MCP が使えない場合だけ、local stdio 方式に fallback します。この場合はユーザーごとの API key が必要です。キーは repo や project `.mcp.json` に書かず、shell の環境変数から渡します。
+
+**Fish shell**:
+
+```fish
+set -gx TAVILY_API_KEY "tvly-..."
+```
+
+**Zsh/Bash**:
+
+```bash
+export TAVILY_API_KEY="tvly-..."
+```
+
+```bash
+claude mcp add --env TAVILY_API_KEY='${TAVILY_API_KEY}' --transport stdio --scope user tavily -- npx -y tavily-mcp@0.1.3
+```
+
+Web 検索・Web ページ取得は Tavily MCP を標準とし、Claude Code 組み込みの WebSearch/WebFetch は Tavily が使えない場合の fallback として扱います。
+
+Tavily が起動しない場合は、OAuth 認証状態、Node.js v20 以上、`npx -y tavily-mcp@0.1.3`、`TAVILY_API_KEY`、企業プロキシや証明書設定を順に確認してください。
 
 ## 含まれる設定
 
