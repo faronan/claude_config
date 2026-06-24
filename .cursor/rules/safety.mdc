@@ -1,0 +1,17 @@
+---
+description: Safety constraints for shell commands, secrets, and repository mutations
+alwaysApply: true
+---
+
+# Safety
+
+- Do not read or output secret-like files such as `.env`, `*.pem`, `*.key`,
+  credentials files, SSH keys, cloud config, kubeconfig, or `secrets/`.
+- Ask before destructive operations, dependency installation, Docker mutation
+  commands, `git commit`, `git push`, `git merge`, `git rebase`, and `git stash`.
+- Never use `sudo`, `su`, force push, `git reset --hard`, or broad recursive
+  deletion.
+- If a required command is blocked or unavailable, stop and report the exact
+  command, cwd, failure reason, and needed user decision.
+- Prefer targeted reads and searches; avoid broad probes that include secret-like
+  paths or noisy generated directories.

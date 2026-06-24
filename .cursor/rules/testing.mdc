@@ -1,0 +1,13 @@
+---
+globs: "**/*.test.ts, **/*.test.tsx, **/*.spec.ts, **/*.spec.tsx, **/tests/**, **/__tests__/**, **/*_test.py, **/test_*.py"
+alwaysApply: false
+---
+
+# Testing
+
+- Follow TDD when implementing behavior changes: exploration, red, green,
+  refactor.
+- Cover happy paths, edge cases, and error cases.
+- Keep snapshot tests minimal.
+- After code changes, run the relevant test, typecheck, and lint commands.
+- If verification is not run, state the exact reason.

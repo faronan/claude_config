@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "editor": {
+    "vimMode": false
+  },
+  "permissions": {
+    "allow": [
+      "Shell(git status)",
+      "Shell(git diff)",
+      "Shell(git show)",
+      "Shell(git log)",
+      "Shell(git branch --show-current)",
+      "Shell(git ls-files)",
+      "Shell(rg)",
+      "Shell(fd)",
+      "Shell(jq)",
+      "Shell(node --version)",
+      "Shell(pnpm --version)",
+      "Shell(pnpm test)",
+      "Shell(pnpm lint)",
+      "Shell(pnpm typecheck)",
+      "Shell(pnpm build)",
+      "Shell(python3 --version)",
+      "Shell(uv --version)",
+      "Shell(ruff --version)",
+      "Shell(biome --version)",
+      "Shell(bash -n)",
+      "Shell(sh -n)",
+      "Shell(zsh -n)"
+    ],
+    "deny": [
+      "Shell(sudo)",
+      "Shell(su)",
+      "Shell(rm -rf /)",
+      "Shell(rm -rf ~)",
+      "Shell(git push --force)",
+      "Shell(git push -f)",
+      "Shell(git reset --hard)",
+      "Shell(git clean -fd)",
+      "Shell(npm install)",
+      "Shell(npm ci)",
+      "Shell(pnpm install)",
+      "Shell(pnpm add)",
+      "Shell(yarn install)",
+      "Shell(yarn add)",
+      "Shell(pip)",
+      "Shell(pip3)",
+      "Shell(python -m pip)",
+      "Shell(python3 -m pip)",
+      "Shell(gh secret)",
+      "Shell(gh auth login)",
+      "Shell(gh auth logout)"
+    ]
+  },
+  "approvalMode": "allowlist",
+  "notifications": true,
+  "hints": true,
+  "rewind": true,
+  "suggestNextPrompt": true,
+  "display": {
+    "showLineNumbers": true,
+    "showThinkingBlocks": true,
+    "showStatusIndicators": true,
+    "showStatusLineRunningTime": true
+  },
+  "attribution": {
+    "attributeCommitsToAgent": false,
+    "attributePRsToAgent": false
+  }
+}

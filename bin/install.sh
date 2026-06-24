@@ -9,6 +9,8 @@ BACKUP_ROOT="${HOME_ROOT}/.claude-config-backup-$(date +%Y%m%d-%H%M%S)"
 DRY_RUN=false
 SKIP_MCP=false
 CODEX_CONFIG_ONLY=false
+CURSOR_ONLY=false
+SKIP_CURSOR=false
 
 #=== ヘルプ ============================
 show_help() {
@@ -22,6 +24,9 @@ OPTIONS:
   --no-mcp         MCP サーバーのセットアップをスキップ
   --codex-config-only
                    Codex config.toml の生成・merge のみ実行
+  --cursor-only
+                   Cursor 設定のみリンク
+  --no-cursor      Cursor セットアップをスキップ
   -h, --help       このヘルプを表示
 
 EXAMPLES:
@@ -30,6 +35,8 @@ EXAMPLES:
   $(basename "$0") --no-mcp     # MCP セットアップをスキップ
   $(basename "$0") --codex-config-only --dry-run
                                 # Codex config 反映の確認のみ
+  $(basename "$0") --cursor-only --dry-run
+                                # Cursor 設定反映の確認のみ
 EOF
 }
 
@@ -46,6 +53,14 @@ while [[ $# -gt 0 ]]; do
       ;;
     --codex-config-only)
       CODEX_CONFIG_ONLY=true
+      shift
+      ;;
+    --cursor-only)
+      CURSOR_ONLY=true
+      shift
+      ;;
+    --no-cursor)
+      SKIP_CURSOR=true
       shift
       ;;
     -h|--help)
@@ -304,6 +319,50 @@ setup_agents() {
   log "Agents setup complete!"
 }
 
+setup_cursor() {
+  echo
+  log "=== Cursor Setup ==="
+
+  if $SKIP_CURSOR; then
+    log "Cursor setup skipped (--no-cursor)"
+    return
+  fi
+
+  local cursor_source="${SOURCE_ROOT}/.cursor"
+  local skills_source="${SOURCE_ROOT}/.agents/skills"
+
+  if [ ! -d "$cursor_source" ]; then
+    log "Cursor source directory not found. Skipping Cursor setup."
+    return
+  fi
+
+  if [ ! -d "$skills_source" ]; then
+    log "ERROR: Cursor skills source not found: $skills_source"
+    log "Refusing to duplicate Claude skills because Cursor should share the Codex/Agents skill source."
+    return 1
+  fi
+
+  if $DRY_RUN; then
+    log "[DRY-RUN] Would create: ${HOME_ROOT}/.cursor"
+  else
+    mkdir -p "${HOME_ROOT}/.cursor"
+  fi
+
+  for src in "$cursor_source"/* "$cursor_source"/.*; do
+    basename="$(basename "$src")"
+    case "$basename" in
+      .|..|skills) continue ;;
+    esac
+    if [ -e "$src" ]; then
+      dest="${HOME_ROOT}/.cursor/${basename}"
+      backup_and_link "$src" "$dest"
+    fi
+  done
+
+  backup_and_link "$skills_source" "${HOME_ROOT}/.cursor/skills"
+  log "Cursor setup complete!"
+}
+
 #=== メイン処理 ========================
 main() {
   if $DRY_RUN; then
@@ -323,6 +382,17 @@ main() {
       log "=== DRY-RUN Complete (no changes made) ==="
     else
       log "=== Codex Config Done ==="
+    fi
+    return
+  fi
+
+  if $CURSOR_ONLY; then
+    setup_cursor
+    echo
+    if $DRY_RUN; then
+      log "=== DRY-RUN Complete (no changes made) ==="
+    else
+      log "=== Cursor Config Done ==="
     fi
     return
   fi
@@ -391,6 +461,9 @@ main() {
 
   # Codex/Agents 用スキルのセットアップ（Claude 用から分岐したコピー）
   setup_agents
+
+  # Cursor のセットアップ（Cursor-native agents/config + shared Agent Skills）
+  setup_cursor
 
   echo
   if $DRY_RUN; then

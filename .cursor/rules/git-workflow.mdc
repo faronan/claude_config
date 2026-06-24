@@ -1,0 +1,13 @@
+---
+globs: "**/*"
+alwaysApply: false
+---
+
+# Git Workflow
+
+- Work on a feature branch, not directly on `main`.
+- Keep commits atomic: one logical change per commit.
+- Use Japanese Conventional Commits for commit messages.
+- Do not commit or push without explicit user confirmation.
+- Prefer read-only git commands for analysis: `git status`, `git diff`,
+  `git show`, `git log`, and `git branch --show-current`.

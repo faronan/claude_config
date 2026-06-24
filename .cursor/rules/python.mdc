@@ -1,0 +1,12 @@
+---
+globs: "**/*.py"
+alwaysApply: false
+---
+
+# Python
+
+- Use `uv` for Python dependency workflows.
+- Use `ruff format` and `ruff check` for formatting and linting.
+- Add type hints to function signatures.
+- Prefer dataclasses or Pydantic for structured data.
+- Do not use `pip` directly unless the user explicitly approves an exception.

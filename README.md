@@ -2,7 +2,7 @@
 
 Claude Code のグローバル設定ディレクトリ `~/.claude` を Git 管理するためのリポジトリ。
 
-**28 スキル・10 エージェント・9 フック・6 ルール** を統合し、3 つの設計原則で全体を設計しています。
+**28 スキル・Cursor/Claude/Codex 向けエージェント・9 フック・複数ハーネス向けルール** を統合し、3 つの設計原則で全体を設計しています。
 
 - **Progressive Disclosure** — 必要な情報を必要な時に（CLAUDE.md は 27 行）
 - **最小権限と関心の分離** — 10 エージェント中 8 エージェントが指示レベルで読み取り専用
@@ -22,6 +22,11 @@ claude-config/
 │   │   └── skills/          # harness 非依存の skill 本体・reference（両側から symlink）
 │   ├── .agents/
 │   │   └── skills/          # Codex / Agents 用スキル（harness 固有部分のみ。共通分は .shared/skills へリンク）
+│   ├── .cursor/
+│   │   ├── agents/          # Cursor-native subagents
+│   │   ├── cli-config.json  # Cursor CLI グローバル設定
+│   │   ├── mcp.json         # Cursor MCP サーバー設定
+│   │   └── skills/          # install.sh では .agents/skills へリンク
 │   └── .claude/
 │       ├── CLAUDE.md       # グローバルユーザー設定
 │       ├── settings.json   # 権限・フック設定
@@ -38,7 +43,11 @@ claude-config/
 │   ├── python-data/        # Python データ分析（Jupyter MCP 付き）
 │   └── project-skills/     # プロジェクト用スキルテンプレート
 ├── bin/
+│   ├── check-cursor-config.sh
+│   ├── check-skill-drift.sh
 │   └── install.sh          # デプロイスクリプト
+├── .cursor/
+│   └── rules/              # この repo 用 Cursor Project Rules
 └── README.md
 ```
 
@@ -67,6 +76,12 @@ chmod +x bin/install.sh
 
 # Codex config.toml の生成・merge のみ実行
 ./bin/install.sh --codex-config-only
+
+# Cursor 設定のみリンク
+./bin/install.sh --cursor-only
+
+# Cursor セットアップをスキップ
+./bin/install.sh --no-cursor
 
 # ヘルプ表示
 ./bin/install.sh --help
@@ -116,6 +131,16 @@ claude mcp add github --scope user -e GITHUB_PERSONAL_ACCESS_TOKEN='${GITHUB_TOK
 
 確認: `claude mcp list`
 
+### Cursor MCP
+
+Cursor 用 MCP は `home/.cursor/mcp.json` で管理します。
+
+- `context7`: 最新ドキュメント取得
+- `sequential-thinking`: 複雑な問題の構造化
+- `github`: GitHub MCP（`GITHUB_TOKEN` を `${env:GITHUB_TOKEN}` で参照）
+
+Cursor は `.cursor/mcp.json` または `~/.cursor/mcp.json` を読み込み、MCP tool は Run Mode / approval に従います。秘密値は repo に書かず、環境変数で渡します。
+
 ## 含まれる設定
 
 ### フック（hooks/）
@@ -156,6 +181,7 @@ Skill の配置は 3 層構成。
 - `home/.shared/skills/` — harness 非依存の本体・reference（両側から相対 symlink で共有）
 - `home/.claude/skills/` — Claude Code 固有部分。共通分は `../../.shared/skills/...` へ symlink
 - `home/.agents/skills/` — Codex / Agents 固有部分（`AskUserQuestion` / `Task` / `Agent` を Codex の会話確認・`spawn_agent`・`apply_patch` に読み替え）。共通分は同じく symlink
+- `~/.cursor/skills/` — `install.sh` が `home/.agents/skills` へリンク。Cursor は `.agents/skills` / `.cursor/skills` / `~/.agents/skills` / `~/.cursor/skills` を読むため、実体は共有してドリフトを避ける。
 
 `codex-delegate` は Claude→Codex 橋渡し skill のため Codex 側には置かない。共通ルールは `home/.agents/skills/CODEX_COMPATIBILITY.md` を参照。
 
@@ -163,6 +189,7 @@ Skill の配置は 3 層構成。
 
 ```bash
 bin/check-skill-drift.sh
+bin/check-cursor-config.sh
 ```
 
 `.shared/skills/` 配下は `.prettierignore` 対象（フォーマッタが内容を書き換えてドリフトが発生するのを防ぐ）。
@@ -232,6 +259,23 @@ bin/check-skill-drift.sh
 | `architect`          | システム設計・技術選定       | 設計のみ |
 | `log-analyzer`       | ログファイル分析・エラー追跡 | 分析のみ |
 | `git-analyst`        | Git 履歴分析・ブランチ戦略   | 分析のみ |
+
+### Cursor Subagents
+
+Cursor 用 subagent は `home/.cursor/agents/` に置きます。`.claude/agents` / `.codex/agents` も互換ディレクトリとして読めますが、同名がある場合は `.cursor/agents` を優先します。
+
+- 読み取り専用系は `readonly: true`
+- 実装担当のみ `readonly: false`
+- `model: inherit` を使い、親セッションの model 方針を継承
+- Claude Code 固有の `tools` / `permissionMode` / `memory` は Cursor frontmatter に持ち込まない
+
+### Cursor Rules
+
+この repo 自体で Cursor を使うための Project Rules は `.cursor/rules/*.mdc` に置きます。
+
+- 常時適用: harness 概要、安全制約
+- file-scoped: Git / Python / testing など
+- 長い手順は rules に詰め込まず、skills や docs へ分離
 
 ### テンプレート
 

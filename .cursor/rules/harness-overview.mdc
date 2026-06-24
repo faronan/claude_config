@@ -1,0 +1,20 @@
+---
+description: Harness architecture for this configuration repository
+alwaysApply: true
+---
+
+# Harness Overview
+
+- This repo manages user-level AI coding harnesses for Claude Code, Codex, and Cursor.
+- Cursor is the primary harness target for new shared workflow design.
+- Preserve Claude Code and Codex compatibility unless the task explicitly removes it.
+- Keep long procedures in skills, hooks, rules, or scripts rather than expanding top-level instructions.
+- Do not commit runtime state, auth files, caches, sessions, or generated local config.
+
+## Source of Truth
+
+- Cursor: `home/.cursor/`
+- Claude Code: `home/.claude/`
+- Codex: `home/.codex/`
+- Shared skills for Cursor/Codex: `home/.agents/skills/`
+- Shared hook helpers: `home/.shared/hooks/`
