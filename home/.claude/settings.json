@@ -4,13 +4,15 @@
   "env": {
     "EDITOR": "code",
     "CLAUDE_CODE_TMPDIR": "/Users/toshiki.ito/.claude/tmp",
-    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70"
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70",
+    "OTEL_LOG_ASSISTANT_RESPONSES": "0"
   },
   "attribution": {
     "commit": "Co-Authored-By: Claude <noreply@anthropic.com>",
     "pr": "Generated with [Claude Code](https://claude.com/claude-code)"
   },
   "includeGitInstructions": false,
+  "respondToBashCommands": false,
   "permissions": {
     "allow": [
       "Skill",
@@ -233,10 +235,22 @@
     ],
     "Notification": [
       {
+        "matcher": "permission_prompt|idle_prompt|elicitation_dialog|agent_needs_input",
         "hooks": [
           {
             "type": "command",
             "command": "~/.claude/hooks/notify-input-required.sh",
+            "timeout": 10,
+            "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "agent_completed",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notify-completion.sh",
             "timeout": 10,
             "async": true
           }
@@ -278,6 +292,9 @@
       }
     ]
   },
+  "worktree": {
+    "baseRef": "head"
+  },
   "statusLine": {
     "type": "command",
     "command": "~/.claude/statusline.js",
@@ -288,14 +305,12 @@
   "showThinkingSummaries": true,
   "theme": "light",
   "preferredNotifChannel": "ghostty",
-  "worktree": {
-    "baseRef": "head"
-  },
   "autoMode": {
     "hard_deny": [
       "$defaults",
       "Never bypass explicit user confirmation requirements for git commit, git push, git merge, git rebase, git stash, dependency installation, Docker execution, destructive filesystem operations, or writes outside the current project.",
       "Never send repository contents, credentials, local configuration, or private working state to external services unless that exact destination is explicitly approved for the current task."
     ]
-  }
+  },
+  "tui": "fullscreen"
 }

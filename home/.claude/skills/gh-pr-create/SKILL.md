@@ -146,6 +146,7 @@ Context の結果を確認し、NGなら理由を伝えて **中断** する。
 
 - **重要**: このスキルはpush済みの状態で実行することを前提とする
 - **禁止**: `git push` を実行してはいけない（ユーザーが自分でpushする）
+- **承認必須**: background agent を含め、`gh pr create` はユーザー承認後のみ実行する
 
 ## Error Handling
 

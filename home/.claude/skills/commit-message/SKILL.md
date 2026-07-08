@@ -21,7 +21,7 @@ allowed-tools:
 ```
 コミットしたい
     ├── 小さな変更（3ファイル以下 & 50行以下）
-    │   └── /quick-commit → 確認なしで即コミット
+    │   └── /quick-commit → 明示承認後にコミット
     ├── 複数の論理的変更が混在
     │   └── /smart-commit → グループ分割して複数コミット
     └── 通常の変更（単一の論理変更）
@@ -33,7 +33,7 @@ allowed-tools:
 1. `git diff --staged` で変更内容を確認（未ステージなら `git status` を案内）
 2. 変更内容を分析し、適切な type と scope を決定
 3. メッセージを生成して表示
-4. `git commit` を実行（Bashコマンド確認で承認）
+4. ユーザーの明示承認を得た場合のみ `git commit` を実行
 
 ## Format
 

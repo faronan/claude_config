@@ -9,6 +9,7 @@ allowed-tools:
   - Bash(git status:*)
   - Bash(git diff:*)
   - Bash(git add:*)
+  - Bash(git commit:*)
   - Bash(git log:*)
   - AskUserQuestion
 ---
@@ -31,7 +32,8 @@ git diffの変更を論理的なグループに分割し、適切な粒度で複
 5. AskUserQuestion で分類確認後、各グループごとに:
    - `git add <files>` でステージング
    - Conventional Commits形式でメッセージ生成
-   - `git commit` 実行
+   - コミットメッセージを提示し、AskUserQuestion で明示承認を得る
+   - 承認後に限り `git commit` 実行
 6. 全コミット完了後、`git log --oneline -n <count>` で結果表示
 
 ## Grouping Strategy

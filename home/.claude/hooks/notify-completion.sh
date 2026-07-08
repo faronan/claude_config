@@ -13,6 +13,8 @@ input=$(cat)
 # ペイロードから情報を取得
 cwd=$(echo "$input" | jq -r '.cwd // ""')
 transcript_path=$(echo "$input" | jq -r '.transcript_path // ""')
+notification_type=$(echo "$input" | jq -r '.notification_type // .notificationType // ""')
+notification_message=$(echo "$input" | jq -r '.message // ""')
 active_background_count=$(echo "$input" | jq '
   [.background_tasks[]? |
     select(((.status // "") | ascii_downcase) as $s |
@@ -47,12 +49,18 @@ project_name=$(get_project_name "$cwd")
 
 # 通知内容を初期化
 title="${project_name:-Claude Code}"
-subtitle="応答完了"
-message="応答しました"
+if [[ "$notification_type" == "agent_completed" ]]; then
+  subtitle="background agent 完了"
+  message="${notification_message:-background agent が完了しました}"
+else
+  subtitle="応答完了"
+  message="応答しました"
+fi
 
 # last_assistant_message フィールドから直接取得（v2.1.47+）
 assistant_output=$(echo "$input" | jq -r '.last_assistant_message // ""' | tr '\n' ' ') || true
 assistant_output=$(strip_system_tags "$assistant_output")
+assistant_output=$(printf '%s' "$assistant_output" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 assistant_output=$(printf '%s' "$assistant_output" | truncate_chars 80)
 
 # ユーザー依頼はトランスクリプトから取得（最初の1件のみ）

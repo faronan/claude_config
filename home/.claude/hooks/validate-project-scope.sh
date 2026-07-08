@@ -14,6 +14,10 @@ fi
 # チェック対象のコマンドから安全なリダイレクト（>/dev/null, 2>&1 等）を除去して判定
 sanitized=$(printf '%s' "$command" | sed -E 's/[0-9]*>\/?dev\/(null|stdout|stderr|fd\/[0-9]+)//g; s/[0-9]*>&[0-9]+//g')
 
+if reason=$(match_secret_command "$sanitized"); then
+  pretooluse_deny "$reason"
+fi
+
 # 禁止システムディレクトリ（/dev, /tmp は除外: /dev/null は正当な使用、/tmp は CLAUDE_CODE_TMPDIR で制御）
 SYSTEM_DIRS="/(etc|var|sys|proc|opt|usr|Library|System)(/|$)"
 HOME_DIRS="(~|\\\$HOME|\\\$\{HOME\})/"

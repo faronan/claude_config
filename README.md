@@ -199,24 +199,24 @@ bin/check-skill-drift.sh
 
 `.shared/skills/` 配下は `.prettierignore` 対象（フォーマッタが内容を書き換えてドリフトが発生するのを防ぐ）。
 
-以下の表は Claude Code 側の挙動を基準に記載。Codex / Agents 側は `home/.agents/skills/CODEX_COMPATIBILITY.md` のルールに従い、`git commit` / `gh pr create` / `gh pr review` 等の破壊・公開操作はすべて明示的なユーザー確認後に実行する（`/quick-commit` も Codex では確認必須）。
+以下の表は Claude Code 側の挙動を基準に記載。Claude Code / Codex / Agents のいずれでも、background agent を含めて `git commit` / `git push` / `gh pr create` / `gh pr review` 等の破壊・公開操作はすべて明示的なユーザー確認後に実行する。
 
 #### 手動実行専用（/コマンド）
 
-| スキル                  | 説明                                                       |
-| ----------------------- | ---------------------------------------------------------- |
-| `/quick-commit`         | 小さな変更をコミット（Claude: 確認なし / Codex: 確認必須） |
-| `/smart-commit`         | 変更を論理的に分割して複数コミット                         |
-| `/switch-branch`        | Conventional Branch形式でブランチ作成                      |
-| `/gh-pr-create`         | Push済みの変更からPR作成（会話コンテキスト活用）           |
-| `/gh-issue-fix`         | GitHub Issue を分析して修正                                |
-| `/security-review`      | OWASP Top 10 に基づくセキュリティレビュー                  |
-| `/workflow-implement`   | 実装ワークフロー（計画→実装→テスト→レビュー）              |
-| `/workflow-fix-bug`     | バグ修正ワークフロー（調査→修正→検証）                     |
-| `/workflow-refactoring` | リファクタリングワークフロー                               |
-| `/workflow-research`    | 調査ワークフロー（コードベース+Web）                       |
-| `/workflow-tdd`         | TDDワークフロー（RED→GREEN→REFACTOR）                      |
-| `/handoff`              | セッション進捗まとめ・引継ぎ                               |
+| スキル                  | 説明                                             |
+| ----------------------- | ------------------------------------------------ |
+| `/quick-commit`         | 小さな変更を確認後にコミット                     |
+| `/smart-commit`         | 変更を論理的に分割して複数コミット               |
+| `/switch-branch`        | Conventional Branch形式でブランチ作成            |
+| `/gh-pr-create`         | Push済みの変更からPR作成（会話コンテキスト活用） |
+| `/gh-issue-fix`         | GitHub Issue を分析して修正                      |
+| `/security-review`      | OWASP Top 10 に基づくセキュリティレビュー        |
+| `/workflow-implement`   | 実装ワークフロー（計画→実装→テスト→レビュー）    |
+| `/workflow-fix-bug`     | バグ修正ワークフロー（調査→修正→検証）           |
+| `/workflow-refactoring` | リファクタリングワークフロー                     |
+| `/workflow-research`    | 調査ワークフロー（コードベース+Web）             |
+| `/workflow-tdd`         | TDDワークフロー（RED→GREEN→REFACTOR）            |
+| `/handoff`              | セッション進捗まとめ・引継ぎ                     |
 
 #### 自動発動（Claude が判断）
 

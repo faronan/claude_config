@@ -6,6 +6,7 @@
 2. 破壊的操作は実行前に確認を求める
 3. TDD で進める（探索 → Red → Green → Refactoring）。コード変更後はテスト・型チェック・lint で検証する
 4. docker-compose.yml があるプロジェクトではコンテナ内でコマンド実行する
+5. `git commit` / `git push` / PR 作成は、background agent を含めて明示的なユーザー承認後のみ実行する
 
 ## Code Design
 

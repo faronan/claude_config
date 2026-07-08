@@ -2,7 +2,7 @@
 name: quick-commit
 effort: low
 description: |
-  Quick commit without confirmation (for small changes).
+  Quick commit with explicit confirmation (for small changes).
   Trigger words: "即コミット", "すぐコミット", "quick commit", "サクッとコミット".
 disable-model-invocation: true
 allowed-tools:
@@ -10,11 +10,12 @@ allowed-tools:
   - Bash(git diff:*)
   - Bash(git add:*)
   - Bash(git commit:*)
+  - AskUserQuestion
 ---
 
 # Quick Commit
 
-ステージされた変更を確認せずに即座にコミットする。
+ステージされた変更を確認し、ユーザー承認後にコミットする。
 小さな変更（typo修正、フォーマット等）用。
 
 ## Current Changes
@@ -27,7 +28,8 @@ allowed-tools:
 1. 上記の Current Changes を確認
 2. 変更が3ファイル以下かつ50行以下なら続行、それ以上なら `/smart-commit` の使用を案内して **終了**
 3. commit-message スキルのルールに従ってメッセージ生成
-4. 確認なしで `git commit` 実行
+4. コミットメッセージと staged diff summary を提示し、AskUserQuestion で明示承認を得る
+5. 承認後に限り `git commit` 実行
 
 ## Commit Message Format
 
