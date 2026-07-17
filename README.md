@@ -1,6 +1,6 @@
 # claude-config
 
-Claude Code のグローバル設定ディレクトリ `~/.claude` を Git 管理するためのリポジトリ。
+Claude Code の `~/.claude` と Codex CLI の `~/.codex` を Git 管理するためのリポジトリ。
 
 **28 スキル・10 エージェント・9 フック・6 ルール** を統合し、3 つの設計原則で全体を設計しています。
 
@@ -10,7 +10,7 @@ Claude Code のグローバル設定ディレクトリ `~/.claude` を Git 管�
 
 ## 概要
 
-新しいマシンでも `git clone` + `install.sh` で同一の Claude Code 環境を再現可能。
+新しいマシンでも `git clone` + `install.sh` で同一の Claude Code / Codex CLI 環境を再現可能。
 
 ## 構成
 
@@ -22,6 +22,12 @@ claude-config/
 │   │   └── skills/          # harness 非依存の skill 本体・reference（両側から symlink）
 │   ├── .agents/
 │   │   └── skills/          # Codex / Agents 用スキル（harness 固有部分のみ。共通分は .shared/skills へリンク）
+│   ├── .codex/              # Codex CLI の user-level 設定
+│   │   ├── config.base.toml # Git 管理する permission profiles / hooks / MCP の base
+│   │   ├── AGENTS.md        # Codex 向けの既定指示
+│   │   ├── agents/          # custom agent 定義
+│   │   ├── hooks/           # Codex hook
+│   │   └── rules/           # Git 管理する実行ポリシー（default.rules はローカル状態）
 │   └── .claude/
 │       ├── CLAUDE.md       # グローバルユーザー設定
 │       ├── settings.json   # 権限・フック設定
@@ -78,6 +84,37 @@ chmod +x bin/install.sh
 git clone git@github.com:<username>/claude-config.git ~/claude-config
 ~/claude-config/bin/install.sh
 ```
+
+## Codex CLI
+
+この構成は Codex CLI 安定版 `0.144.5` を検証対象にしています。`home/.codex/config.base.toml` は Git 管理する base であり、`~/.codex/config.toml` そのものは app/runtime の local state を含む active file として扱います。
+
+`install.sh` は base を展開したうえで、次の local state を維持します。
+
+- `projects`、`marketplaces`、`plugins`、`hooks.state`
+- `tui.model_availability_nux`、`notice`、`desktop`
+- repo 管理外の `mcp_servers.*`（例: `node_repl`、`computer-use`）
+
+`context7` と `sequential-thinking` は repo 管理の MCP です。これらだけは base config の値で更新され、connector 認証や plugin 状態は repo に固定しません。
+
+permission profiles は `default_permissions = "workspace"` と `[permissions.workspace.*]` を使用します。旧 `sandbox_mode` / `[sandbox_workspace_write]` とは混在させません。Web 検索は `web_search = "indexed"` を既定にし、最新性とページアクセスの制約を両立させます。
+
+`~/.codex/rules/default.rules` は Codex-managed local state です。インストーラは Git 管理下のルールだけを個別にリンクし、`default.rules` を上書き・Git 管理しません。
+
+設定の適用前後は次で確認できます。
+
+```bash
+codex --strict-config --version
+codex doctor --json
+codex features list
+./bin/install.sh --codex-config-only --dry-run
+```
+
+### Multi-agent troubleshooting
+
+MultiAgentV2 の agent tool metadata が見えない問題に対して、`hide_spawn_agent_metadata = false` や `tool_namespace = "agents"` を base config へ固定しません。まず `codex features list` で現行 CLI の feature 状態を確認し、再現する場合だけ [調査記事](https://zenn.dev/hayatosc/articles/codex-agent-issue) と [openai/codex#31814](https://github.com/openai/codex/issues/31814) を参照して upstream の状況を確認してください。
+
+設定項目は [Codex changelog](https://learn.chatgpt.com/docs/changelog)、[Config basics](https://learn.chatgpt.com/docs/config-file/config-basic)、[Permissions](https://learn.chatgpt.com/docs/permissions)、[Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)、[Rules](https://learn.chatgpt.com/docs/agent-configuration/rules)、[Plugins](https://learn.chatgpt.com/docs/plugins) を基準に更新します。
 
 ### 環境変数の設定
 

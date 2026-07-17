@@ -99,6 +99,11 @@ extract_codex_local_config() {
   fi
 
   awk '
+    function is_repo_managed_mcp(header) {
+      return header ~ /^\[\[?mcp_servers\."?context7"?([.\]]|$)/ ||
+             header ~ /^\[\[?mcp_servers\."?sequential-thinking"?([.\]]|$)/
+    }
+
     function keep_table(header) {
       return header ~ /^\[\[?projects\./ ||
              header ~ /^\[\[?marketplaces\./ ||
@@ -108,7 +113,9 @@ extract_codex_local_config() {
              header ~ /^\[\[?hooks\.state\./ ||
              header == "[tui.model_availability_nux]" ||
              header == "[[tui.model_availability_nux]]" ||
-             header ~ /^\[\[?notice(\.|])/
+             header ~ /^\[\[?notice(\.|])/ ||
+             header ~ /^\[\[?desktop(\.|])/ ||
+             (header ~ /^\[\[?mcp_servers\./ && !is_repo_managed_mcp(header))
     }
 
     /^\[+[^]]+\]+$/ {
@@ -127,6 +134,51 @@ extract_codex_local_config() {
       print
     }
   ' "$config"
+}
+
+link_codex_rules() {
+  local source_rules="$1"
+  local dest_rules="$2"
+
+  if $DRY_RUN; then
+    log "[DRY-RUN] Would link managed Codex rules individually: $dest_rules <- $source_rules"
+    log "[DRY-RUN] Would preserve local Codex-managed rule: $dest_rules/default.rules"
+    return
+  fi
+
+  if [ -L "$dest_rules" ]; then
+    local local_default=""
+    if [ -f "$dest_rules/default.rules" ]; then
+      local_default="$(mktemp "${HOME_ROOT}/.codex/default.rules.XXXXXX")"
+      cp "$dest_rules/default.rules" "$local_default"
+    fi
+
+    local rel="${dest_rules#${HOME_ROOT}/}"
+    local backup_path="${BACKUP_ROOT}/${rel}"
+    mkdir -p "$(dirname "$backup_path")"
+    mv "$dest_rules" "$backup_path"
+    log "Backup: $dest_rules -> $backup_path"
+    mkdir -p "$dest_rules"
+
+    if [ -n "$local_default" ]; then
+      mv "$local_default" "$dest_rules/default.rules"
+      log "Preserved local rule: $dest_rules/default.rules"
+    fi
+  else
+    mkdir -p "$dest_rules"
+  fi
+
+  local src
+  local basename
+  for src in "$source_rules"/* "$source_rules"/.*; do
+    basename="$(basename "$src")"
+    case "$basename" in
+      .|..|default.rules) continue ;;
+    esac
+    if [ -e "$src" ]; then
+      backup_and_link "$src" "$dest_rules/$basename"
+    fi
+  done
 }
 
 render_codex_base_config() {
@@ -155,7 +207,7 @@ install_codex_config() {
 
   if $DRY_RUN; then
     log "[DRY-RUN] Would merge Codex config: $dest from $base_config"
-    log "[DRY-RUN] Would preserve local Codex state tables: projects, marketplaces, plugins, hooks.state, tui.model_availability_nux, notice"
+    log "[DRY-RUN] Would preserve local Codex state tables: projects, marketplaces, plugins, hooks.state, tui.model_availability_nux, notice, desktop, non-base mcp_servers"
     return
   fi
 
@@ -261,8 +313,9 @@ setup_codex() {
 
   if $DRY_RUN; then
     log "[DRY-RUN] Would create: ${HOME_ROOT}/.codex"
-    log "[DRY-RUN] Would link: ~/.codex/* -> ${SOURCE_ROOT}/.codex/* except config.toml/config.base.toml"
+    log "[DRY-RUN] Would link: ~/.codex/* -> ${SOURCE_ROOT}/.codex/* except config.toml/config.base.toml/rules"
     install_codex_config
+    link_codex_rules "${SOURCE_ROOT}/.codex/rules" "${HOME_ROOT}/.codex/rules"
     return
   fi
 
@@ -274,13 +327,17 @@ setup_codex() {
     for src in "${SOURCE_ROOT}/.codex"/* "${SOURCE_ROOT}/.codex"/.*; do
       basename="$(basename "$src")"
       case "$basename" in
-        .|..|config.toml|config.base.toml) continue ;;
+        .|..|config.toml|config.base.toml|rules) continue ;;
       esac
       if [ -e "$src" ]; then
         dest="${HOME_ROOT}/.codex/${basename}"
         backup_and_link "$src" "$dest"
       fi
     done
+
+    if [ -d "${SOURCE_ROOT}/.codex/rules" ]; then
+      link_codex_rules "${SOURCE_ROOT}/.codex/rules" "${HOME_ROOT}/.codex/rules"
+    fi
   fi
 
   log "Codex setup complete!"

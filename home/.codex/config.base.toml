@@ -1,10 +1,9 @@
 model_reasoning_effort      = "high"
 plan_mode_reasoning_effort  = "xhigh"
 model_reasoning_summary     = "auto"
-web_search                  = "cached"
+web_search                  = "indexed"
 approval_policy             = "on-request"
 default_permissions         = "workspace"
-sandbox_mode                = "workspace-write"
 personality                 = "pragmatic"
 cli_auth_credentials_store  = "auto"
 
@@ -30,10 +29,6 @@ exclude = [
 max_threads             = 6
 max_depth               = 1
 job_max_runtime_seconds = 3600
-
-[sandbox_workspace_write]
-network_access = false
-writable_roots = []
 
 [features]
 shell_tool    = true

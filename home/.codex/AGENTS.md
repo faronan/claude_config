@@ -76,7 +76,8 @@ lockfile で判定し、対応するツールを使う:
 
 ## Model / Agents
 
-- Agent tool で model パラメータを指定しない（親モデルを継承）
+- 直接起動する Agent tool では model パラメータを指定せず、親モデルを継承する
+- custom agent TOML に明示された `model` / `model_reasoning_effort` は、その agent 定義として尊重する
 - コスト最適化のためのモデルダウングレード禁止
 - subagent は具体的で分離可能な作業だけに使い、実装時は担当ファイルを明確にする
 
@@ -127,10 +128,12 @@ lockfile で判定し、対応するツールを使う:
 - 共有してよいもの: skills、hooks の共通 helper、命名規約、計画ファイルの保存先 convention
 - 共有しないもの: active runtime state、auth、sessions、cache、Codex-managed `default.rules`
 - この設定 repo では `~/.codex/config.toml` は app-managed local state を含む active file として扱い、repo では `config.base.toml` を source of truth とする
+- `projects`、`marketplaces`、`plugins`、`hooks.state`、`tui.model_availability_nux`、`notice`、`desktop`、repo 管理外の MCP は install 時に local state として温存する
+- `context7` と `sequential-thinking` だけは repo 管理の MCP とし、base config の定義を優先する
 
 ### Rules / Allow policy
 
-- 現在の `approval_policy` / `sandbox_mode` / `~/.codex/rules/` に従う
+- 現在の `approval_policy` / `default_permissions` / `[permissions]` / `~/.codex/rules/` に従う
 - 詳細な allow / prompt / forbid は `config.base.toml`、`.rules`、hooks を source of truth とする
 - `default.rules` は Codex-managed local state として扱い、Git 管理に入れない
 - allow を増やす場合は `prefix_rule` だけで判断せず、変形コマンドを hook と `codex execpolicy check` で検証する
